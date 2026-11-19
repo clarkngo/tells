@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+import Drill from '../components/Drill';
+import { dsa } from '../lib/tracks';
+---
+<Base title="Drill">
+  <section class="page-head">
+    <h1>Drill</h1>
+    <p class="muted">{dsa.problems.length} problems · keys 1–4 answer, Enter continues</p>
+  </section>
+  <Drill client:only="preact" track={dsa.slug} patterns={dsa.patterns} problems={dsa.problems} setup>
+    <div slot="fallback" class="drill skeleton">Loading drill…</div>
+  </Drill>
+</Base>
