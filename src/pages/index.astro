@@ -2,46 +2,61 @@
 import Base from '../layouts/Base.astro';
 import Drill from '../components/Drill';
 import Progress from '../components/Progress';
-import { dsa } from '../lib/tracks';
+import { dsa, tracks } from '../lib/tracks';
 const base = import.meta.env.BASE_URL;
-const live = dsa.patterns.filter((p) => p.live);
 ---
 <Base>
   <section class="hero">
-    <p class="eyebrow">Pattern recognition for coding interviews</p>
+    <p class="eyebrow">Pattern recognition for tech interviews</p>
     <h1>Every problem has a <span class="hl">tell</span>.</h1>
     <p class="lede">
       Read a problem, catch the signal, name the pattern in under 20 seconds.
       Tells trains the first 30 seconds, so you spend the rest actually solving.
     </p>
     <div class="row">
-      <a class="btn primary" href={`${base}drill/`}>Start a sprint →</a>
-      <a class="btn" href={`${base}patterns/`}>Browse patterns</a>
+      {tracks.map((t, i) => (
+        <a class={`btn ${i === 0 ? 'primary' : ''}`} href={`${base}${t.slug}/drill/`}>{t.short} drill →</a>
+      ))}
     </div>
   </section>
 
   <section class="demo">
-    <h2 class="section-title">Try three <span class="muted">· keys 1–4 answer, Enter continues</span></h2>
-    <Drill client:only="preact" track={dsa.slug} patterns={dsa.patterns} problems={dsa.problems} count={3} seconds={20} setup={false}>
+    <h2 class="section-title">Try three <span class="muted">· DSA · keys 1–4 answer, Enter continues</span></h2>
+    <Drill client:only="preact" track={dsa.slug} patterns={dsa.patterns} problems={dsa.problems}
+      count={3} seconds={20} setup={false} drillHref={`${base}dsa/drill/`}>
       <div slot="fallback" class="drill skeleton">Loading drill…</div>
     </Drill>
   </section>
 
   <section class="how">
-    <div><span class="step mono">01</span><h3>Read</h3><p>A short problem in plain words. No code, no examples to lean on.</p></div>
+    <div><span class="step mono">01</span><h3>Read</h3><p>A short problem or scenario in plain words. No code, no diagrams to lean on.</p></div>
     <div><span class="step mono">02</span><h3>Spot</h3><p>Pick the pattern before the timer runs out. Your first instinct is what's being trained.</p></div>
     <div><span class="step mono">03</span><h3>Reveal</h3><p>The tells light up, the pattern animates, and the look-alike trap is named.</p></div>
   </section>
 
   <section>
-    <h2 class="section-title">Your progress</h2>
-    <Progress client:only="preact" patterns={dsa.patterns} />
-  </section>
-
-  <section>
-    <h2 class="section-title">Live patterns <span class="muted">· {live.length} of {dsa.patterns.length}</span></h2>
-    <div class="pill-row">
-      {live.map((p) => <a class="pill" style={`--h:${p.hue}`} href={`${base}drill/?focus=${p.slug}`}><span class="dot" />{p.name}</a>)}
+    <h2 class="section-title">Tracks</h2>
+    <div class="tracks">
+      {tracks.map((t) => {
+        const live = t.patterns.filter((p) => p.live);
+        return (
+          <article class="track">
+            <div class="track-head">
+              <h3>{t.name}</h3>
+              <span class="mono muted">{t.problems.length} · {live.length}/{t.patterns.length} live</span>
+            </div>
+            <p class="muted">{t.tagline}</p>
+            <div class="pill-row">
+              {live.map((p) => <a class="pill" style={`--h:${p.hue}`} href={`${base}${t.slug}/drill/?focus=${p.slug}`}><span class="dot" />{p.name}</a>)}
+            </div>
+            <Progress client:only="preact" track={t.slug} patterns={t.patterns} />
+            <div class="row">
+              <a class="btn primary" href={`${base}${t.slug}/drill/`}>Drill</a>
+              <a class="btn" href={`${base}${t.slug}/patterns/`}>{t.slug === 'dsa' ? 'Patterns' : 'Building blocks'}</a>
+            </div>
+          </article>
+        );
+      })}
     </div>
   </section>
 </Base>

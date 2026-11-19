@@ -2,10 +2,10 @@ import { useEffect, useState } from 'preact/hooks';
 import { CHANGED, loadAttempts, type Attempt } from '../lib/storage';
 import type { Pattern } from '../lib/types';
 
-export default function Progress({ patterns }: { patterns: Pattern[] }) {
+export default function Progress({ track, patterns }: { track: string; patterns: Pattern[] }) {
   const [attempts, setAttempts] = useState<Attempt[] | null>(null);
   useEffect(() => {
-    const refresh = () => setAttempts(loadAttempts());
+    const refresh = () => setAttempts(loadAttempts().filter((a) => a.track === track));
     refresh();
     addEventListener(CHANGED, refresh);
     return () => removeEventListener(CHANGED, refresh);

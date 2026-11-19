@@ -5,4 +5,9 @@ import preact from '@astrojs/preact';
 export default defineConfig({
   base: '/tells/',
   integrations: [preact()],
+  // Old single-track URLs from the first release.
+  redirects: {
+    '/drill': '/tells/dsa/drill/',
+    '/patterns': '/tells/dsa/patterns/',
+  },
 });

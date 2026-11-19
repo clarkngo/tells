@@ -15,6 +15,7 @@ interface Props {
   count?: number;
   seconds?: number;
   setup?: boolean;
+  drillHref?: string;
 }
 
 const MODES: Record<Mode, { label: string; desc: string; timed: boolean }> = {
@@ -55,7 +56,7 @@ function highlight(text: string, tells: string[]) {
   return out;
 }
 
-export default function Drill({ track, patterns, problems, count = 10, seconds = 20, setup = true }: Props) {
+export default function Drill({ track, patterns, problems, count = 10, seconds = 20, setup = true, drillHref }: Props) {
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
@@ -224,7 +225,7 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
             <button type="button" class="btn primary" onClick={() => start()}>Run it again</button>
             {setup
               ? <button type="button" class="btn" onClick={() => setPhase('setup')}>Change mode</button>
-              : <a class="btn" href={`${import.meta.env.BASE_URL}drill/`}>Full drill →</a>}
+              : drillHref && <a class="btn" href={drillHref}>Full drill →</a>}
           </div>
         </div>
       </div>

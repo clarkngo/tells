@@ -236,7 +236,26 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .g-ring { transform-box: fill-box; transform-origin: center; animation: ring 1.8s ease-out infinite; opacity: 0; }
 @keyframes ring { 0% { transform: scale(0.2); opacity: 1; } 100% { transform: scale(1); opacity: 0; } }
 
+.g-dash { stroke-dasharray: 3 4; }
+.g-faint { opacity: 0.5; }
+.g-shuttle { animation: shuttle 1.4s ease-in infinite; }
+@keyframes shuttle { 0% { transform: translateX(0); opacity: 1; } 90% { transform: translateX(30px); opacity: 1; } 100% { transform: translateX(30px); opacity: 0; } }
+.g-split { animation: split 2.4s ease-in-out infinite alternate; }
+@keyframes split { 0%, 20% { transform: translateX(0); } 80%, 100% { transform: translateX(var(--dx)); } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .g-bs, .g-ring { opacity: 1; }
 }
+
+/* ---------- tracks ---------- */
+.tracks { display: grid; gap: 16px; }
+.track {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 20px; display: flex; flex-direction: column; gap: 14px;
+}
+.track-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; }
+.track h3 { margin: 0; font-size: 1.2rem; }
+.track > p { margin: 0; }
+.track .stat { background: var(--surface-2); }
+.page-head .eyebrow { margin-bottom: 6px; }

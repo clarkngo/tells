@@ -23,6 +23,8 @@ export interface Problem {
 export interface Track {
   slug: string;
   name: string;
+  short: string; // nav label
+  tagline: string;
   patterns: Pattern[];
   problems: Problem[];
 }

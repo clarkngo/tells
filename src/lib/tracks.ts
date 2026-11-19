@@ -2,6 +2,7 @@
 import { z } from 'astro/zod';
 import type { Pattern, Problem, Track } from './types';
 import { patterns as dsaPatterns } from '../data/tracks/dsa/patterns';
+import { patterns as sdPatterns } from '../data/tracks/system-design/patterns';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -38,17 +39,28 @@ function check(slug: string, patterns: Pattern[], problems: Problem[]) {
   if (errors.length) throw new Error(`Problem bank errors:\n${errors.join('\n')}`);
 }
 
-function makeTrack(slug: string, name: string, patterns: Pattern[], files: Record<string, unknown>): Track {
+function makeTrack(
+  meta: Pick<Track, 'slug' | 'name' | 'short' | 'tagline'>,
+  patterns: Pattern[],
+  files: Record<string, unknown>,
+): Track {
   const problems = loadProblems(files);
-  check(slug, patterns, problems);
-  return { slug, name, patterns, problems };
+  check(meta.slug, patterns, problems);
+  return { ...meta, patterns, problems };
 }
 
 export const dsa = makeTrack(
-  'dsa',
-  'Data structures & algorithms',
+  { slug: 'dsa', name: 'Data structures & algorithms', short: 'DSA',
+    tagline: 'Read a coding problem, name the algorithm pattern.' },
   dsaPatterns,
   import.meta.glob('../data/tracks/dsa/problems/*.json', { eager: true, import: 'default' }),
 );
 
-export const tracks: Track[] = [dsa];
+export const systemDesign = makeTrack(
+  { slug: 'system-design', name: 'System design', short: 'System design',
+    tagline: 'Read a scenario, name the building block it needs.' },
+  sdPatterns,
+  import.meta.glob('../data/tracks/system-design/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const tracks: Track[] = [dsa, systemDesign];

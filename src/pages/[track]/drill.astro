@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import Drill from '../../components/Drill';
+import { tracks } from '../../lib/tracks';
+import type { Track } from '../../lib/types';
+
+export function getStaticPaths() {
+  return tracks.map((t) => ({ params: { track: t.slug }, props: { t } }));
+}
+const { t } = Astro.props as { t: Track };
+const base = import.meta.env.BASE_URL;
+---
+<Base title={`${t.short} drill`}>
+  <section class="page-head">
+    <p class="eyebrow">{t.name}</p>
+    <h1>Drill</h1>
+    <p class="muted">
+      {t.problems.length} {t.slug === 'dsa' ? 'problems' : 'scenarios'} · keys 1–4 answer, Enter continues ·
+      <a href={`${base}${t.slug}/patterns/`}>see all patterns</a>
+    </p>
+  </section>
+  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} setup>
+    <div slot="fallback" class="drill skeleton">Loading drill…</div>
+  </Drill>
+</Base>

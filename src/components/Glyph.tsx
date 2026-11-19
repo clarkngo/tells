@@ -57,6 +57,69 @@ const shapes: Record<string, () => preact.JSX.Element> = {
       <circle class="g-fill" cx={80} cy={28} r={5} />
     </g>
   ),
+
+  // ---- system design ----
+  cache: () => (
+    <g>
+      <circle class="g-node" cx={20} cy={28} r={7} />
+      <path class="g-line" d="M28 28 H64" />
+      <path class="g-line g-dash" d="M96 28 H124" />
+      <rect class="g-node g-faint" x={124} y={14} width={28} height={28} rx={6} />
+      <rect class="g-fill g-heap" x={64} y={16} width={32} height={24} rx={6} />
+      <circle class="g-fill g-shuttle" cx={30} cy={28} r={3} />
+    </g>
+  ),
+  'message-queue': () => (
+    <g>
+      <circle class="g-node" cx={16} cy={28} r={7} />
+      <path class="g-line" d="M40 16 H128 M40 40 H128" />
+      {[0, 1, 2, 3].map((i) => (
+        <rect class="g-fill g-bs" style={{ animationDelay: `${(3 - i) * 0.4}s` }}
+          x={46 + i * 20} y={20} width={14} height={16} rx={3} />
+      ))}
+      <circle class="g-fill g-heap" cx={144} cy={28} r={7} />
+    </g>
+  ),
+  sharding: () => (
+    <g>
+      {[0, 1, 2].map((i) => (
+        <g class="g-split" style={{ '--dx': `${(i - 1) * 40}px` }}>
+          <rect class="g-fill" x={66} y={10} width={28} height={36} rx={6}
+            style={{ opacity: 0.45 + i * 0.25 }} />
+        </g>
+      ))}
+    </g>
+  ),
+  'read-replicas': () => (
+    <g>
+      <path class="g-line" d="M36 28 L112 10 M36 28 L112 28 M36 28 L112 46" />
+      <circle class="g-fill" cx={30} cy={28} r={9} />
+      {[10, 28, 46].map((y, i) => (
+        <circle class="g-stroke g-heap" style={{ animationDelay: `${i * 0.3}s` }} cx={118} cy={y} r={6} />
+      ))}
+    </g>
+  ),
+  cdn: () => (
+    <g>
+      <circle class="g-line" cx={80} cy={28} r={22} />
+      <path class="g-line" d="M58 28 H102 M80 6 C68 18 68 38 80 50 M80 6 C92 18 92 38 80 50" />
+      <circle class="g-fill" cx={80} cy={28} r={4} />
+      {[[28, 14], [132, 14], [24, 44], [136, 44]].map(([x, y], i) => (
+        <circle class="g-fill g-heap" style={{ animationDelay: `${i * 0.35}s` }} cx={x} cy={y} r={5} />
+      ))}
+    </g>
+  ),
+  'rate-limiting': () => (
+    <g>
+      <path class="g-stroke" d="M96 8 V22 M96 34 V48" />
+      {[0, 1, 2, 3, 4].map((i) => (
+        <circle class="g-fill g-bs" style={{ animationDelay: `${i * 0.3}s` }} cx={16 + i * 16} cy={28} r={4} />
+      ))}
+      {[0, 1].map((i) => (
+        <circle class="g-fill g-bs" style={{ animationDelay: `${0.6 + i * 0.9}s` }} cx={116 + i * 20} cy={28} r={4} />
+      ))}
+    </g>
+  ),
 };
 
 export default function Glyph({ slug, hue }: { slug: string; hue: number }) {

@@ -12,7 +12,9 @@ npm run build    # type-checks, validates the problem bank, builds to dist/
 
 ## Content
 
-Content is organised into **tracks** under `src/data/tracks/<track>/`:
+Content is organised into **tracks** under `src/data/tracks/<track>/`. Right now there are two: `dsa` (algorithm patterns) and `system-design` (building blocks such as caches, queues and sharding). Each track gets its own `/<track>/drill/` and `/<track>/patterns/` pages. Register a new track in `src/lib/tracks.ts`.
+
+Each track contains:
 
 - `patterns.ts`: each pattern's slug, name, hue, blurb and signals. `live: true` puts it in the drills.
 - `problems/*.json`: the quiz bank. Each problem lists its `tells`, which must appear word-for-word in its `prompt`. Its `answer` and three `decoys` must all be live patterns. `src/lib/tracks.ts` checks these rules and fails the build if one is broken.
