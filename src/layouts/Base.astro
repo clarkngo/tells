@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { tracks } from '../lib/tracks';
+import Player from '../components/Player';
 interface Props { title?: string; description?: string }
 const { title, description = 'Train the first 30 seconds of a coding problem: spot the tell, name the pattern.' } = Astro.props;
 const base = import.meta.env.BASE_URL;
@@ -22,9 +23,12 @@ const nav = tracks.map((t) => ({ prefix: `${base}${t.slug}/`, label: t.short }))
   <body>
     <header class="site-head">
       <a class="logo" href={base}><span class="logo-dot" />tells</a>
-      <nav>
-        {nav.map((n) => <a href={`${n.prefix}drill/`} aria-current={path.startsWith(n.prefix) ? 'page' : undefined}>{n.label}</a>)}
-      </nav>
+      <div class="head-right">
+        <nav>
+          {nav.map((n) => <a href={`${n.prefix}drill/`} aria-current={path.startsWith(n.prefix) ? 'page' : undefined}>{n.label}</a>)}
+        </nav>
+        <Player client:only="preact" />
+      </div>
     </header>
     <main><slot /></main>
     <footer class="site-foot">
