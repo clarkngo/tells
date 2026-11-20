@@ -388,3 +388,28 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
   .today { grid-template-columns: 1fr 1fr; }
   .today-level { grid-column: 1 / -1; }
 }
+
+/* ---- mastery stars ---- */
+.mastery { display: flex; align-items: center; gap: 8px; min-height: 18px; }
+.stars { display: inline-flex; gap: 2px; }
+.stars svg { width: 16px; height: 16px; fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linejoin: round; opacity: 0.55; }
+.stars svg.on { fill: var(--pc); stroke: var(--pc); opacity: 1; animation: star-pop 0.4s ease-out both; }
+.stars svg.on:nth-child(2) { animation-delay: 0.08s; }
+.stars svg.on:nth-child(3) { animation-delay: 0.16s; }
+.mastery.m3 .stars svg.on { filter: drop-shadow(0 0 4px var(--pc)); }
+.mastery-hint { font-size: 0.78rem; color: var(--muted); }
+@keyframes star-pop { 0% { transform: scale(0.4); } 70% { transform: scale(1.2); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .stars svg.on { animation: none; } }
+
+/* ---- touch devices: bigger targets, no keyboard hints, no tap delay ---- */
+html { -webkit-text-size-adjust: 100%; }
+button, a, .word { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+@media (pointer: coarse) {
+  kbd, .kb-hint { display: none; }
+  nav a { display: inline-flex; align-items: center; min-height: 44px; }
+  .mute { width: 40px; height: 40px; }
+  .card-link { display: inline-flex; align-items: center; min-height: 44px; }
+  .word { padding-block: 3px; }
+}
+/* notch / home-indicator safe areas (viewport-fit=cover) */
+body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); min-height: 100dvh; }
