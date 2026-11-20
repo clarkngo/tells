@@ -26,7 +26,7 @@ const base = import.meta.env.BASE_URL;
   </section>
 
   <section class="demo">
-    <h2 class="section-title">Try three <span class="muted">· DSA · keys 1–4 answer, Enter continues</span></h2>
+    <h2 class="section-title">Try three <span class="muted">· DSA<span class="kb-hint"> · keys 1–4 answer, Enter continues</span></span></h2>
     <Drill client:only="preact" track={dsa.slug} patterns={dsa.patterns} problems={dsa.problems}
       count={3} seconds={20} setup={false} drillHref={`${base}dsa/drill/`}>
       <div slot="fallback" class="drill skeleton">Loading drill…</div>

@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Glyph from '../../components/Glyph';
+import Stars from '../../components/Stars';
 import { tracks } from '../../lib/tracks';
 import type { Track } from '../../lib/types';
 
@@ -25,6 +26,7 @@ const noun = t.slug === 'dsa' ? 'problems' : 'scenarios';
           <h2 class="pname">{p.name}</h2>
           {p.live ? <span class="mono muted">{count(p.slug)} {noun}</span> : <span class="badge">Soon</span>}
         </div>
+        {p.live && <Stars client:only="preact" track={t.slug} slug={p.slug} />}
         {p.live && <Glyph slug={p.slug} hue={p.hue} />}
         <p>{p.blurb}</p>
         <ul class="signals">{p.signals.map((s) => <li>{s}</li>)}</ul>
