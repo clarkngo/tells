@@ -11,12 +11,6 @@
     "answer": "garch-var", "decoys": ["igarch", "garch-11", "dcc-garch"],
     "why": "Multi-step GARCH forecasts mean-revert; the square-root-of-time rule ignores that.",
     "trap": "Using √10 × today's σ overstates risk after a spike." },
-  { "id": "backtest-kupiec", "difficulty": 3,
-    "prompt": "You count how many days losses exceeded the VaR and test whether that rate matches the target.",
-    "tells": ["count how many days losses exceeded the VaR", "matches the target"],
-    "answer": "garch-var", "decoys": ["arch-lm-test", "fat-tails", "volatility-clustering"],
-    "why": "VaR backtesting (e.g. Kupiec's test) checks exception frequency.",
-    "trap": "A failed backtest might lead to fat tails, but this step is the backtest." },
   { "id": "expected-shortfall", "difficulty": 2,
     "prompt": "Regulators want the average loss on days worse than the VaR, not just the threshold.",
     "tells": ["average loss on days worse than the VaR"],
@@ -34,5 +28,11 @@
     "tells": ["1-day volatility forecast is very high", "60-day average forecast is much closer to normal"],
     "answer": "garch-var", "decoys": ["igarch", "volatility-clustering", "gjr-garch"],
     "why": "Term structure of GARCH forecasts: mean reversion pulls long horizons toward the long-run level.",
-    "trap": "With IGARCH, both would stay high." }
+    "trap": "With IGARCH, both would stay high." },
+  { "id": "position-sizing", "difficulty": 2,
+    "prompt": "A fund holds less of the market when forecast volatility is high and more when it's low, keeping its daily risk steady.",
+    "tells": ["holds less of the market when forecast volatility is high"],
+    "answer": "garch-var", "decoys": ["garch-m", "volatility-clustering", "out-of-sample"],
+    "why": "Volatility targeting uses the GARCH forecast to size positions.",
+    "trap": "GARCH-M is about expected returns; this is using the forecast." }
 ]
