@@ -19,6 +19,8 @@ import { patterns as ai901Patterns } from '../data/tracks/ai-901/patterns';
 import { glossary as ai901Glossary } from '../data/tracks/ai-901/glossary';
 import { patterns as discPatterns } from '../data/tracks/disc/patterns';
 import { glossary as discGlossary } from '../data/tracks/disc/glossary';
+import { patterns as gamePatterns } from '../data/tracks/game-design/patterns';
+import { glossary as gameGlossary } from '../data/tracks/game-design/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -182,7 +184,15 @@ export const disc = makeTrack(
   discGlossary,
 );
 
+export const gameDesign = makeTrack(
+  { slug: 'game-design', name: 'Game design', short: 'Games',
+    tagline: 'Read a design problem, name the kind of fun, what an encounter tests, the systems fix or the process move.' },
+  gamePatterns,
+  import.meta.glob('../data/tracks/game-design/problems/*.json', { eager: true, import: 'default' }),
+  gameGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, garch, ai901, disc, debugging, firstPrinciples,
+  dataScience, garch, ai901, disc, gameDesign, debugging, firstPrinciples,
 ];
