@@ -527,3 +527,106 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .choice { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; }
 .peek-def { border-left-color: oklch(var(--pl) var(--pc-c) var(--h)); }
 .peek-def .muted { font-size: 0.88em; }
+
+/* ---------- progress map: tracks as suns, patterns as planets ---------- */
+.map { --map-sun: #ffd27a; --map-due: #f5b84b; }
+.map-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.map-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; list-style: none; margin: 0; padding: 0; font-size: 0.8rem; color: var(--muted); }
+.map-legend li { display: flex; align-items: center; gap: 6px; }
+.lg { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.lg-star { background: var(--map-sun); box-shadow: 0 0 6px var(--map-sun); }
+.lg-retry { border: 2px solid var(--bad); }
+.lg-due { background: var(--map-due); width: 7px; height: 7px; }
+.lg-mix { width: 16px; height: 0; border-radius: 0; border-top: 2px solid var(--bad); opacity: 0.7; }
+.map-sky {
+  width: 100%; height: auto; max-height: 80vh; display: block; overflow: visible; margin: 0 auto;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 8%, var(--surface)), var(--bg));
+  border: 1px solid var(--border); border-radius: var(--radius);
+  user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+}
+.map-stars circle { fill: var(--muted); opacity: 0.35; animation: map-twinkle 4s ease-in-out infinite alternate; }
+@keyframes map-twinkle { to { opacity: 0.08; } }
+.map-scene { animation: map-zoom 0.45s cubic-bezier(.2,.8,.2,1); transform-origin: center; transform-box: view-box; }
+@keyframes map-zoom { from { transform: scale(0.6); opacity: 0; } }
+.map-path { stroke: var(--border); stroke-width: 2; stroke-dasharray: 2 8; }
+.map-path.lit { stroke: color-mix(in srgb, var(--map-sun) 55%, transparent); stroke-dasharray: none; }
+.map-orbit { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 2 10; }
+.map-core-body { fill: var(--surface-2); stroke: var(--map-sun); stroke-width: 2; }
+.map-big { font: 700 34px var(--font); fill: var(--text); }
+.map-small { font: 500 15px var(--mono); fill: var(--muted); }
+.map-num { font: 700 20px var(--font); fill: var(--text); pointer-events: none; }
+.map-node { cursor: pointer; outline: none; }
+.map-hit { fill: transparent; }
+.map-body { fill: var(--surface-2); stroke: var(--border); stroke-width: 3; transition: stroke 0.2s; }
+.map-fill { fill: var(--map-sun); pointer-events: none; transition: opacity 0.4s; }
+.map-sun.started .map-body, .map-center .map-body { stroke: var(--map-sun); }
+.map-node:hover .map-body, .map-node:focus-visible .map-body { stroke: var(--text); }
+.map-node:focus-visible .map-body { stroke-dasharray: 6 4; }
+.map-dot { fill: var(--border); }
+.map-dot.s1, .map-dot.s2, .map-dot.s3 { fill: var(--pc); }
+.map-dot.s1 { opacity: 0.55; }
+.map-dot.s3 { filter: drop-shadow(0 0 3px var(--pc)); }
+.map-label { font: 500 20px var(--font); fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 6px; pointer-events: none; }
+.map-label.center { font-size: 22px; font-weight: 700; stroke: none; }
+.map-label.planet { font-size: 17px; }
+.map-planet .map-body { fill: color-mix(in srgb, var(--pc) 10%, var(--surface-2)); stroke: color-mix(in srgb, var(--pc) 45%, var(--border)); }
+.map-planet.s1 .map-body { fill: color-mix(in srgb, var(--pc) 35%, var(--surface-2)); stroke: var(--pc); }
+.map-planet.s2 .map-body { fill: color-mix(in srgb, var(--pc) 65%, var(--surface-2)); stroke: var(--pc); }
+.map-planet.s3 .map-body { fill: var(--pc); stroke: var(--pc); }
+.map-planet.sel .map-body { stroke: var(--text); stroke-width: 5; }
+.map-planet.dim { opacity: 0.35; }
+.map-arc { fill: none; stroke: var(--map-sun); stroke-width: 4; stroke-linecap: round; pointer-events: none; }
+.map-node.retry .map-body { stroke: var(--bad); animation: map-pulse 1.6s ease-in-out infinite; }
+@keyframes map-pulse { 50% { stroke-width: 10; stroke-opacity: 0.4; } }
+.map-moon { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.2; }
+.map-moon.later { fill: var(--pc); stroke: var(--pc); }
+.map-moon.due { fill: var(--map-due); stroke: var(--map-due); }
+.map-moon.retry { fill: var(--bad); stroke: var(--bad); }
+.map-mix { fill: none; stroke: var(--bad); opacity: 0.45; stroke-linecap: round; transition: opacity 0.2s; }
+.map-mix.hot { opacity: 0.9; }
+.map-mix.dim { opacity: 0.08; }
+.map-detail { margin-top: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; }
+.map-detail h2 { margin: 0 0 8px; font-size: 1.2rem; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.map-detail-head { display: grid; grid-template-columns: 160px 1fr; gap: 16px; align-items: start; }
+.map-detail-head .glyph { width: 160px; height: auto; }
+.map-detail-head p { margin: 0 0 6px; }
+.map-stars-txt { color: var(--map-sun); letter-spacing: 2px; }
+.map-hint { font-size: 0.8rem; color: var(--muted); }
+.map-stats { margin: 12px 0; }
+.map-waiting { margin: 8px 0 14px; color: var(--muted); }
+.linkish { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+@media (prefers-color-scheme: light) {
+  .map { --map-sun: #d99a1e; --map-due: #c9841a; }
+}
+@media (max-width: 640px) {
+  .map-label { font-size: 30px; stroke-width: 8px; }
+  .map-label.planet { font-size: 26px; }
+  .map-label.center { font-size: 30px; }
+  .map-small { font-size: 22px; }
+  .map-detail-head { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-scene, .map-stars circle, .map-node.retry .map-body { animation: none; }
+}
+.map-center .map-small, .map-center .map-label.center, .map-core .map-small { fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 5px; }
+
+/* Low score: step down to something easier, or wish for a basics track. */
+.easier { margin: 20px 0; padding: 16px 18px; border: 1px dashed var(--border); border-radius: var(--radius); text-align: left; }
+.easier h3 { margin: 0 0 10px; font-size: 1rem; }
+.easier .row { flex-wrap: wrap; }
+.wish { margin-top: 14px; }
+.wish p { margin: 0 0 8px; }
+.wish-text { font-size: 0.82rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; user-select: all; -webkit-user-select: all; overflow-wrap: anywhere; }
+.map-wish-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 6; opacity: 0.6; }
+.map-wish .map-body { fill: transparent; stroke: var(--muted); stroke-dasharray: 4 5; stroke-width: 2; animation: map-spin 18s linear infinite; transform-box: fill-box; transform-origin: center; }
+.map-wish .map-num { fill: var(--muted); font-size: 18px; }
+.map-wish.sel .map-body, .map-wish:hover .map-body { stroke: var(--text); }
+@keyframes map-spin { to { transform: rotate(360deg); } }
+.wishlist { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; }
+.wishlist h3 { margin: 0 0 4px; font-size: 1rem; }
+.wishlist > p { margin: 0 0 10px; }
+.wish-item { border: 1px dashed var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; cursor: pointer; }
+.wish-item.on { border-color: var(--text); border-style: solid; }
+.wish-item.built { border-color: var(--accent); border-style: solid; }
+.wish-item p { margin: 8px 0; }
+@media (prefers-reduced-motion: reduce) { .map-wish .map-body { animation: none; } }

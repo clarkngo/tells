@@ -7,6 +7,17 @@ import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
 import Glyph from './Glyph';
+import { LOW_SCORE, type Basics } from '../lib/related';
+import { addWish, copyText, wishText, type Wish } from '../lib/wishes';
+
+/** What to offer after a low score (worked out at build time from lib/related). */
+export interface Suggest {
+  trackName: string;
+  easier: { slug: string; name: string }[];
+  /** A basics track that doesn't exist yet: saved as a wish when nothing easier exists. */
+  basics: Basics | null;
+}
+const BASE = import.meta.env.BASE_URL;
 
 type Mode = 'sprint' | 'focus' | 'zen';
 type Phase = 'setup' | 'ask' | 'mark' | 'reveal' | 'done';
@@ -24,6 +35,7 @@ interface Props {
   seconds?: number;
   setup?: boolean;
   drillHref?: string;
+  suggest?: Suggest;
 }
 
 const MODES: Record<Mode, { label: string; desc: string; timed: boolean }> = {
@@ -158,7 +170,7 @@ function CountUp({ to }: { to: number }) {
   return <>{v.toLocaleString()}</>;
 }
 
-export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref }: Props) {
+export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest }: Props) {
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
@@ -177,6 +189,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const [bestCombo, setBestCombo] = useState(0);
   const [newBest, setNewBest] = useState(false);
   const [openTerm, setOpenTerm] = useState<Term | null>(null);
+  // Low score: an easier round on the missed patterns, easier tracks, or a wish.
+  const [easyRound, setEasyRound] = useState(false);
+  const [wish, setWish] = useState<Wish | null>(null);
+  const [copied, setCopied] = useState(false);
   // Press and hold a choice to see what the pattern means. It marks the question
   // as peeked: no points, and it doesn't count toward stars.
   const [peek, setPeek] = useState<Pattern | null>(null);
@@ -194,10 +210,20 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const limit = setup ? (MODES[mode].timed ? 20 : 0) : seconds;
   const marking = setup && mode === 'focus';
 
-  function build(m: Mode, f: string): Round[] {
-    const pool = m === 'focus'
-      ? problems.filter((p) => p.answer === f || p.decoys.includes(f))
-      : problems;
+  /** The easiest questions whose answer is one of `pats`: difficulty 1, topped up with 2s. */
+  function easyPool(pats: Set<string>) {
+    const mine = problems.filter((p) => pats.has(p.answer));
+    const d1 = mine.filter((p) => p.difficulty === 1);
+    const pool = d1.length >= Math.min(count, mine.length) ? d1 : mine.filter((p) => p.difficulty <= 2);
+    return pool.length >= 3 ? pool : mine;
+  }
+
+  function build(m: Mode, f: string, easy?: Set<string>): Round[] {
+    const pool = easy
+      ? easyPool(easy)
+      : m === 'focus'
+        ? problems.filter((p) => p.answer === f || p.decoys.includes(f))
+        : problems;
     // Spaced repetition: recent misses come back first, then new questions,
     // then right answers that are due for a check (see lib/schedule.ts).
     const byId = new Map(pool.map((p) => [p.id, p]));
@@ -208,8 +234,11 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     });
   }
 
-  function start(m = mode, f = focus) {
-    setRounds(build(m, f));
+  function start(m = mode, f = focus, easy?: Set<string>) {
+    setRounds(build(m, f, easy));
+    setEasyRound(!!easy);
+    setWish(null);
+    setCopied(false);
     setIdx(0);
     setResults([]);
     setPicked(null);
@@ -347,6 +376,17 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     const perfect = results.length > 0 && results.every((r) => r.picked === r.problem.answer);
     const best = setup && pointsRef.current > 0 && submitBest(`${track}:${mode}`, pointsRef.current);
     setNewBest(best);
+    // Low score with no easier track to point to: put a basics track on the wishlist.
+    const clean = results.filter((r) => r.picked === r.problem.answer && !r.peeked).length;
+    if (setup && suggest?.basics && !suggest.easier.length && results.length >= 5 && clean / results.length < LOW_SCORE) {
+      const missed = [...new Set(results.filter((r) => r.picked !== r.problem.answer || r.peeked).map((r) => r.problem.answer))];
+      setWish(addWish({
+        ...suggest.basics,
+        forTrack: track,
+        forName: suggest.trackName,
+        patterns: missed.map((m) => bySlug.get(m)?.name ?? m),
+      }));
+    }
     setPhase('done');
     if (best || perfect) {
       sfx.fanfare();
@@ -443,6 +483,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     const peeks = results.filter((r) => r.peeked).length;
     const pct = results.length ? right.length / results.length : 0;
     const ms = results.flatMap((r) => (r.marks ? [r.marks] : []));
+    const clean = results.filter((r) => r.picked === r.problem.answer && !r.peeked).length;
+    const low = setup && !!suggest && results.length >= 5 && clean / results.length < LOW_SCORE;
+    const missedPats = new Set(misses.map((r) => r.problem.answer));
+    const easyN = low && !easyRound ? Math.min(count, easyPool(missedPats).length) : 0;
     return (
       <div class="drill">
         <div class="done">
@@ -484,6 +528,34 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
                   </div>
                 );
               })}
+            </div>
+          )}
+          {low && (
+            <div class="easier">
+              <h3>Tough round. Step down a level?</h3>
+              <div class="row">
+                {easyN >= 3 && (
+                  <button type="button" class="btn" onClick={() => start(mode, focus, missedPats)}>
+                    {easyN} easier questions on what you missed
+                  </button>
+                )}
+                {suggest!.easier.map((t) => <a class="btn" href={`${BASE}${t.slug}/drill/`}>{t.name} drill →</a>)}
+              </div>
+              {wish && (
+                <div class="wish">
+                  <p>
+                    There's no easier track for this yet, so <strong>{wish.title}</strong> is on your wishlist
+                    {wish.asks > 1 ? ` (asked ${wish.asks} times)` : ''}. Paste this to Claude to have it built:
+                  </p>
+                  <p class="wish-text mono">{wishText(wish)}</p>
+                  <div class="row">
+                    <button type="button" class="btn" onClick={async () => setCopied(await copyText(wishText(wish)))}>
+                      {copied ? 'Copied' : 'Copy request'}
+                    </button>
+                    <a class="btn" href={`${BASE}map/`}>See your wishlist on the map →</a>
+                  </div>
+                </div>
+              )}
             </div>
           )}
           <div class="row">

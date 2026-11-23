@@ -3,12 +3,24 @@ import Base from '../../layouts/Base.astro';
 import Drill from '../../components/Drill';
 import { tracks } from '../../lib/tracks';
 import type { Track } from '../../lib/types';
+import { related } from '../../lib/related';
+import type { Suggest } from '../../components/Drill';
 
 export function getStaticPaths() {
   return tracks.map((t) => ({ params: { track: t.slug }, props: { t } }));
 }
 const { t } = Astro.props as { t: Track };
 const base = import.meta.env.BASE_URL;
+const rel = related[t.slug];
+const live = new Set(tracks.map((x) => x.slug));
+const suggest: Suggest = {
+  trackName: t.name,
+  // A basics track that has since been built counts as an easier track.
+  easier: [...(rel?.easier ?? []), ...(rel && live.has(rel.basics.slug) ? [rel.basics.slug] : [])]
+    .filter((s) => live.has(s) && s !== t.slug)
+    .map((s) => ({ slug: s, name: tracks.find((x) => x.slug === s)!.short })),
+  basics: rel && !live.has(rel.basics.slug) ? rel.basics : null,
+};
 ---
 <Base title={`${t.short} drill`}>
   <section class="page-head">
@@ -19,7 +31,7 @@ const base = import.meta.env.BASE_URL;
       <a href={`${base}${t.slug}/patterns/`}>see all patterns</a>
     </p>
   </section>
-  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} glossary={t.glossary} setup>
+  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} glossary={t.glossary} suggest={suggest} setup>
     <div slot="fallback" class="drill skeleton">Loading drill…</div>
   </Drill>
 </Base>
