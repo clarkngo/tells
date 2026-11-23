@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Drill from '../components/Drill';
 import Progress from '../components/Progress';
 import Today from '../components/Today';
+import SkyCard from '../components/SkyCard';
 import { dsa, tracks } from '../lib/tracks';
 const base = import.meta.env.BASE_URL;
 ---
@@ -25,7 +26,9 @@ const base = import.meta.env.BASE_URL;
 
   <section class="today-wrap">
     <Today client:only="preact" />
-    <p class="gallery-link"><a href={`${base}map/`}>See your progress map →</a> · <a href={`${base}sync/`}>Practice on another device? Sync your progress →</a></p>
+    <SkyCard client:only="preact" href={`${base}map/`}
+      tracks={tracks.map((t) => ({ slug: t.slug, short: t.short, patterns: t.patterns.filter((p) => p.live).map((p) => p.slug) }))} />
+    <p class="gallery-link"><a href={`${base}sync/`}>Practice on another device? Sync your progress →</a></p>
   </section>
 
   <section class="demo">
