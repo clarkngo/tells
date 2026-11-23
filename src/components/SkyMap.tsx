@@ -164,6 +164,12 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
     setSel('');
   };
 
+  // On a phone the detail panel sits below the sky: bring it into view on a tap.
+  useEffect(() => {
+    if ((!sel && !selWish) || innerWidth >= 720) return;
+    document.querySelector('.map-detail')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, [sel, selWish]);
+
   const track = tracks.find((t) => t.slug === view);
   const key = (fn: () => void) => (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {

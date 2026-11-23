@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { tracks } from '../lib/tracks';
 import Player from '../components/Player';
+import MapLink from '../components/MapLink';
 interface Props { title?: string; description?: string }
 const { title, description = 'Train the first 30 seconds of any problem, from algorithms, system design, frontend and backend to AI, prompts, specs, data science, production debugging and first principles: spot the tell, name the pattern.' } = Astro.props;
 const base = import.meta.env.BASE_URL;
@@ -33,6 +34,7 @@ const nav = tracks.map((t) => ({ prefix: `${base}${t.slug}/`, label: t.short }))
         <nav>
           {nav.map((n) => <a href={`${n.prefix}drill/`} aria-current={path.startsWith(n.prefix) ? 'page' : undefined}>{n.label}</a>)}
         </nav>
+        <MapLink client:load href={`${base}map/`} current={path.startsWith(`${base}map`)} />
         <Player client:only="preact" />
       </div>
     </header>
