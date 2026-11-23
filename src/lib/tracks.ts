@@ -8,6 +8,10 @@ import { patterns as agentPatterns } from '../data/tracks/ai-agents/patterns';
 import { patterns as debugPatterns } from '../data/tracks/debugging/patterns';
 import { patterns as dsPatterns } from '../data/tracks/data-science/patterns';
 import { patterns as fpPatterns } from '../data/tracks/first-principles/patterns';
+import { patterns as ctxPatterns } from '../data/tracks/context-engineering/patterns';
+import { patterns as specPatterns } from '../data/tracks/spec-driven/patterns';
+import { patterns as fePatterns } from '../data/tracks/frontend/patterns';
+import { patterns as bePatterns } from '../data/tracks/backend/patterns';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -103,4 +107,35 @@ export const firstPrinciples = makeTrack(
   import.meta.glob('../data/tracks/first-principles/problems/*.json', { eager: true, import: 'default' }),
 );
 
-export const tracks: Track[] = [dsa, systemDesign, aiEngineering, aiAgents, dataScience, debugging, firstPrinciples];
+export const frontend = makeTrack(
+  { slug: 'frontend', name: 'Frontend', short: 'Frontend',
+    tagline: 'Read a web app problem, name the rendering or UI technique it needs.' },
+  fePatterns,
+  import.meta.glob('../data/tracks/frontend/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const backend = makeTrack(
+  { slug: 'backend', name: 'Backend', short: 'Backend',
+    tagline: 'Read an API or database problem, name the technique that fixes it.' },
+  bePatterns,
+  import.meta.glob('../data/tracks/backend/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const contextEngineering = makeTrack(
+  { slug: 'context-engineering', name: 'Prompt & context engineering', short: 'Context',
+    tagline: 'Read what goes wrong in a prompt or context window, name the fix.' },
+  ctxPatterns,
+  import.meta.glob('../data/tracks/context-engineering/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const specDriven = makeTrack(
+  { slug: 'spec-driven', name: 'Spec-driven development', short: 'Specs',
+    tagline: 'Read a coding-agent workflow problem, name the spec practice it needs.' },
+  specPatterns,
+  import.meta.glob('../data/tracks/spec-driven/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const tracks: Track[] = [
+  dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
+  dataScience, debugging, firstPrinciples,
+];
