@@ -10,7 +10,7 @@ export interface Attempt {
 }
 
 const KEY = 'tells:v1:attempts';
-const MAX = 2000;
+const MAX = 5000;
 export const CHANGED = 'tells:attempts-changed';
 
 export function loadAttempts(): Attempt[] {
@@ -45,4 +45,14 @@ export function seenCounts(attempts: Attempt[]): Map<string, number> {
   const seen = new Map<string, number>();
   for (const a of attempts) seen.set(a.id, (seen.get(a.id) ?? 0) + 1);
   return seen;
+}
+
+/** Replaces the whole attempt history (used by import). */
+export function replaceAttempts(all: Attempt[]) {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(all.slice(-MAX)));
+    dispatchEvent(new Event(CHANGED));
+  } catch {
+    /* storage unavailable */
+  }
 }
