@@ -22,5 +22,17 @@
     "tells": ["all the words searchable, with no structure needed"],
     "answer": "ocr", "decoys": ["document-extraction", "embedding-model", "summarization"],
     "why": "Plain text from scans is OCR.",
-    "trap": "Field extraction is for structured data; here, words are enough." }
+    "trap": "Field extraction is for structured data; here, words are enough." },
+  { "id": "whiteboard", "difficulty": 2,
+    "prompt": "After meetings, people photograph the whiteboard and want the writing as editable text.",
+    "tells": ["writing as editable text"],
+    "answer": "ocr", "decoys": ["document-extraction", "image-analysis", "speech-to-text"],
+    "why": "Reading handwriting from a photo is OCR.",
+    "trap": "No fields are needed; just the text." },
+  { "id": "ocr-vs-fields", "difficulty": 3,
+    "prompt": "An app needs every word from photographed restaurant menus so customers can search them. Prices don't need to be matched to dishes.",
+    "tells": ["Prices don't need to be matched to dishes"],
+    "answer": "ocr", "decoys": ["document-extraction", "translation", "image-analysis"],
+    "why": "All the words, unstructured: OCR.",
+    "trap": "Matching prices to dishes would be structured extraction." }
 ]

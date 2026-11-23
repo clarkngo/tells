@@ -22,5 +22,17 @@
     "tells": ["a file-search tool and a code interpreter"],
     "answer": "ai-agent", "decoys": ["rag", "multimodal-model", "system-prompt"],
     "why": "Instructions plus tools is a single-agent solution in Foundry Agent Service.",
-    "trap": "File search is one tool here; the solution is an agent." }
+    "trap": "File search is one tool here; the solution is an agent." },
+  { "id": "multi-system", "difficulty": 2,
+    "prompt": "An assistant should look up an order, check stock in another system, and create a replacement shipment if needed.",
+    "tells": ["create a replacement shipment if needed"],
+    "answer": "ai-agent", "decoys": ["rag", "reasoning-model", "system-prompt"],
+    "why": "Calling several systems and acting is agent work.",
+    "trap": "RAG would only read; this changes data." },
+  { "id": "agent-client", "difficulty": 3,
+    "prompt": "A small Python app sends a user's message to an agent built in the Foundry portal and prints the agent's reply.",
+    "tells": ["sends a user's message to an agent built in the Foundry portal"],
+    "answer": "ai-agent", "decoys": ["system-prompt", "rag", "multimodal-model"],
+    "why": "A lightweight client application for an agent calls it through the Foundry SDK.",
+    "trap": "The client calls an agent, not just a model with a system prompt." }
 ]

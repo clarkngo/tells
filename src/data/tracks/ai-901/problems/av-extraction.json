@@ -22,5 +22,17 @@
     "tells": ["sponsor mentions from each podcast episode"],
     "answer": "av-extraction", "decoys": ["entity-recognition", "key-phrases", "speech-to-text"],
     "why": "Field extraction from audio is Content Understanding.",
-    "trap": "Text tools need a transcript first; this does it end to end." }
+    "trap": "Text tools need a transcript first; this does it end to end." },
+  { "id": "lecture-index", "difficulty": 2,
+    "prompt": "Turn a library of recorded lectures into searchable topics with timestamps for each.",
+    "tells": ["searchable topics with timestamps"],
+    "answer": "av-extraction", "decoys": ["speech-to-text", "key-phrases", "summarization"],
+    "why": "Content Understanding segments video and returns topics with timestamps.",
+    "trap": "A transcript alone has no topic structure." },
+  { "id": "call-fields", "difficulty": 3,
+    "prompt": "From each recorded sales call, return the customer's budget, timeline and objections as fields in a CRM.",
+    "tells": ["return the customer's budget, timeline and objections as fields"],
+    "answer": "av-extraction", "decoys": ["speech-to-text", "entity-recognition", "summarization"],
+    "why": "Content Understanding extracts defined fields from audio.",
+    "trap": "Speech to text gives a transcript, not fields." }
 ]

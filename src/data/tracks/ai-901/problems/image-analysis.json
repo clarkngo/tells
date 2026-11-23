@@ -22,5 +22,17 @@
     "tells": ["keep the most important part of each photo"],
     "answer": "image-analysis", "decoys": ["object-detection", "image-generation", "ocr"],
     "why": "Smart cropping is an image-analysis feature.",
-    "trap": "No new image is being created." }
+    "trap": "No new image is being created." },
+  { "id": "content-tags-dam", "difficulty": 2,
+    "prompt": "A marketing team's 200,000 images need searchable labels like 'outdoor', 'team' and 'laptop'.",
+    "tells": ["searchable labels like 'outdoor', 'team' and 'laptop'"],
+    "answer": "image-analysis", "decoys": ["object-detection", "key-phrases", "image-generation"],
+    "why": "Image tags make images searchable.",
+    "trap": "No locations needed, so not object detection." },
+  { "id": "dense-caption", "difficulty": 3,
+    "prompt": "For each photo, describe the overall scene in one sentence.",
+    "tells": ["describe the overall scene in one sentence"],
+    "answer": "image-analysis", "decoys": ["object-detection", "multimodal-model", "ocr"],
+    "why": "A caption of the whole scene is image analysis.",
+    "trap": "A multimodal model could, but no question is being asked; it's a standard caption." }
 ]

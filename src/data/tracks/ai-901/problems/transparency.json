@@ -22,5 +22,17 @@
     "tells": ["labeled with metadata saying they were AI-generated"],
     "answer": "transparency", "decoys": ["content-filters", "accountability", "privacy-security"],
     "why": "Labeling AI-generated content tells people what they're looking at: transparency.",
-    "trap": "Content filters block harmful images; labeling is about disclosure." }
+    "trap": "Content filters block harmful images; labeling is about disclosure." },
+  { "id": "model-card", "difficulty": 2,
+    "prompt": "A team publishes a document describing the model's intended uses, training data and known failure cases.",
+    "tells": ["intended uses, training data and known failure cases"],
+    "answer": "transparency", "decoys": ["accountability", "reliability-safety", "privacy-security"],
+    "why": "A model card or transparency note documents what a system is and isn't for.",
+    "trap": "It documents the limits; it doesn't fix them." },
+  { "id": "chatbot-sources", "difficulty": 3,
+    "prompt": "A research assistant shows which retrieved passages each answer was based on so users can judge it themselves.",
+    "tells": ["so users can judge it themselves"],
+    "answer": "transparency", "decoys": ["rag", "accountability", "reliability-safety"],
+    "why": "Showing how an answer was produced is transparency.",
+    "trap": "RAG produces the passages; showing them to users is the transparency." }
 ]

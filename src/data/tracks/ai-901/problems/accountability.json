@@ -22,5 +22,17 @@
     "tells": ["appeal an automated content-moderation decision"],
     "answer": "accountability", "decoys": ["transparency", "content-filters", "fairness"],
     "why": "A route to human recourse is accountability.",
-    "trap": "Content filters made the decision; the appeal path is accountability." }
+    "trap": "Content filters made the decision; the appeal path is accountability." },
+  { "id": "incident-owner", "difficulty": 2,
+    "prompt": "Each deployed model has a named owner who must investigate and report any harm it causes.",
+    "tells": ["named owner who must investigate"],
+    "answer": "accountability", "decoys": ["transparency", "reliability-safety", "privacy-security"],
+    "why": "Clear ownership of outcomes is accountability.",
+    "trap": "Reporting is involved, but the point is who answers for it." },
+  { "id": "vendor-model", "difficulty": 3,
+    "prompt": "A company uses a third-party AI model and says any problems are the vendor's fault, not theirs.",
+    "tells": ["any problems are the vendor's fault"],
+    "answer": "accountability", "decoys": ["transparency", "fairness", "privacy-security"],
+    "why": "The organization that deploys AI remains accountable for how it's used.",
+    "trap": "Who built the model doesn't change who answers for deploying it." }
 ]

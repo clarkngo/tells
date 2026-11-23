@@ -22,5 +22,17 @@
     "tells": ["root cause of a subtle bug"],
     "answer": "reasoning-model", "decoys": ["small-model", "multimodal-model", "embedding-model"],
     "why": "Tracing logic across functions is a reasoning task.",
-    "trap": "Speed isn't the priority here; correctness is." }
+    "trap": "Speed isn't the priority here; correctness is." },
+  { "id": "schedule-solver", "difficulty": 2,
+    "prompt": "Generate a school timetable that satisfies 40 teacher, room and class constraints at once.",
+    "tells": ["satisfies 40 teacher, room and class constraints"],
+    "answer": "reasoning-model", "decoys": ["small-model", "ai-agent", "temperature"],
+    "why": "Satisfying many interacting constraints needs a reasoning model.",
+    "trap": "Speed and cost aren't the concern; getting a valid answer is." },
+  { "id": "audit-calc", "difficulty": 3,
+    "prompt": "An accounting tool must check whether a 30-step tax calculation is correct and point to the first wrong step.",
+    "tells": ["point to the first wrong step"],
+    "answer": "reasoning-model", "decoys": ["small-model", "summarization", "embedding-model"],
+    "why": "Checking a long chain of steps is reasoning-model work.",
+    "trap": "A summary of the calculation wouldn't find the error." }
 ]

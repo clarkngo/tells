@@ -22,5 +22,17 @@
     "tells": ["returned as JSON matching it"],
     "answer": "document-extraction", "decoys": ["few-shot", "system-prompt", "summarization"],
     "why": "A Content Understanding analyzer turns documents into structured output for a schema.",
-    "trap": "Prompting a chat model for JSON is less reliable than a purpose-built analyzer." }
+    "trap": "Prompting a chat model for JSON is less reliable than a purpose-built analyzer." },
+  { "id": "id-cards", "difficulty": 2,
+    "prompt": "Onboarding pulls name, date of birth and document number from photographed ID cards.",
+    "tells": ["name, date of birth and document number"],
+    "answer": "document-extraction", "decoys": ["ocr", "pii-detection", "entity-recognition"],
+    "why": "Named fields from a document image is Content Understanding.",
+    "trap": "PII detection hides data; here you capture it." },
+  { "id": "tables", "difficulty": 3,
+    "prompt": "Pull the line-item table (description, quantity, price) from supplier quotes into a spreadsheet.",
+    "tells": ["line-item table"],
+    "answer": "document-extraction", "decoys": ["ocr", "key-phrases", "summarization"],
+    "why": "Content Understanding extracts tables and fields from documents.",
+    "trap": "OCR gives the words, but not which cell belongs to which column." }
 ]

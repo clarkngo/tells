@@ -22,5 +22,17 @@
     "tells": ["accuracy slowly drops", "nobody notices for weeks"],
     "answer": "reliability-safety", "decoys": ["accountability", "fairness", "transparency"],
     "why": "Monitoring that the system keeps working as intended is part of reliability.",
-    "trap": "Accountability is who owns it; the failing behavior itself is a reliability issue." }
+    "trap": "Accountability is who owns it; the failing behavior itself is a reliability issue." },
+  { "id": "confidence-threshold", "difficulty": 2,
+    "prompt": "A document classifier sends any prediction below 70% confidence to a person instead of acting on it.",
+    "tells": ["below 70% confidence"],
+    "answer": "reliability-safety", "decoys": ["accountability", "transparency", "fairness"],
+    "why": "Not acting on uncertain predictions keeps the system safe.",
+    "trap": "A person is involved, but the trigger is the model's uncertainty, which makes this reliability and safety." },
+  { "id": "robot-limits", "difficulty": 3,
+    "prompt": "A warehouse robot's AI must stop moving whenever its sensors give conflicting readings, even if that slows work.",
+    "tells": ["stop moving whenever its sensors give conflicting readings"],
+    "answer": "reliability-safety", "decoys": ["accountability", "privacy-security", "transparency"],
+    "why": "Failing safely in unexpected conditions is reliability and safety.",
+    "trap": "Nobody is being asked to own a decision; the system itself must behave safely." }
 ]

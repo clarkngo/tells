@@ -22,5 +22,17 @@
     "tells": ["politely decline anything off-topic"],
     "answer": "system-prompt", "decoys": ["content-filters", "max-tokens", "rag"],
     "why": "Scope rules are set in the system prompt.",
-    "trap": "Tax law isn't harmful content, so content filters won't catch it." }
+    "trap": "Tax law isn't harmful content, so content filters won't catch it." },
+  { "id": "safety-rules", "difficulty": 2,
+    "prompt": "Every conversation must start with the rule 'never share another customer's order details', regardless of what users type.",
+    "tells": ["regardless of what users type"],
+    "answer": "system-prompt", "decoys": ["content-filters", "few-shot", "privacy-security"],
+    "why": "Standing rules for the assistant go in the system prompt.",
+    "trap": "Content filters cover harm categories like hate and violence, not your business rules." },
+  { "id": "format-always", "difficulty": 3,
+    "prompt": "In the SDK, the developer wants every answer in Markdown bullet points, without repeating that in each user message.",
+    "tells": ["without repeating that in each user message"],
+    "answer": "system-prompt", "decoys": ["few-shot", "max-tokens", "temperature"],
+    "why": "Instructions that apply to every turn belong in the system message.",
+    "trap": "Examples could show the format, but the always-on instruction is the system prompt." }
 ]

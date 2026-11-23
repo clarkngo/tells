@@ -22,5 +22,17 @@
     "tells": ["spoken out loud"],
     "answer": "text-to-speech", "decoys": ["image-analysis", "speech-to-text", "inclusiveness"],
     "why": "Speaking text aloud is text to speech.",
-    "trap": "Inclusiveness is the principle; text to speech is the feature." }
+    "trap": "Inclusiveness is the principle; text to speech is the feature." },
+  { "id": "custom-brand-voice", "difficulty": 2,
+    "prompt": "A bank wants its phone assistant to speak in a consistent voice that matches its brand.",
+    "tells": ["speak in a consistent voice"],
+    "answer": "text-to-speech", "decoys": ["speech-to-text", "system-prompt", "translation"],
+    "why": "Speech synthesis with a chosen or custom neural voice.",
+    "trap": "A system prompt shapes words, not the sound of the voice." },
+  { "id": "pronounce-names", "difficulty": 3,
+    "prompt": "The navigation app mispronounces local street names when reading directions aloud.",
+    "tells": ["mispronounces local street names"],
+    "answer": "text-to-speech", "decoys": ["speech-to-text", "translation", "ocr"],
+    "why": "Fix pronunciation in speech synthesis with SSML or a custom lexicon.",
+    "trap": "It's the output voice that's wrong, not what was heard." }
 ]

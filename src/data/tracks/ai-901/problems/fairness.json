@@ -22,5 +22,17 @@
     "tells": ["higher premiums to one group", "claims history is the same"],
     "answer": "fairness", "decoys": ["transparency", "privacy-security", "accountability"],
     "why": "Equal risk, unequal price: a fairness issue.",
-    "trap": "Being open about the price doesn't make it fair." }
+    "trap": "Being open about the price doesn't make it fair." },
+  { "id": "face-skin-tone", "difficulty": 2,
+    "prompt": "A face-matching system has an error rate of 1% for lighter-skinned users and 8% for darker-skinned users.",
+    "tells": ["1% for lighter-skinned users and 8% for darker-skinned users"],
+    "answer": "fairness", "decoys": ["reliability-safety", "inclusiveness", "transparency"],
+    "why": "Very different error rates between groups is a fairness problem.",
+    "trap": "Overall reliability may look fine; the gap between groups is the issue." },
+  { "id": "rebalance-data", "difficulty": 3,
+    "prompt": "To fix a model that underperforms for older patients, the team adds more data from patients over 70 and retrains.",
+    "tells": ["underperforms for older patients", "adds more data from patients over 70"],
+    "answer": "fairness", "decoys": ["inclusiveness", "reliability-safety", "accountability"],
+    "why": "Rebalancing training data to close a gap between groups is a fairness fix.",
+    "trap": "The patients can use the system; it just treats them worse, which is fairness rather than inclusiveness." }
 ]

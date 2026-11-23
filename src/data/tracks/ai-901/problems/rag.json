@@ -22,5 +22,17 @@
     "tells": ["invents plausible return rules", "only from the official policy documents"],
     "answer": "rag", "decoys": ["temperature", "content-filters", "system-prompt"],
     "why": "Grounding in retrieved documents reduces made-up answers.",
-    "trap": "Lower temperature makes it consistent, not correct." }
+    "trap": "Lower temperature makes it consistent, not correct." },
+  { "id": "search-then-answer", "difficulty": 2,
+    "prompt": "For each question, the app searches an index of the product manuals and puts the top three passages in the prompt.",
+    "tells": ["puts the top three passages in the prompt"],
+    "answer": "rag", "decoys": ["few-shot", "ai-agent", "embedding-model"],
+    "why": "Retrieve, then generate: grounding with your data.",
+    "trap": "The passages are facts to answer from, not examples." },
+  { "id": "rag-vs-finetune", "difficulty": 3,
+    "prompt": "Policies change every week, and the team wants the assistant's answers to stay current without retraining.",
+    "tells": ["without retraining"],
+    "answer": "rag", "decoys": ["few-shot", "system-prompt", "reasoning-model"],
+    "why": "RAG uses current documents at question time, so updates need no training.",
+    "trap": "Fine-tuning would need retraining for every change." }
 ]

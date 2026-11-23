@@ -22,5 +22,17 @@
     "tells": ["pay only for what it uses"],
     "answer": "deployment-type", "decoys": ["small-model", "max-tokens", "temperature"],
     "why": "A standard (pay-per-token) deployment fits low, spiky usage.",
-    "trap": "Provisioned throughput charges for reserved capacity even when idle." }
+    "trap": "Provisioned throughput charges for reserved capacity even when idle." },
+  { "id": "global-standard", "difficulty": 2,
+    "prompt": "A startup wants the highest available capacity with no reserved commitment, and doesn't mind requests being processed in any Azure region.",
+    "tells": ["processed in any Azure region"],
+    "answer": "deployment-type", "decoys": ["small-model", "privacy-security", "max-tokens"],
+    "why": "A global standard deployment routes to any region for the best capacity, pay-as-you-go.",
+    "trap": "Data-zone deployments are for when data must stay in a geography." },
+  { "id": "ptu-cost", "difficulty": 3,
+    "prompt": "Traffic is steady at millions of tokens every hour, and finance wants a predictable monthly bill instead of per-token charges.",
+    "tells": ["predictable monthly bill"],
+    "answer": "deployment-type", "decoys": ["small-model", "max-tokens", "temperature"],
+    "why": "Provisioned throughput gives fixed-price reserved capacity for steady heavy use.",
+    "trap": "Capping tokens limits replies; it doesn't change how you're billed." }
 ]

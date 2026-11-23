@@ -22,5 +22,17 @@
     "tells": ["from 1.0 to 0.2", "far more repetitive"],
     "answer": "temperature", "decoys": ["max-tokens", "content-filters", "system-prompt"],
     "why": "Lowering temperature (or its cousin top_p) narrows choices to the likeliest words.",
-    "trap": "Content filters block content; they don't change word choice." }
+    "trap": "Content filters block content; they don't change word choice." },
+  { "id": "poem-variety", "difficulty": 2,
+    "prompt": "A greeting-card app wants each user's poem to feel fresh, even for the same occasion.",
+    "tells": ["feel fresh, even for the same occasion"],
+    "answer": "temperature", "decoys": ["few-shot", "max-tokens", "image-generation"],
+    "why": "A higher temperature gives more varied wording.",
+    "trap": "Examples would make poems more alike, not less." },
+  { "id": "classifier-temp0", "difficulty": 3,
+    "prompt": "A prompt that labels tickets as billing or technical should give the same label every time for the same ticket. Which setting do you set to 0?",
+    "tells": ["the same label every time for the same ticket"],
+    "answer": "temperature", "decoys": ["max-tokens", "few-shot", "deployment-type"],
+    "why": "Temperature 0 makes output as deterministic as possible.",
+    "trap": "Max tokens set to 0 would return nothing at all." }
 ]

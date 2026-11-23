@@ -22,5 +22,17 @@
     "tells": ["Adding a couple of good answers to the prompt"],
     "answer": "few-shot", "decoys": ["temperature", "reasoning-model", "system-prompt"],
     "why": "Going from zero examples to a few is few-shot prompting.",
-    "trap": "The fix was examples, not a setting change." }
+    "trap": "The fix was examples, not a setting change." },
+  { "id": "tricky-edge", "difficulty": 2,
+    "prompt": "A model mislabels sarcastic reviews. The prompt now includes three sarcastic reviews with the correct label.",
+    "tells": ["three sarcastic reviews with the correct label"],
+    "answer": "few-shot", "decoys": ["sentiment-analysis", "system-prompt", "temperature"],
+    "why": "Worked examples in the prompt are few-shot prompting.",
+    "trap": "Sentiment is the task; the technique is adding examples." },
+  { "id": "few-vs-finetune", "difficulty": 3,
+    "prompt": "The team has six good input-output pairs and wants better results today, without training anything.",
+    "tells": ["without training anything"],
+    "answer": "few-shot", "decoys": ["rag", "system-prompt", "small-model"],
+    "why": "Put the examples in the prompt: few-shot. Fine-tuning needs training.",
+    "trap": "RAG adds facts; these are examples of the task." }
 ]

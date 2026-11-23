@@ -22,5 +22,17 @@
     "tells": ["revealing confidential files"],
     "answer": "privacy-security", "decoys": ["reliability-safety", "transparency", "inclusiveness"],
     "why": "Resisting attacks that expose data is security.",
-    "trap": "Content filters can help detect the attack, but the principle at stake is privacy and security." }
+    "trap": "Content filters can help detect the attack, but the principle at stake is privacy and security." },
+  { "id": "anonymize-before-train", "difficulty": 2,
+    "prompt": "Before training a model on patient records, the team removes names and replaces exact birthdates with age ranges.",
+    "tells": ["removes names and replaces exact birthdates"],
+    "answer": "privacy-security", "decoys": ["pii-detection", "fairness", "transparency"],
+    "why": "Protecting personal data in training is privacy and security.",
+    "trap": "PII detection is a tool that could do this; the principle asked about is privacy." },
+  { "id": "delete-on-request", "difficulty": 3,
+    "prompt": "Users must be able to ask for their chat history to be deleted and excluded from any future training.",
+    "tells": ["excluded from any future training"],
+    "answer": "privacy-security", "decoys": ["transparency", "accountability", "inclusiveness"],
+    "why": "Giving people control over their data is privacy.",
+    "trap": "Telling users what you do with data is transparency; letting them delete it is privacy." }
 ]

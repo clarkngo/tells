@@ -22,5 +22,17 @@
     "tells": ["both praising and complaining at once"],
     "answer": "sentiment-analysis", "decoys": ["summarization", "key-phrases", "few-shot"],
     "why": "Sentiment analysis has a 'mixed' label for exactly this.",
-    "trap": "A summary wouldn't give a score you can chart." }
+    "trap": "A summary wouldn't give a score you can chart." },
+  { "id": "agent-coaching", "difficulty": 2,
+    "prompt": "Score each customer's tone at the start and end of support chats to see whether agents improve the mood.",
+    "tells": ["Score each customer's tone"],
+    "answer": "sentiment-analysis", "decoys": ["summarization", "key-phrases", "speech-to-text"],
+    "why": "Scoring tone is sentiment analysis.",
+    "trap": "A summary describes the chat; it doesn't score tone." },
+  { "id": "app-store", "difficulty": 3,
+    "prompt": "For each app-store review, mark it positive, negative, neutral or mixed, with a confidence score.",
+    "tells": ["with a confidence score"],
+    "answer": "sentiment-analysis", "decoys": ["key-phrases", "entity-recognition", "translation"],
+    "why": "Azure Language returns sentiment labels with confidence scores.",
+    "trap": "Labels about tone, not topics." }
 ]

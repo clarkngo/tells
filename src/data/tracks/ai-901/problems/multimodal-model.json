@@ -22,5 +22,17 @@
     "tells": ["car-damage photos alongside the claim text"],
     "answer": "multimodal-model", "decoys": ["object-detection", "document-extraction", "image-analysis"],
     "why": "Combining image and text in one prompt is multimodal.",
-    "trap": "Object detection finds dents; judging consistency with text needs the multimodal model." }
+    "trap": "Object detection finds dents; judging consistency with text needs the multimodal model." },
+  { "id": "diagram-quiz", "difficulty": 2,
+    "prompt": "Students photograph a geometry diagram and ask the chat assistant to explain how to find the missing angle.",
+    "tells": ["photograph a geometry diagram"],
+    "answer": "multimodal-model", "decoys": ["ocr", "image-analysis", "reasoning-model"],
+    "why": "A multimodal model reads the diagram and the question together.",
+    "trap": "OCR reads text; it can't interpret a diagram." },
+  { "id": "voice-and-photo", "difficulty": 3,
+    "prompt": "A field technician holds up a broken part to the camera and asks out loud what it is, getting a spoken answer from one deployed model.",
+    "tells": ["asks out loud what it is"],
+    "answer": "multimodal-model", "decoys": ["object-detection", "speech-to-text", "image-analysis"],
+    "why": "One model taking image and audio input is multimodal.",
+    "trap": "Chaining separate vision and speech tools isn't what's described." }
 ]

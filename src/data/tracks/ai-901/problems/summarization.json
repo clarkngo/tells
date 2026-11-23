@@ -22,5 +22,17 @@
     "tells": ["short digest"],
     "answer": "summarization", "decoys": ["key-phrases", "sentiment-analysis", "translation"],
     "why": "A digest is a summary.",
-    "trap": "Listing topics isn't the same as telling what happened." }
+    "trap": "Listing topics isn't the same as telling what happened." },
+  { "id": "email-thread", "difficulty": 2,
+    "prompt": "A manager returns from vacation to a 60-email thread and wants the key decisions in a paragraph.",
+    "tells": ["key decisions in a paragraph"],
+    "answer": "summarization", "decoys": ["key-phrases", "entity-recognition", "sentiment-analysis"],
+    "why": "A paragraph of key points is summarization.",
+    "trap": "Key phrases would give fragments, not decisions." },
+  { "id": "abstractive", "difficulty": 3,
+    "prompt": "A product team wants a short, newly worded recap of each support conversation, not copied sentences.",
+    "tells": ["newly worded recap"],
+    "answer": "summarization", "decoys": ["key-phrases", "translation", "document-extraction"],
+    "why": "Abstractive summarization writes a new, shorter version.",
+    "trap": "Extractive summarization copies original sentences." }
 ]
