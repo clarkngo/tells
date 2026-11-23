@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Pattern, Problem } from '../lib/types';
-import { saveAttempt } from '../lib/storage';
+import { loadAttempts, repeatWeight, saveAttempt, seenCounts } from '../lib/storage';
 import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
@@ -8,7 +8,7 @@ import Glyph from './Glyph';
 
 type Mode = 'sprint' | 'focus' | 'zen';
 type Phase = 'setup' | 'ask' | 'mark' | 'reveal' | 'done';
-interface Round { problem: Problem; choices: string[] }
+interface Round { problem: Problem; choices: string[]; seen: number } // seen = earlier attempts at this question
 interface Marks { found: Set<number>; total: number; extra: number }
 interface Result { problem: Problem; picked: string | null; ms: number; marks?: Marks }
 interface Token { text: string; word: boolean; tell: number } // tell = index into problem.tells, or -1
@@ -172,9 +172,14 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
     const pool = m === 'focus'
       ? problems.filter((p) => p.answer === f || p.decoys.includes(f))
       : problems;
-    return shuffle(pool).slice(0, count).map((problem) => ({
+    // Fresh questions first; repeats only once the unseen ones run out.
+    const seen = seenCounts(loadAttempts().filter((a) => a.track === track));
+    const times = (p: Problem) => seen.get(p.id) ?? 0;
+    const picked = shuffle(pool).sort((a, b) => times(a) - times(b)).slice(0, count);
+    return shuffle(picked).map((problem) => ({
       problem,
       choices: shuffle([problem.answer, ...problem.decoys]),
+      seen: times(problem),
     }));
   }
 
@@ -457,7 +462,14 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
   return (
     <div class="drill" ref={cardRef}>
       <div class="drill-head">
-        <span class="mono">Q{idx + 1}<span class="muted">/{rounds.length}</span></span>
+        <span class="qhead">
+          <span class="mono">Q{idx + 1}<span class="muted">/{rounds.length}</span></span>
+          {round.seen === 0
+            ? <span class="fresh new" title="First time seeing this question: full mastery point">New</span>
+            : <span class="fresh" title={`You've answered this ${round.seen === 1 ? 'once' : `${round.seen} times`} before. Repeats earn fewer mastery points.`}>
+                Repeat · mastery ×{repeatWeight(round.seen)}
+              </span>}
+        </span>
         <span class="hud">
           {combo >= 2 && (
             <span key={combo} class={`combo ${combo >= 8 ? 'c3' : combo >= 5 ? 'c2' : combo >= 3 ? 'c1' : ''}`}>
