@@ -246,9 +246,33 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .g-split { animation: split 2.4s ease-in-out infinite alternate; }
 @keyframes split { 0%, 20% { transform: translateX(0); } 80%, 100% { transform: translateX(var(--dx)); } }
 
+/* Travel by (--dx, --dy), then fade: for things that get sent somewhere. */
+.g-move { animation: move var(--t, 2.4s) ease-in-out infinite; }
+@keyframes move {
+  0%, 12% { transform: translate(0, 0); opacity: 1; }
+  70%, 88% { transform: translate(var(--dx, 0px), var(--dy, 0px)); opacity: 1; }
+  100% { transform: translate(var(--dx, 0px), var(--dy, 0px)); opacity: 0; }
+}
+/* Back and forth by (--dx, --dy): sliders, merging, bouncing. */
+.g-sway { animation: sway var(--t, 2.4s) ease-in-out infinite alternate; }
+@keyframes sway { 0%, 15% { transform: translate(0, 0); } 85%, 100% { transform: translate(var(--dx, 0px), var(--dy, 0px)); } }
+/* Rotate about a point set with transform-origin (in viewBox units). */
+.g-spin { transform-box: view-box; animation: spin var(--t, 4s) linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.g-flip { transform-box: view-box; animation: flip 2.4s ease-in-out infinite alternate; }
+@keyframes flip { 0%, 30% { transform: rotate(0deg); } 70%, 100% { transform: rotate(-32deg); } }
+/* Draw a stroke along its path (paths use pathLength="100"). */
+.g-draw { fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 100; stroke-dashoffset: 100; animation: draw 2.8s ease-out infinite; }
+@keyframes draw { 55%, 88% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: 0; opacity: 0; } }
+/* Marching dashes along a line: something flowing. */
+.g-flow { fill: none; stroke: currentColor; stroke-width: 2; stroke-dasharray: 4 5; animation: flow 0.9s linear infinite; }
+@keyframes flow { to { stroke-dashoffset: -18; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .g-bs, .g-ring { opacity: 1; }
+  .g-draw { stroke-dashoffset: 0; }
 }
 
 /* ---------- tracks ---------- */
@@ -295,6 +319,7 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .lv-fg, .ring-fg { fill: none; stroke: var(--accent); stroke-width: 3; stroke-linecap: round; transition: stroke-dashoffset 0.6s ease-out; }
 .mute { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; }
 .mute:hover { color: var(--text); }
+.music.on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
 .mute svg { width: 18px; height: 18px; }
 @media (max-width: 480px) {
   /* Logo and player on the first row; track links get their own scrollable row. */
