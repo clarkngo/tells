@@ -12,6 +12,7 @@ import { patterns as ctxPatterns } from '../data/tracks/context-engineering/patt
 import { patterns as specPatterns } from '../data/tracks/spec-driven/patterns';
 import { patterns as fePatterns } from '../data/tracks/frontend/patterns';
 import { patterns as bePatterns } from '../data/tracks/backend/patterns';
+import { patterns as garchPatterns } from '../data/tracks/garch/patterns';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -135,7 +136,14 @@ export const specDriven = makeTrack(
   import.meta.glob('../data/tracks/spec-driven/problems/*.json', { eager: true, import: 'default' }),
 );
 
+export const garch = makeTrack(
+  { slug: 'garch', name: 'Volatility modeling (GARCH)', short: 'GARCH',
+    tagline: 'A deep dive: read a volatility problem, name the GARCH variant, test or step it needs.' },
+  garchPatterns,
+  import.meta.glob('../data/tracks/garch/problems/*.json', { eager: true, import: 'default' }),
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, debugging, firstPrinciples,
+  dataScience, garch, debugging, firstPrinciples,
 ];
