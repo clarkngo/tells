@@ -17,6 +17,8 @@ import { glossary as dataScienceGlossary } from '../data/tracks/data-science/glo
 import { glossary as garchGlossary } from '../data/tracks/garch/glossary';
 import { patterns as ai901Patterns } from '../data/tracks/ai-901/patterns';
 import { glossary as ai901Glossary } from '../data/tracks/ai-901/glossary';
+import { patterns as discPatterns } from '../data/tracks/disc/patterns';
+import { glossary as discGlossary } from '../data/tracks/disc/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -172,7 +174,15 @@ export const ai901 = makeTrack(
   ai901Glossary,
 );
 
+export const disc = makeTrack(
+  { slug: 'disc', name: 'Communication styles (DISC)', short: 'DISC',
+    tagline: 'Read how someone works, name their DISC style, then pick how to adapt your message.' },
+  discPatterns,
+  import.meta.glob('../data/tracks/disc/problems/*.json', { eager: true, import: 'default' }),
+  discGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, garch, ai901, debugging, firstPrinciples,
+  dataScience, garch, ai901, disc, debugging, firstPrinciples,
 ];
