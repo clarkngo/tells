@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'preact/hooks';
 import { PROFILE_CHANGED, levelOf, loadProfile, titleOf, xpForLevel, type Profile } from '../lib/profile';
 import { SOUND_CHANGED, isMuted, setMuted } from '../lib/sfx';
-import { MUSIC_CHANGED, initMusic, isMusicOn, setMusicOn } from '../lib/music';
+import { MUSIC_CHANGED, TRACKS, currentTrack, initMusic, isMusicOn, nextTrack, setMusicOn } from '../lib/music';
 
-// Header widget: level ring (fills toward the next level), a music toggle and a mute toggle.
+// Header widget: level ring (fills toward the next level), music toggle, next-track button and a mute toggle.
 export default function Player() {
   const [p, setP] = useState<Profile | null>(null);
   const [muted, setM] = useState(false);
   const [music, setMusic] = useState(false);
+  const [trackNo, setTrackNo] = useState(0);
   useEffect(() => {
     const r = () => setP(loadProfile());
     const m = () => setM(isMuted());
-    const mu = () => setMusic(isMusicOn());
+    const mu = () => {
+      setMusic(isMusicOn());
+      setTrackNo(currentTrack());
+    };
     r();
     m();
     mu();
@@ -46,7 +50,7 @@ export default function Player() {
       </span>
       <button type="button" class={`mute music ${music ? 'on' : ''}`} aria-pressed={music}
         aria-label={music ? 'Turn background music off' : 'Turn background music on'}
-        title={music ? 'Music on' : 'Music off'} onClick={() => setMusicOn(!music)}>
+        title={music ? `Music on: ${TRACKS[trackNo].title}` : 'Music off'} onClick={() => setMusicOn(!music)}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path d="M9 17V5l11-2v12" stroke="currentColor" stroke-width="2" fill="none" stroke-linejoin="round" />
           <circle cx="6.5" cy="17" r="2.5" fill="currentColor" />
@@ -54,6 +58,16 @@ export default function Player() {
           {!music && <path d="M3 3l18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />}
         </svg>
       </button>
+      {music && TRACKS.length > 1 && (
+        <button type="button" class="mute" onClick={nextTrack}
+          aria-label={`Switch music to ${TRACKS[(trackNo + 1) % TRACKS.length].title}`}
+          title={`Now playing: ${TRACKS[trackNo].title}. Switch to ${TRACKS[(trackNo + 1) % TRACKS.length].title}`}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 5l10 7-10 7z" fill="currentColor" />
+            <path d="M18 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+      )}
       <button type="button" class="mute" aria-pressed={muted} aria-label={muted ? 'Turn sound on' : 'Turn sound off'}
         title={muted ? 'Sound off' : 'Sound on'} onClick={() => setMuted(!muted)}>
         <svg viewBox="0 0 24 24" aria-hidden="true">
