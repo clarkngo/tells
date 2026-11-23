@@ -297,9 +297,14 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .mute:hover { color: var(--text); }
 .mute svg { width: 18px; height: 18px; }
 @media (max-width: 480px) {
-  .site-head { padding: 14px 16px; }
-  .head-right { gap: 10px; }
-  nav { gap: 12px; font-size: 0.9rem; }
+  /* Logo and player on the first row; track links get their own scrollable row. */
+  .site-head { padding: 14px 16px 6px; flex-wrap: wrap; row-gap: 4px; }
+  .head-right { display: contents; }
+  nav {
+    order: 3; width: 100%; gap: 18px; font-size: 0.9rem;
+    overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
   .lv, .mute { width: 30px; height: 30px; }
 }
 

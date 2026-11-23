@@ -3,6 +3,8 @@ import { z } from 'astro/zod';
 import type { Pattern, Problem, Track } from './types';
 import { patterns as dsaPatterns } from '../data/tracks/dsa/patterns';
 import { patterns as sdPatterns } from '../data/tracks/system-design/patterns';
+import { patterns as aiEngPatterns } from '../data/tracks/ai-engineering/patterns';
+import { patterns as agentPatterns } from '../data/tracks/ai-agents/patterns';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -63,4 +65,18 @@ export const systemDesign = makeTrack(
   import.meta.glob('../data/tracks/system-design/problems/*.json', { eager: true, import: 'default' }),
 );
 
-export const tracks: Track[] = [dsa, systemDesign];
+export const aiEngineering = makeTrack(
+  { slug: 'ai-engineering', name: 'AI engineering', short: 'AI eng',
+    tagline: 'Read an LLM product problem, name the technique it needs.' },
+  aiEngPatterns,
+  import.meta.glob('../data/tracks/ai-engineering/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const aiAgents = makeTrack(
+  { slug: 'ai-agents', name: 'AI agents', short: 'Agents',
+    tagline: 'Read an agent scenario, name the design pattern it calls for.' },
+  agentPatterns,
+  import.meta.glob('../data/tracks/ai-agents/problems/*.json', { eager: true, import: 'default' }),
+);
+
+export const tracks: Track[] = [dsa, systemDesign, aiEngineering, aiAgents];
