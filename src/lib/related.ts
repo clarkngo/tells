@@ -68,6 +68,10 @@ export const related: Record<string, Related> = {
     easier: [],
     basics: { slug: 'play-basics', title: 'Game design basics', about: 'goals, rules, feedback, loops and player choice' },
   },
+  'engineering-judgment': {
+    easier: [],
+    basics: { slug: 'dev-workflow-basics', title: 'Developer workflow basics', about: 'git, pull requests, code review, tests and asking for help well' },
+  },
   debugging: {
     easier: ['backend'],
     basics: { slug: 'debugging-basics', title: 'Debugging basics', about: 'reading errors and logs, reproducing a bug and narrowing it down' },
