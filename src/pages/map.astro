@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import SkyMap from '../components/SkyMap';
+import { tracks } from '../lib/tracks';
+const base = import.meta.env.BASE_URL;
+const data = tracks.map((t) => ({
+  slug: t.slug,
+  name: t.name,
+  short: t.short,
+  patterns: t.patterns.filter((p) => p.live).map(({ slug, name, hue, blurb }) => ({ slug, name, hue, blurb })),
+  questions: t.problems.map((p) => ({ id: p.id, answer: p.answer })),
+}));
+---
+<Base title="Progress map" description="Your progress across every Tells track, drawn as a night sky.">
+  <section class="page-head">
+    <p class="eyebrow">Progress</p>
+    <h1>Your sky</h1>
+    <p class="muted">Tracks are suns and patterns are planets. Stars make them glow. Progress stays in this browser.</p>
+  </section>
+  <SkyMap client:only="preact" tracks={data} base={base}>
+    <div slot="fallback" class="drill skeleton">Loading map…</div>
+  </SkyMap>
+</Base>
