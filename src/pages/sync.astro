@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import SyncPanel from '../components/SyncPanel';
+---
+<Base title="Sync progress" description="Move your Tells progress between devices with a copyable code.">
+  <section class="page-head">
+    <p class="eyebrow">Sync</p>
+    <h1>Take your progress with you</h1>
+    <p class="muted">Progress is saved in this browser only. Copy a code here, paste it on your laptop, iPad or phone, and it merges in.</p>
+  </section>
+  <SyncPanel client:only="preact" />
+</Base>
