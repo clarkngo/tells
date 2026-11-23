@@ -446,3 +446,31 @@ button, a, .word { touch-action: manipulation; -webkit-tap-highlight-color: tran
 }
 /* notch / home-indicator safe areas (viewport-fit=cover) */
 body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); min-height: 100dvh; }
+
+/* ---------- gallery ---------- */
+.gallery-jump { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 14px; order: initial; width: auto; overflow: visible; }
+.gallery-track { scroll-margin-top: 16px; margin-top: 36px; }
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; }
+.tile {
+  display: flex; flex-direction: column; gap: 10px; padding: 16px 14px 14px;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+  text-decoration: none; color: var(--text);
+  transition: border-color 0.2s, transform 0.2s, background 0.2s;
+}
+.tile .glyph { max-width: none; }
+.tile:hover, .tile:focus-visible {
+  border-color: color-mix(in srgb, var(--pc) 60%, var(--border));
+  background: color-mix(in srgb, var(--pc) 6%, var(--surface));
+  transform: translateY(-2px);
+}
+.tile-name { display: flex; align-items: flex-start; gap: 8px; font-weight: 500; font-size: 0.95rem; line-height: 1.35; }
+.tile-name .dot { margin-top: 0.4em; }
+@media (max-width: 480px) {
+  .gallery { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .tile { padding: 12px 10px 10px; }
+  .tile-name { font-size: 0.85rem; }
+  .gallery-jump { white-space: normal; }
+}
+.gallery-link { margin: 16px 0 0; }
+.gallery-link a { color: var(--accent); text-decoration: none; font-weight: 500; }
+.gallery-link a:hover { text-decoration: underline; }

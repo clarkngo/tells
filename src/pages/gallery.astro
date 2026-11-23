@@ -1,0 +1,32 @@
+---
+import Base from '../layouts/Base.astro';
+import Glyph from '../components/Glyph';
+import { tracks } from '../lib/tracks';
+const base = import.meta.env.BASE_URL;
+const total = tracks.reduce((n, t) => n + t.patterns.length, 0);
+---
+<Base title="Pattern gallery" description="Every pattern in Tells, each with its own small animation.">
+  <section class="page-head">
+    <p class="eyebrow">Gallery</p>
+    <h1>Every pattern, in motion</h1>
+    <p class="muted">{total} patterns across {tracks.length} tracks. Tap one to drill it.</p>
+    <nav class="gallery-jump" aria-label="Jump to track">
+      {tracks.map((t) => <a href={`#${t.slug}`}>{t.short}</a>)}
+    </nav>
+  </section>
+
+  {tracks.map((t) => (
+    <section class="gallery-track" id={t.slug}>
+      <h2 class="section-title">{t.name} <span class="muted mono">· {t.patterns.length}</span></h2>
+      <div class="gallery">
+        {t.patterns.map((p) => (
+          <a class="tile" style={`--h:${p.hue}`} href={`${base}${t.slug}/drill/?focus=${p.slug}`}
+            title={p.blurb}>
+            <Glyph slug={p.slug} hue={p.hue} />
+            <span class="tile-name"><span class="dot" />{p.name}</span>
+          </a>
+        ))}
+      </div>
+    </section>
+  ))}
+</Base>
