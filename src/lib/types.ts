@@ -20,6 +20,13 @@ export interface Problem {
   leetcode?: string;
 }
 
+// A glossary entry: tapping the term (or an alias) in a prompt shows the definition.
+export interface Term {
+  term: string;
+  aliases?: string[];
+  def: string;
+}
+
 export interface Track {
   slug: string;
   name: string;
@@ -27,4 +34,5 @@ export interface Track {
   tagline: string;
   patterns: Pattern[];
   problems: Problem[];
+  glossary: Term[];
 }

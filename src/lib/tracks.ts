@@ -1,6 +1,6 @@
 // Loads every track at build time and validates it. Any bad entry fails the build.
 import { z } from 'astro/zod';
-import type { Pattern, Problem, Track } from './types';
+import type { Pattern, Problem, Term, Track } from './types';
 import { patterns as dsaPatterns } from '../data/tracks/dsa/patterns';
 import { patterns as sdPatterns } from '../data/tracks/system-design/patterns';
 import { patterns as aiEngPatterns } from '../data/tracks/ai-engineering/patterns';
@@ -13,6 +13,7 @@ import { patterns as specPatterns } from '../data/tracks/spec-driven/patterns';
 import { patterns as fePatterns } from '../data/tracks/frontend/patterns';
 import { patterns as bePatterns } from '../data/tracks/backend/patterns';
 import { patterns as garchPatterns } from '../data/tracks/garch/patterns';
+import { glossary as garchGlossary } from '../data/tracks/garch/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -49,14 +50,29 @@ function check(slug: string, patterns: Pattern[], problems: Problem[]) {
   if (errors.length) throw new Error(`Problem bank errors:\n${errors.join('\n')}`);
 }
 
+function checkGlossary(slug: string, glossary: Term[]) {
+  const keys = new Set<string>();
+  const errors: string[] = [];
+  for (const t of glossary) {
+    if (!t.def.trim()) errors.push(`[${slug} glossary] "${t.term}" has no definition`);
+    for (const k of [t.term, ...(t.aliases ?? [])]) {
+      if (keys.has(k.toLowerCase())) errors.push(`[${slug} glossary] "${k}" is listed twice`);
+      keys.add(k.toLowerCase());
+    }
+  }
+  if (errors.length) throw new Error(`Glossary errors:\n${errors.join('\n')}`);
+}
+
 function makeTrack(
   meta: Pick<Track, 'slug' | 'name' | 'short' | 'tagline'>,
   patterns: Pattern[],
   files: Record<string, unknown>,
+  glossary: Term[] = [],
 ): Track {
   const problems = loadProblems(files);
   check(meta.slug, patterns, problems);
-  return { ...meta, patterns, problems };
+  checkGlossary(meta.slug, glossary);
+  return { ...meta, patterns, problems, glossary };
 }
 
 export const dsa = makeTrack(
@@ -141,6 +157,7 @@ export const garch = makeTrack(
     tagline: 'A deep dive: read a volatility problem, name the GARCH variant, test or step it needs.' },
   garchPatterns,
   import.meta.glob('../data/tracks/garch/problems/*.json', { eager: true, import: 'default' }),
+  garchGlossary,
 );
 
 export const tracks: Track[] = [

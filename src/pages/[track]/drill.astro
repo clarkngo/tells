@@ -19,7 +19,7 @@ const base = import.meta.env.BASE_URL;
       <a href={`${base}${t.slug}/patterns/`}>see all patterns</a>
     </p>
   </section>
-  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} setup>
+  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} glossary={t.glossary} setup>
     <div slot="fallback" class="drill skeleton">Loading drill…</div>
   </Drill>
 </Base>

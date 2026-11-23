@@ -34,4 +34,18 @@ const noun = t.slug === 'dsa' ? 'problems' : 'scenarios';
       </article>
     ))}
   </div>
+  {t.glossary.length > 0 && (
+    <section class="glossary" id="glossary">
+      <h2>Glossary</h2>
+      <p class="muted">{t.glossary.length} terms. In a drill, tap any dotted word in the question to see its entry.</p>
+      <dl>
+        {[...t.glossary].sort((a, b) => a.term.localeCompare(b.term, 'en', { sensitivity: 'base' })).map((g) => (
+          <div>
+            <dt>{g.term}{g.aliases?.length ? <span class="muted"> · {g.aliases.join(', ')}</span> : null}</dt>
+            <dd>{g.def}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )}
 </Base>
