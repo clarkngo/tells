@@ -21,6 +21,8 @@ import { patterns as discPatterns } from '../data/tracks/disc/patterns';
 import { glossary as discGlossary } from '../data/tracks/disc/glossary';
 import { patterns as gamePatterns } from '../data/tracks/game-design/patterns';
 import { glossary as gameGlossary } from '../data/tracks/game-design/glossary';
+import { patterns as engPatterns } from '../data/tracks/engineering-judgment/patterns';
+import { glossary as engGlossary } from '../data/tracks/engineering-judgment/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -192,7 +194,15 @@ export const gameDesign = makeTrack(
   gameGlossary,
 );
 
+export const engineeringJudgment = makeTrack(
+  { slug: 'engineering-judgment', name: 'Engineering judgment', short: 'Eng judgment',
+    tagline: 'Read a work or interview situation, name the call a good engineer makes: junior habits, design choices, risk and team moves.' },
+  engPatterns,
+  import.meta.glob('../data/tracks/engineering-judgment/problems/*.json', { eager: true, import: 'default' }),
+  engGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, garch, ai901, disc, gameDesign, debugging, firstPrinciples,
+  dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, debugging, firstPrinciples,
 ];

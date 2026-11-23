@@ -1,0 +1,73 @@
+import type { Pattern } from '../../../lib/types';
+
+// Engineering judgment: name the habit or call a situation needs, for junior and
+// senior engineers, at work and in interviews.
+export const patterns: Pattern[] = [
+  // Getting it right
+  { slug: 'clarify-first', name: 'Clarify first', hue: 200, live: true,
+    blurb: 'Before building, ask what is really needed: the goal, the users, the limits and what done looks like.',
+    signals: ['vague request', 'unclear requirements', 'what problem are we solving', 'ask before coding'] },
+  { slug: 'timebox-then-ask', name: 'Timebox, then ask', hue: 215, live: true,
+    blurb: 'Try on your own for a set time, then ask for help, showing what you tried and where you are stuck.',
+    signals: ['stuck for days', 'afraid to ask', 'asks too soon', 'what have you tried'] },
+  { slug: 'small-changes', name: 'Small changes', hue: 230, live: true,
+    blurb: 'Ship work in small, focused pieces that are easy to review, test and undo.',
+    signals: ['huge PR', 'hard to review', 'one change per PR', 'split it up'] },
+  { slug: 'prove-it-works', name: 'Prove it works', hue: 245, live: true,
+    blurb: 'Before saying it is done, show it works: run it, test it, check the edge cases.',
+    signals: ['works on my machine', 'it compiles', 'untested', 'show me'] },
+  { slug: 'own-the-mistake', name: 'Own the mistake', hue: 260, live: true,
+    blurb: 'Say it early, fix forward and learn from it without blame or hiding.',
+    signals: ['I broke it', 'tell them now', 'no blame', 'what we learned'] },
+
+  // Design choices
+  { slug: 'yagni', name: "YAGNI", hue: 20, live: true,
+    blurb: "You aren't gonna need it: build for today's real need, not imagined futures.",
+    signals: ['just in case', 'might need later', 'future-proof', 'configurable everything'] },
+  { slug: 'rule-of-three', name: 'Rule of three', hue: 35, live: true,
+    blurb: 'Allow a little copying; wait for the third similar case before you abstract.',
+    signals: ['two similar pieces', 'premature abstraction', 'wrong abstraction', 'third time'] },
+  { slug: 'boring-tech', name: 'Boring tech', hue: 50, live: true,
+    blurb: 'Pick proven, well-understood tools unless something new solves a real problem you have.',
+    signals: ['shiny new framework', 'nobody knows it', 'proven stack', 'innovation budget'] },
+  { slug: 'measure-first', name: 'Measure first', hue: 65, live: true,
+    blurb: 'Profile and measure before optimizing; fix the real bottleneck, not a guess.',
+    signals: ['it feels slow', 'guessing at the cause', 'profile', 'premature optimization'] },
+  { slug: 'build-vs-buy', name: 'Build vs buy', hue: 80, live: true,
+    blurb: 'Build what makes you different; use an existing product or library for the rest.',
+    signals: ['write our own', 'already solved', 'core business', 'maintenance cost'] },
+
+  // Risk and delivery
+  { slug: 'two-way-door', name: 'Two-way door', hue: 130, live: true,
+    blurb: 'A decision that is easy to undo: decide quickly and learn by doing.',
+    signals: ['easy to change later', 'endless debate', 'low stakes', 'just pick one'] },
+  { slug: 'one-way-door', name: 'One-way door', hue: 145, live: true,
+    blurb: 'A decision that is hard or costly to undo: slow down, get review and plan the exit.',
+    signals: ['hard to reverse', 'public API', 'data migration', 'contract'] },
+  { slug: 'ship-behind-flag', name: 'Ship behind a flag', hue: 160, live: true,
+    blurb: 'Release to a few users first, behind a switch, and widen as it proves safe.',
+    signals: ['feature flag', 'canary', 'gradual rollout', 'turn it off'] },
+  { slug: 'mitigate-first', name: 'Mitigate first', hue: 175, live: true,
+    blurb: 'In an outage, stop the harm first (roll back, fail over), then find the root cause.',
+    signals: ['outage', 'users affected now', 'roll back', 'root cause later'] },
+  { slug: 'raise-risk-early', name: 'Raise risk early', hue: 190, live: true,
+    blurb: 'Tell people as soon as a date or plan is at risk, with what you know and options.',
+    signals: ['slipping', 'surprise on deadline day', 'bad news early', 'heads-up'] },
+
+  // Senior and team
+  { slug: 'write-it-down', name: 'Write it down', hue: 290, live: true,
+    blurb: 'Put a significant design in writing so others can review it and future readers know why.',
+    signals: ['design doc', 'RFC', 'why did we do this', 'review before building'] },
+  { slug: 'disagree-and-commit', name: 'Disagree and commit', hue: 305, live: true,
+    blurb: 'Argue your case, then fully back the decision once it is made.',
+    signals: ['lost the argument', 'decision is made', 'relitigating', 'back the team'] },
+  { slug: 'negotiate-scope', name: 'Negotiate scope', hue: 320, live: true,
+    blurb: 'When time is fixed, trade what gets built, not quality: agree what to cut or defer.',
+    signals: ['fixed deadline', 'too much work', 'what can we cut', 'phase two'] },
+  { slug: 'multiply-others', name: 'Multiply others', hue: 335, live: true,
+    blurb: "Raise the team's output: review, pair, mentor, unblock and share what you know.",
+    signals: ['bottleneck', 'only I know', 'mentor', 'unblock'] },
+  { slug: 'pay-down-debt', name: 'Pay down debt', hue: 350, live: true,
+    blurb: 'Fix the shortcuts that slow you down most, a bit at a time, where you are working.',
+    signals: ['slows every change', 'workaround', 'cleanup', 'leave it better'] },
+];
