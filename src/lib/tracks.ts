@@ -13,6 +13,7 @@ import { patterns as specPatterns } from '../data/tracks/spec-driven/patterns';
 import { patterns as fePatterns } from '../data/tracks/frontend/patterns';
 import { patterns as bePatterns } from '../data/tracks/backend/patterns';
 import { patterns as garchPatterns } from '../data/tracks/garch/patterns';
+import { glossary as dataScienceGlossary } from '../data/tracks/data-science/glossary';
 import { glossary as garchGlossary } from '../data/tracks/garch/glossary';
 
 const problemSchema = z.object({
@@ -115,6 +116,7 @@ export const dataScience = makeTrack(
     tagline: 'Read a use case, name the model, algorithm or statistical method it needs.' },
   dsPatterns,
   import.meta.glob('../data/tracks/data-science/problems/*.json', { eager: true, import: 'default' }),
+  dataScienceGlossary,
 );
 
 export const firstPrinciples = makeTrack(
