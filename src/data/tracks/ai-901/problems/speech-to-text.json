@@ -22,5 +22,17 @@
     "tells": ["adds a list of product terms"],
     "answer": "speech-to-text", "decoys": ["few-shot", "entity-recognition", "translation"],
     "why": "Custom speech models or phrase lists improve recognition of domain words.",
-    "trap": "The words are wrong at transcription, before any text analysis." }
+    "trap": "The words are wrong at transcription, before any text analysis." },
+  { "id": "dictation", "difficulty": 2,
+    "prompt": "Doctors dictate notes after each visit, and the app writes them into the patient record.",
+    "tells": ["Doctors dictate notes"],
+    "answer": "speech-to-text", "decoys": ["text-to-speech", "summarization", "entity-recognition"],
+    "why": "Dictation is speech to text.",
+    "trap": "Summarizing could come later; first the speech becomes text." },
+  { "id": "speaker-labels", "difficulty": 3,
+    "prompt": "Meeting transcripts need to show who said each line.",
+    "tells": ["who said each line"],
+    "answer": "speech-to-text", "decoys": ["av-extraction", "entity-recognition", "summarization"],
+    "why": "Speaker diarization in speech to text labels who spoke when.",
+    "trap": "Content Understanding returns structured fields; this is a labeled transcript." }
 ]

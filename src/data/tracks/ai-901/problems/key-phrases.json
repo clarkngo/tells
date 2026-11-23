@@ -22,5 +22,17 @@
     "tells": ["short list of important terms"],
     "answer": "key-phrases", "decoys": ["embedding-model", "pii-detection", "entity-recognition"],
     "why": "Important terms from a document: key phrase extraction.",
-    "trap": "Embeddings power semantic search, not a keyword index." }
+    "trap": "Embeddings power semantic search, not a keyword index." },
+  { "id": "lecture-topics", "difficulty": 2,
+    "prompt": "List the main concepts covered in each lecture transcript so students can scan them quickly.",
+    "tells": ["main concepts covered in each lecture transcript"],
+    "answer": "key-phrases", "decoys": ["summarization", "entity-recognition", "speech-to-text"],
+    "why": "A list of main concepts is key phrase extraction.",
+    "trap": "A summary would be sentences; this is a list of phrases." },
+  { "id": "complaint-drivers", "difficulty": 3,
+    "prompt": "From 50,000 complaints, find the phrases that come up most, like 'late delivery' or 'wrong size'.",
+    "tells": ["find the phrases that come up most"],
+    "answer": "key-phrases", "decoys": ["sentiment-analysis", "entity-recognition", "embedding-model"],
+    "why": "Key phrases, counted across documents, show the main drivers.",
+    "trap": "The complaints are already negative; what they're about is the question." }
 ]

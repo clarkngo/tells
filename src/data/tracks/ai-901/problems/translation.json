@@ -22,5 +22,17 @@
     "tells": ["while keeping their formatting"],
     "answer": "translation", "decoys": ["document-extraction", "summarization", "few-shot"],
     "why": "Document translation keeps layout while translating.",
-    "trap": "Extraction pulls fields; this converts the whole document." }
+    "trap": "Extraction pulls fields; this converts the whole document." },
+  { "id": "app-localize", "difficulty": 2,
+    "prompt": "Ship the app's help articles in 12 languages without hiring translators for each.",
+    "tells": ["in 12 languages"],
+    "answer": "translation", "decoys": ["text-to-speech", "summarization", "few-shot"],
+    "why": "Azure Translator converts text between languages.",
+    "trap": "Nothing needs to be spoken or condensed." },
+  { "id": "custom-terms", "difficulty": 3,
+    "prompt": "Machine translation keeps turning the brand name 'Contoso Cloud' into local words. It must stay unchanged.",
+    "tells": ["must stay unchanged"],
+    "answer": "translation", "decoys": ["entity-recognition", "system-prompt", "pii-detection"],
+    "why": "Translator supports custom glossaries and do-not-translate terms.",
+    "trap": "Recognizing the name as an entity doesn't stop it being translated." }
 ]

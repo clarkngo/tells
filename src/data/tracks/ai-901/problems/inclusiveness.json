@@ -22,5 +22,17 @@
     "tells": ["students in rural areas with older devices can't use it"],
     "answer": "inclusiveness", "decoys": ["fairness", "reliability-safety", "small-model"],
     "why": "Leaving groups unable to benefit is an inclusiveness issue.",
-    "trap": "A small model might be a fix, but the principle asked about is inclusiveness." }
+    "trap": "A small model might be a fix, but the principle asked about is inclusiveness." },
+  { "id": "sign-language", "difficulty": 2,
+    "prompt": "A video-call assistant adds support for users who communicate in sign language.",
+    "tells": ["communicate in sign language"],
+    "answer": "inclusiveness", "decoys": ["fairness", "transparency", "reliability-safety"],
+    "why": "Designing for people with disabilities is inclusiveness.",
+    "trap": "No one was being treated unfairly; a group simply couldn't use it." },
+  { "id": "reading-level", "difficulty": 3,
+    "prompt": "An AI benefits assistant rewrites its answers in plain language because many applicants have limited literacy.",
+    "tells": ["many applicants have limited literacy"],
+    "answer": "inclusiveness", "decoys": ["transparency", "fairness", "summarization"],
+    "why": "Making the system usable by people with different abilities is inclusiveness.",
+    "trap": "Plain language helps people understand, but the reason here is who can use it, which makes this inclusiveness rather than transparency." }
 ]

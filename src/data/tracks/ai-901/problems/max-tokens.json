@@ -22,5 +22,17 @@
     "tells": ["assumed the limit counted words"],
     "answer": "max-tokens", "decoys": ["temperature", "deployment-type", "embedding-model"],
     "why": "The limit counts tokens, and English averages about 3/4 of a word per token, so 600 tokens is roughly 450 words.",
-    "trap": "The limit is fine as a concept; the unit is tokens." }
+    "trap": "The limit is fine as a concept; the unit is tokens." },
+  { "id": "json-truncated", "difficulty": 2,
+    "prompt": "A model returns long JSON objects, and some arrive with the closing braces missing so they fail to parse.",
+    "tells": ["closing braces missing"],
+    "answer": "max-tokens", "decoys": ["temperature", "few-shot", "content-filters"],
+    "why": "Cut-off output is the max-token limit; raise it or ask for shorter output.",
+    "trap": "Examples can't fix a hard length cap." },
+  { "id": "context-budget", "difficulty": 3,
+    "prompt": "A long document plus the prompt nearly fills the model's context window, leaving room for only a few hundred tokens of answer.",
+    "tells": ["leaving room for only a few hundred tokens of answer"],
+    "answer": "max-tokens", "decoys": ["deployment-type", "temperature", "small-model"],
+    "why": "Input and output share the context window, so the room left for the answer caps its length.",
+    "trap": "A different deployment type doesn't enlarge the context window." }
 ]

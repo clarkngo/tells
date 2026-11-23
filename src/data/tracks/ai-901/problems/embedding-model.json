@@ -22,5 +22,17 @@
     "tells": ["based on what the posts are about, not their tags"],
     "answer": "embedding-model", "decoys": ["key-phrases", "summarization", "small-model"],
     "why": "Comparing embeddings finds articles about similar things.",
-    "trap": "Key phrases are a cruder tag-like signal." }
+    "trap": "Key phrases are a cruder tag-like signal." },
+  { "id": "cluster-feedback", "difficulty": 2,
+    "prompt": "Group thousands of free-text feedback comments by meaning before anyone has defined categories.",
+    "tells": ["Group thousands of free-text feedback comments by meaning"],
+    "answer": "embedding-model", "decoys": ["key-phrases", "sentiment-analysis", "summarization"],
+    "why": "Embeddings let you cluster texts by meaning.",
+    "trap": "Key phrases list topics per comment; grouping by meaning uses vectors." },
+  { "id": "cross-language-match", "difficulty": 3,
+    "prompt": "Match job descriptions in English to CVs written in Spanish by what they mean.",
+    "tells": ["by what they mean"],
+    "answer": "embedding-model", "decoys": ["translation", "entity-recognition", "key-phrases"],
+    "why": "Multilingual embeddings place similar meanings close together across languages.",
+    "trap": "Translating first would work, but matching by meaning is the embedding model's job." }
 ]

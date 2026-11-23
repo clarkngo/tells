@@ -22,5 +22,17 @@
     "tells": ["where in the image it is"],
     "answer": "object-detection", "decoys": ["image-analysis", "multimodal-model", "reliability-safety"],
     "why": "Moving from 'what' to 'where' is classification to object detection.",
-    "trap": "Knowing what's there is image classification; locating it is detection." }
+    "trap": "Knowing what's there is image classification; locating it is detection." },
+  { "id": "wildlife-count", "difficulty": 2,
+    "prompt": "Count each deer in trail-camera images and mark where each one is.",
+    "tells": ["mark where each one is"],
+    "answer": "object-detection", "decoys": ["image-analysis", "multimodal-model", "image-generation"],
+    "why": "Locating and counting is object detection.",
+    "trap": "A caption might say 'deer' but not how many or where." },
+  { "id": "defect-location", "difficulty": 3,
+    "prompt": "A quality camera must outline each scratch on a car door so a robot can polish it.",
+    "tells": ["outline each scratch"],
+    "answer": "object-detection", "decoys": ["image-analysis", "ocr", "multimodal-model"],
+    "why": "The robot needs locations, so it's object detection.",
+    "trap": "Knowing there is a scratch isn't enough; it needs to know where." }
 ]

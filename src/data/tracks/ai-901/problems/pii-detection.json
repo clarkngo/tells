@@ -22,5 +22,17 @@
     "tells": ["personal details removed"],
     "answer": "pii-detection", "decoys": ["content-filters", "privacy-security", "summarization"],
     "why": "Strip PII from training data with PII detection.",
-    "trap": "Content filters target harmful content, not personal data." }
+    "trap": "Content filters target harmful content, not personal data." },
+  { "id": "chat-mask", "difficulty": 2,
+    "prompt": "Before chat logs go into an analytics warehouse, credit-card numbers and home addresses must be replaced with placeholders.",
+    "tells": ["replaced with placeholders"],
+    "answer": "pii-detection", "decoys": ["entity-recognition", "content-filters", "privacy-security"],
+    "why": "Detecting and masking personal data is PII detection.",
+    "trap": "Privacy is the principle; PII detection is the feature." },
+  { "id": "pii-categories", "difficulty": 3,
+    "prompt": "Mask passport numbers and bank account numbers in emails, but leave product names and order numbers as they are.",
+    "tells": ["leave product names and order numbers as they are"],
+    "answer": "pii-detection", "decoys": ["entity-recognition", "key-phrases", "document-extraction"],
+    "why": "PII detection lets you pick which categories of personal data to redact.",
+    "trap": "Entity recognition would label products too; the goal is hiding personal data." }
 ]

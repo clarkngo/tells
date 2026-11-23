@@ -22,5 +22,17 @@
     "tells": ["planet or the element"],
     "answer": "entity-recognition", "decoys": ["key-phrases", "embedding-model", "translation"],
     "why": "Entity linking resolves which real thing an entity refers to.",
-    "trap": "Embeddings measure similarity; entity linking picks the specific referent." }
+    "trap": "Embeddings measure similarity; entity linking picks the specific referent." },
+  { "id": "contract-parties", "difficulty": 2,
+    "prompt": "Identify the organizations, people and dates named in each contract's free text.",
+    "tells": ["organizations, people and dates named"],
+    "answer": "entity-recognition", "decoys": ["document-extraction", "key-phrases", "pii-detection"],
+    "why": "Labeling named things by category is entity recognition.",
+    "trap": "No fixed fields are defined; you want every entity, wherever it appears." },
+  { "id": "ner-vs-pii", "difficulty": 3,
+    "prompt": "A news app wants to link every mentioned politician to their profile page. The names should stay visible.",
+    "tells": ["The names should stay visible"],
+    "answer": "entity-recognition", "decoys": ["pii-detection", "key-phrases", "translation"],
+    "why": "Finding and labeling people for linking is entity recognition.",
+    "trap": "PII detection is for hiding personal data; here the names stay." }
 ]

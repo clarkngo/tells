@@ -22,5 +22,17 @@
     "tells": ["a beach scene the model creates"],
     "answer": "image-generation", "decoys": ["object-detection", "image-analysis", "multimodal-model"],
     "why": "Creating new visual content, even inside an existing image, is image generation.",
-    "trap": "Detecting the product isn't the goal; making the new scene is." }
+    "trap": "Detecting the product isn't the goal; making the new scene is." },
+  { "id": "illustrate-lesson", "difficulty": 2,
+    "prompt": "A teacher wants a unique illustration for each vocabulary word, created from the word's definition.",
+    "tells": ["created from the word's definition"],
+    "answer": "image-generation", "decoys": ["image-analysis", "multimodal-model", "few-shot"],
+    "why": "Creating new pictures from text is image generation.",
+    "trap": "There's no existing image to describe." },
+  { "id": "gen-vs-analyze", "difficulty": 3,
+    "prompt": "An app takes a user's text like 'a red bicycle under a tree at dusk' and returns a picture that didn't exist before.",
+    "tells": ["returns a picture that didn't exist before"],
+    "answer": "image-generation", "decoys": ["image-analysis", "object-detection", "multimodal-model"],
+    "why": "Text in, new image out: image generation.",
+    "trap": "Multimodal models take images in; generation creates them." }
 ]
