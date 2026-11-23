@@ -121,7 +121,10 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 6px; border-rad
   padding: 24px; min-height: 340px;
 }
 .skeleton { display: grid; place-items: center; color: var(--muted); }
-.drill-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.drill-head { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+.qhead { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.fresh { font-family: var(--mono); font-size: 0.7rem; border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; color: var(--muted); white-space: nowrap; }
+.fresh.new { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
 .timer { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; margin-bottom: 20px; }
 .timer-fill { height: 100%; background: var(--accent); transform-origin: left; transition: transform 0.1s linear; }
 .timer-fill.low { background: var(--bad); }

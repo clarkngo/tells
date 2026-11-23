@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
-import { CHANGED, loadAttempts, type Attempt } from '../lib/storage';
+import { CHANGED, loadAttempts, repeatWeight, type Attempt } from '../lib/storage';
 
 // Mastery is judged on recent form, so old misses fade out as you improve.
+// Each attempt is weighted by how fresh the question was: a new question is
+// worth a full mastery point, a repeat less (see repeatWeight).
 const WINDOW = 10;
 const TIERS = [
   { n: 3, acc: 0.6, ms: Infinity },  // ★
@@ -10,23 +12,32 @@ const TIERS = [
 ];
 
 export function mastery(attempts: Attempt[]) {
-  const recent = attempts.slice(-WINDOW);
-  const right = recent.filter((a) => a.picked === a.answer);
-  const acc = recent.length ? right.length / recent.length : 0;
-  const ms = right.length ? right.reduce((s, a) => s + a.ms, 0) / right.length : Infinity;
+  const prior = new Map<string, number>();
+  const weighted = attempts.map((a) => {
+    const k = prior.get(a.id) ?? 0;
+    prior.set(a.id, k + 1);
+    return { a, w: repeatWeight(k) };
+  });
+  const pts = weighted.reduce((s, x) => s + x.w, 0);
+  const recent = weighted.slice(-WINDOW);
+  const recentW = recent.reduce((s, x) => s + x.w, 0);
+  const right = recent.filter((x) => x.a.picked === x.a.answer);
+  const acc = recentW ? right.reduce((s, x) => s + x.w, 0) / recentW : 0;
+  const ms = right.length ? right.reduce((s, x) => s + x.a.ms, 0) / right.length : Infinity;
   let stars = 0;
   for (const t of TIERS) {
-    if (attempts.length >= t.n && acc >= t.acc && ms <= t.ms) stars++;
+    if (pts >= t.n - 1e-9 && acc >= t.acc && ms <= t.ms) stars++;
     else break;
   }
   const next = TIERS[stars];
   let hint = 'Mastered';
   if (next) {
-    if (attempts.length < next.n) hint = `${next.n - attempts.length} more to next ★`;
+    const need = next.n - pts;
+    if (need > 1e-9) hint = `${need % 1 ? need.toFixed(1) : need} mastery pts to next ★`;
     else if (acc < next.acc) hint = `${Math.round(next.acc * 100)}% recent accuracy for next ★`;
     else hint = `avg under ${next.ms / 1000}s for next ★`;
   }
-  return { stars, hint, acc, n: attempts.length };
+  return { stars, hint, acc, n: attempts.length, pts, unique: prior.size };
 }
 
 export default function Stars({ track, slug }: { track: string; slug: string }) {
@@ -39,7 +50,9 @@ export default function Stars({ track, slug }: { track: string; slug: string }) 
     return () => removeEventListener(CHANGED, refresh);
   }, []);
   if (!m) return null;
-  const label = `${m.stars} of 3 mastery stars${m.n ? `, ${Math.round(m.acc * 100)}% recent accuracy` : ''}`;
+  const label = `${m.stars} of 3 mastery stars${m.n
+    ? `, ${m.pts.toFixed(1)} mastery pts from ${m.unique} different questions, ${Math.round(m.acc * 100)}% recent accuracy. Repeated questions earn fewer mastery pts.`
+    : ''}`;
   return (
     <div class={`mastery m${m.stars}`} title={label}>
       <span class="stars" role="img" aria-label={label}>
