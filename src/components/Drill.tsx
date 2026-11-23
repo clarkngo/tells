@@ -161,7 +161,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
-  const [mode, setMode] = useState<Mode>('sprint');
+  const [mode, setMode] = useState<Mode>('zen');
   const [focus, setFocus] = useState(live[0]?.slug ?? '');
   const [phase, setPhase] = useState<Phase>(setup ? 'setup' : 'ask');
   const [rounds, setRounds] = useState<Round[]>([]);
