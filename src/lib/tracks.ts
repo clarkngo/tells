@@ -23,6 +23,8 @@ import { patterns as gamePatterns } from '../data/tracks/game-design/patterns';
 import { glossary as gameGlossary } from '../data/tracks/game-design/glossary';
 import { patterns as engPatterns } from '../data/tracks/engineering-judgment/patterns';
 import { glossary as engGlossary } from '../data/tracks/engineering-judgment/glossary';
+import { patterns as talkPatterns } from '../data/tracks/hard-conversations/patterns';
+import { glossary as talkGlossary } from '../data/tracks/hard-conversations/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -202,7 +204,15 @@ export const engineeringJudgment = makeTrack(
   engGlossary,
 );
 
+export const hardConversations = makeTrack(
+  { slug: 'hard-conversations', name: 'Hard conversations at work', short: 'Conversations',
+    tagline: 'Read a tense moment at work, name the move: handle conflict, give and take feedback, meet pushback, be the expert.' },
+  talkPatterns,
+  import.meta.glob('../data/tracks/hard-conversations/problems/*.json', { eager: true, import: 'default' }),
+  talkGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, debugging, firstPrinciples,
+  dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, debugging, firstPrinciples,
 ];
