@@ -15,6 +15,8 @@ import { patterns as bePatterns } from '../data/tracks/backend/patterns';
 import { patterns as garchPatterns } from '../data/tracks/garch/patterns';
 import { glossary as dataScienceGlossary } from '../data/tracks/data-science/glossary';
 import { glossary as garchGlossary } from '../data/tracks/garch/glossary';
+import { patterns as ai901Patterns } from '../data/tracks/ai-901/patterns';
+import { glossary as ai901Glossary } from '../data/tracks/ai-901/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -162,7 +164,15 @@ export const garch = makeTrack(
   garchGlossary,
 );
 
+export const ai901 = makeTrack(
+  { slug: 'ai-901', name: 'Azure AI Fundamentals (AI-901)', short: 'AI-901',
+    tagline: 'Exam prep: read a scenario, name the responsible AI principle, model, setting or Foundry capability it needs.' },
+  ai901Patterns,
+  import.meta.glob('../data/tracks/ai-901/problems/*.json', { eager: true, import: 'default' }),
+  ai901Glossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, garch, debugging, firstPrinciples,
+  dataScience, garch, ai901, debugging, firstPrinciples,
 ];
