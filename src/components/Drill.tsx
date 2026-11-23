@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import type { Pattern, Problem } from '../lib/types';
+import type { Pattern, Problem, Term } from '../lib/types';
+import { findTerms, makeMatcher, type TermHit } from '../lib/glossary';
 import { loadAttempts, repeatWeight, saveAttempt, seenCounts } from '../lib/storage';
 import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
@@ -17,6 +18,7 @@ interface Props {
   track: string;
   patterns: Pattern[];
   problems: Problem[];
+  glossary?: Term[];
   count?: number;
   seconds?: number;
   setup?: boolean;
@@ -112,6 +114,22 @@ function markedPrompt(tokens: Token[], selected: Set<number>, marks: Marks) {
   return out;
 }
 
+// The prompt with each glossary term's first appearance as a tappable button.
+function withTerms(text: string, hits: TermHit[], open: Term | null, toggle: (t: Term) => void) {
+  const out: (string | preact.JSX.Element)[] = [];
+  let at = 0;
+  for (const h of hits) {
+    out.push(text.slice(at, h.start));
+    out.push(
+      <button type="button" class={`term ${open === h.term ? 'on' : ''}`} aria-expanded={open === h.term}
+        onMouseDown={(e) => e.preventDefault()} onClick={() => toggle(h.term)}>{text.slice(h.start, h.end)}</button>,
+    );
+    at = h.end;
+  }
+  out.push(text.slice(at));
+  return out;
+}
+
 function rankOf(pct: number, avgSec: number) {
   if (pct === 1) return avgSec && avgSec < 5 ? 'Flawless and fast' : 'Flawless';
   if (pct >= 0.8) return 'Sharp eye';
@@ -139,7 +157,7 @@ function CountUp({ to }: { to: number }) {
   return <>{v.toLocaleString()}</>;
 }
 
-export default function Drill({ track, patterns, problems, count = 10, seconds = 20, setup = true, drillHref }: Props) {
+export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref }: Props) {
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
@@ -157,6 +175,8 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
   const [combo, setCombo] = useState(0);
   const [bestCombo, setBestCombo] = useState(0);
   const [newBest, setNewBest] = useState(false);
+  const [openTerm, setOpenTerm] = useState<Term | null>(null);
+  const matcher = useMemo(() => makeMatcher(glossary), [glossary]);
   const startRef = useRef(0);
   const answeredRef = useRef(false);
   const comboRef = useRef(0);
@@ -206,6 +226,7 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
     setElapsed(0);
     setSelected(new Set());
     setMarks(null);
+    setOpenTerm(null);
     setPhase('ask');
   }
 
@@ -224,6 +245,7 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
 
   const round = rounds[idx];
   const tokens = useMemo(() => (round ? tokenize(round.problem.prompt, round.problem.tells) : []), [round]);
+  const hits = useMemo(() => (round ? findTerms(round.problem.prompt, matcher) : []), [round, matcher]);
 
   function award(n: number) {
     pointsRef.current += n;
@@ -493,8 +515,14 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
         </p>
       ) : (
         <p class="prompt">
-          {!revealed ? p.prompt : marks ? markedPrompt(tokens, selected, marks) : highlight(p.prompt, p.tells)}
+          {!revealed ? withTerms(p.prompt, hits, openTerm, (t) => setOpenTerm((o) => (o === t ? null : t))) : marks ? markedPrompt(tokens, selected, marks) : highlight(p.prompt, p.tells)}
         </p>
+      )}
+      {!revealed && phase !== 'mark' && openTerm && (
+        <div class="term-def" role="note">
+          <p><strong>{openTerm.term}</strong> {openTerm.def}</p>
+          <button type="button" class="term-close" aria-label="Close definition" onClick={() => setOpenTerm(null)}>×</button>
+        </div>
       )}
       {p.constraints && <p class="chip mono">{p.constraints}</p>}
 
@@ -553,6 +581,14 @@ export default function Drill({ track, patterns, problems, count = 10, seconds =
             </div>
           </div>
           <p class="trap"><span class="label">Trap</span>{p.trap}</p>
+          {hits.length > 0 && (
+            <details class="terms">
+              <summary>Terms in this question <span class="muted">({hits.length})</span></summary>
+              <dl>
+                {hits.map((h) => (<><dt>{h.term.term}</dt><dd>{h.term.def}</dd></>))}
+              </dl>
+            </details>
+          )}
           <div class="row">
             <button type="button" class="btn primary" onClick={next} autoFocus>
               {idx + 1 >= rounds.length ? 'See results' : 'Next'} <kbd>↵</kbd>
