@@ -521,3 +521,8 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .glossary dt { font-weight: 600; }
 .glossary dt .muted { font-weight: 400; font-size: 0.9em; }
 .glossary dd { margin: 2px 0 0; color: var(--muted); line-height: 1.5; }
+
+/* Press and hold a choice to peek at its meaning. */
+.choice { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; }
+.peek-def { border-left-color: oklch(var(--pl) var(--pc-c) var(--h)); }
+.peek-def .muted { font-size: 0.88em; }
