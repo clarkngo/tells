@@ -34,5 +34,17 @@
     "tells": ["stop moving whenever its sensors give conflicting readings"],
     "answer": "reliability-safety", "decoys": ["accountability", "privacy-security", "transparency"],
     "why": "Failing safely in unexpected conditions is reliability and safety.",
-    "trap": "Nobody is being asked to own a decision; the system itself must behave safely." }
+    "trap": "Nobody is being asked to own a decision; the system itself must behave safely." },
+  { "id": "fallback-human", "difficulty": 2,
+    "prompt": "If the AI translation service goes down, calls automatically route to human interpreters so no patient goes without help.",
+    "tells": ["route to human interpreters"],
+    "answer": "reliability-safety", "decoys": ["accountability", "inclusiveness", "transparency"],
+    "why": "Planning for failures so the service stays safe is reliability and safety.",
+    "trap": "The humans are a fallback, not owners of decisions." },
+  { "id": "red-team", "difficulty": 3,
+    "prompt": "Before release, a team deliberately tries to make a chatbot give dangerous instructions, then fixes what they find.",
+    "tells": ["deliberately tries to make a chatbot give dangerous instructions"],
+    "answer": "reliability-safety", "decoys": ["content-filters", "privacy-security", "accountability"],
+    "why": "Red-teaming tests that a system behaves safely before release.",
+    "trap": "Filters may be one fix; the practice of testing is reliability and safety." }
 ]

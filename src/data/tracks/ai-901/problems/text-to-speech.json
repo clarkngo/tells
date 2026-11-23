@@ -34,5 +34,17 @@
     "tells": ["mispronounces local street names"],
     "answer": "text-to-speech", "decoys": ["speech-to-text", "translation", "ocr"],
     "why": "Fix pronunciation in speech synthesis with SSML or a custom lexicon.",
-    "trap": "It's the output voice that's wrong, not what was heard." }
+    "trap": "It's the output voice that's wrong, not what was heard." },
+  { "id": "audiobook", "difficulty": 2,
+    "prompt": "A publisher wants audio versions of its back catalog without hiring narrators.",
+    "tells": ["without hiring narrators"],
+    "answer": "text-to-speech", "decoys": ["speech-to-text", "translation", "image-generation"],
+    "why": "Generating speech from text is speech synthesis.",
+    "trap": "Nothing is being transcribed." },
+  { "id": "multilingual-voice", "difficulty": 3,
+    "prompt": "An airline's announcements must be spoken in English, Spanish and French from one written script.",
+    "tells": ["spoken in English, Spanish and French from one written script"],
+    "answer": "text-to-speech", "decoys": ["speech-to-text", "summarization", "av-extraction"],
+    "why": "Translate the script, then speak it with text to speech.",
+    "trap": "The output is speech, so synthesis is the key step." }
 ]

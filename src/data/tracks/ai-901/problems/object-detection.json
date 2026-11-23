@@ -34,5 +34,17 @@
     "tells": ["outline each scratch"],
     "answer": "object-detection", "decoys": ["image-analysis", "ocr", "multimodal-model"],
     "why": "The robot needs locations, so it's object detection.",
-    "trap": "Knowing there is a scratch isn't enough; it needs to know where." }
+    "trap": "Knowing there is a scratch isn't enough; it needs to know where." },
+  { "id": "fruit-sorting", "difficulty": 2,
+    "prompt": "A conveyor camera must find each apple and say where it is so a robot arm can pick it.",
+    "tells": ["say where it is so a robot arm can pick it"],
+    "answer": "object-detection", "decoys": ["image-analysis", "multimodal-model", "ocr"],
+    "why": "Locations of objects are object detection.",
+    "trap": "Tags would only say 'apple'." },
+  { "id": "detect-vs-tag", "difficulty": 3,
+    "prompt": "A tagging service says a photo contains 'dog'. The app now needs to draw a rectangle around each dog.",
+    "tells": ["draw a rectangle around each dog"],
+    "answer": "object-detection", "decoys": ["image-analysis", "image-generation", "multimodal-model"],
+    "why": "Rectangles around objects are bounding boxes from object detection.",
+    "trap": "Tags say what; detection says where." }
 ]

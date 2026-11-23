@@ -34,5 +34,17 @@
     "tells": ["any problems are the vendor's fault"],
     "answer": "accountability", "decoys": ["transparency", "fairness", "privacy-security"],
     "why": "The organization that deploys AI remains accountable for how it's used.",
-    "trap": "Who built the model doesn't change who answers for deploying it." }
+    "trap": "Who built the model doesn't change who answers for deploying it." },
+  { "id": "audit-log", "difficulty": 2,
+    "prompt": "Every automated decision is logged with the model version and inputs so the company can answer for it later.",
+    "tells": ["so the company can answer for it later"],
+    "answer": "accountability", "decoys": ["transparency", "privacy-security", "reliability-safety"],
+    "why": "Records that let people be held responsible support accountability.",
+    "trap": "Logs can help explain, but the reason given is answering for decisions." },
+  { "id": "policy-signoff", "difficulty": 3,
+    "prompt": "A legal and ethics team must sign off on any AI use that affects hiring, lending or healthcare.",
+    "tells": ["must sign off"],
+    "answer": "accountability", "decoys": ["fairness", "transparency", "privacy-security"],
+    "why": "Governance approval for high-impact AI is accountability.",
+    "trap": "Fairness may be checked, but the structure described is accountability." }
 ]

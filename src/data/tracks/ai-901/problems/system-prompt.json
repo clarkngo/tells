@@ -34,5 +34,17 @@
     "tells": ["without repeating that in each user message"],
     "answer": "system-prompt", "decoys": ["few-shot", "max-tokens", "temperature"],
     "why": "Instructions that apply to every turn belong in the system message.",
-    "trap": "Examples could show the format, but the always-on instruction is the system prompt." }
+    "trap": "Examples could show the format, but the always-on instruction is the system prompt." },
+  { "id": "persona-sdk", "difficulty": 2,
+    "prompt": "In code, the first message sent is 'You are a friendly assistant for a pet store. Only discuss pets.'",
+    "tells": ["Only discuss pets"],
+    "answer": "system-prompt", "decoys": ["few-shot", "content-filters", "chat-history"],
+    "why": "Role and scope instructions go in the system message.",
+    "trap": "It's a rule, not an example." },
+  { "id": "agent-instructions", "difficulty": 3,
+    "prompt": "When creating an agent in the portal, you fill in a box that says how it should behave and what it must never do.",
+    "tells": ["how it should behave and what it must never do"],
+    "answer": "system-prompt", "decoys": ["ai-agent", "content-filters", "playground"],
+    "why": "An agent's instructions play the role of its system prompt.",
+    "trap": "You're building an agent, but the box you're filling is its instructions." }
 ]

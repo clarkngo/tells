@@ -34,5 +34,17 @@
     "tells": ["hidden text saying 'ignore previous instructions"],
     "answer": "content-filters", "decoys": ["pii-detection", "system-prompt", "privacy-security"],
     "why": "Prompt Shields detect indirect prompt attacks hidden in documents.",
-    "trap": "A system prompt can be overridden by injected text; the shield sits outside the model." }
+    "trap": "A system prompt can be overridden by injected text; the shield sits outside the model." },
+  { "id": "gen-safety", "difficulty": 3,
+    "prompt": "An image-generation app must refuse requests for violent images of real people. What protects it?",
+    "tells": ["refuse requests for violent images of real people"],
+    "answer": "content-filters", "decoys": ["image-generation", "transparency", "system-prompt"],
+    "why": "Content filters screen image prompts and outputs.",
+    "trap": "Generation is the feature; the safety layer is content filtering." },
+  { "id": "hate-input", "difficulty": 2,
+    "prompt": "Users sometimes type slurs into a public chatbot. The app should block those messages before they reach the model.",
+    "tells": ["block those messages before they reach the model"],
+    "answer": "content-filters", "decoys": ["system-prompt", "sentiment-analysis", "pii-detection"],
+    "why": "Input content filters block hateful prompts.",
+    "trap": "Negative sentiment doesn't mean hateful content." }
 ]

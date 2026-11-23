@@ -34,5 +34,17 @@
     "tells": ["sends a user's message to an agent built in the Foundry portal"],
     "answer": "ai-agent", "decoys": ["system-prompt", "rag", "multimodal-model"],
     "why": "A lightweight client application for an agent calls it through the Foundry SDK.",
-    "trap": "The client calls an agent, not just a model with a system prompt." }
+    "trap": "The client calls an agent, not just a model with a system prompt." },
+  { "id": "vacation-tool", "difficulty": 2,
+    "prompt": "An HR assistant should submit a vacation request in the HR system when an employee asks for time off.",
+    "tells": ["submit a vacation request"],
+    "answer": "ai-agent", "decoys": ["rag", "system-prompt", "chat-history"],
+    "why": "Taking an action in another system is what an agent does.",
+    "trap": "Reading the policy would be RAG; submitting the request is an action." },
+  { "id": "code-interpreter-task", "difficulty": 3,
+    "prompt": "A user uploads a spreadsheet and asks for a chart of monthly sales. The assistant writes and runs Python to make it.",
+    "tells": ["writes and runs Python to make it"],
+    "answer": "ai-agent", "decoys": ["reasoning-model", "multimodal-model", "document-extraction"],
+    "why": "An agent with the code interpreter tool can run code to finish a task.",
+    "trap": "Reasoning alone can't produce a chart file." }
 ]

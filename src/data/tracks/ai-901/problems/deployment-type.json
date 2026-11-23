@@ -34,5 +34,17 @@
     "tells": ["predictable monthly bill"],
     "answer": "deployment-type", "decoys": ["small-model", "max-tokens", "temperature"],
     "why": "Provisioned throughput gives fixed-price reserved capacity for steady heavy use.",
-    "trap": "Capping tokens limits replies; it doesn't change how you're billed." }
+    "trap": "Capping tokens limits replies; it doesn't change how you're billed." },
+  { "id": "dev-vs-prod", "difficulty": 2,
+    "prompt": "A team uses pay-as-you-go while testing, then switches to reserved capacity when the app goes live with steady traffic.",
+    "tells": ["switches to reserved capacity"],
+    "answer": "deployment-type", "decoys": ["model-catalog", "small-model", "endpoint-auth"],
+    "why": "Moving from standard to provisioned throughput is a deployment-type choice.",
+    "trap": "They're not changing the model, only how it's hosted." },
+  { "id": "regional-data", "difficulty": 3,
+    "prompt": "A US bank's rules say data may be processed anywhere in the US, but not outside it.",
+    "tells": ["anywhere in the US, but not outside it"],
+    "answer": "deployment-type", "decoys": ["privacy-security", "endpoint-auth", "model-catalog"],
+    "why": "A US data-zone deployment keeps processing in the US.",
+    "trap": "Privacy is the reason; the deployment type is how you meet it." }
 ]

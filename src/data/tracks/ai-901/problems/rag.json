@@ -34,5 +34,17 @@
     "tells": ["without retraining"],
     "answer": "rag", "decoys": ["few-shot", "system-prompt", "reasoning-model"],
     "why": "RAG uses current documents at question time, so updates need no training.",
-    "trap": "Fine-tuning would need retraining for every change." }
+    "trap": "Fine-tuning would need retraining for every change." },
+  { "id": "not-for-news", "difficulty": 2,
+    "prompt": "A team plans to fine-tune a model so it knows this week's prices. Which approach would suit that better?",
+    "tells": ["knows this week's prices"],
+    "answer": "rag", "decoys": ["fine-tuning", "few-shot", "next-token"],
+    "why": "Fast-changing facts are better retrieved at question time with RAG.",
+    "trap": "Fine-tuning teaches behavior, and would need retraining every week." },
+  { "id": "intranet-qa", "difficulty": 2,
+    "prompt": "An internal helpdesk bot answers only from the company wiki, quoting the page it used.",
+    "tells": ["answers only from the company wiki"],
+    "answer": "rag", "decoys": ["fine-tuning", "few-shot", "system-prompt"],
+    "why": "Answers grounded in retrieved company content are RAG.",
+    "trap": "Fine-tuning wouldn't let it quote pages." }
 ]

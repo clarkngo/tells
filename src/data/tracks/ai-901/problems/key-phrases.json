@@ -34,5 +34,17 @@
     "tells": ["find the phrases that come up most"],
     "answer": "key-phrases", "decoys": ["sentiment-analysis", "entity-recognition", "embedding-model"],
     "why": "Key phrases, counted across documents, show the main drivers.",
-    "trap": "The complaints are already negative; what they're about is the question." }
+    "trap": "The complaints are already negative; what they're about is the question." },
+  { "id": "meeting-keywords", "difficulty": 2,
+    "prompt": "Show the five most important topics from each meeting transcript as clickable tags.",
+    "tells": ["five most important topics"],
+    "answer": "key-phrases", "decoys": ["summarization", "entity-recognition", "sentiment-analysis"],
+    "why": "Key phrase extraction gives the main topics as short phrases.",
+    "trap": "Tags are phrases, not a summary paragraph." },
+  { "id": "kp-vs-ner", "difficulty": 3,
+    "prompt": "From 'The new battery life is great but the Contoso charger overheats', the team wants 'battery life' and 'charger overheats', not 'Contoso'.",
+    "tells": ["not 'Contoso'"],
+    "answer": "key-phrases", "decoys": ["entity-recognition", "sentiment-analysis", "pii-detection"],
+    "why": "Topics like these are key phrases; 'Contoso' would be an entity.",
+    "trap": "Entity recognition would return the brand name, which isn't wanted." }
 ]

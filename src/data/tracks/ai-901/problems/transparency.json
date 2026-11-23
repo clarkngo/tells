@@ -34,5 +34,17 @@
     "tells": ["so users can judge it themselves"],
     "answer": "transparency", "decoys": ["rag", "accountability", "reliability-safety"],
     "why": "Showing how an answer was produced is transparency.",
-    "trap": "RAG produces the passages; showing them to users is the transparency." }
+    "trap": "RAG produces the passages; showing them to users is the transparency." },
+  { "id": "score-explained", "difficulty": 2,
+    "prompt": "A credit app shows each applicant the top three factors that lowered their score.",
+    "tells": ["top three factors that lowered their score"],
+    "answer": "transparency", "decoys": ["accountability", "fairness", "privacy-security"],
+    "why": "Explaining decisions to the people affected is transparency.",
+    "trap": "Explaining isn't the same as offering an appeal." },
+  { "id": "limitations-ui", "difficulty": 3,
+    "prompt": "Under every AI answer, the app shows 'AI-generated, may contain errors; check important facts'.",
+    "tells": ["may contain errors"],
+    "answer": "transparency", "decoys": ["reliability-safety", "accountability", "content-filters"],
+    "why": "Telling users about limitations is transparency.",
+    "trap": "The warning doesn't make the system more reliable." }
 ]

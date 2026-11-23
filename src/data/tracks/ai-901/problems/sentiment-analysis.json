@@ -34,5 +34,17 @@
     "tells": ["with a confidence score"],
     "answer": "sentiment-analysis", "decoys": ["key-phrases", "entity-recognition", "translation"],
     "why": "Azure Language returns sentiment labels with confidence scores.",
-    "trap": "Labels about tone, not topics." }
+    "trap": "Labels about tone, not topics." },
+  { "id": "survey-score", "difficulty": 2,
+    "prompt": "Rate each open-ended survey answer as positive, negative or neutral to track satisfaction by month.",
+    "tells": ["positive, negative or neutral"],
+    "answer": "sentiment-analysis", "decoys": ["key-phrases", "summarization", "entity-recognition"],
+    "why": "Sentiment analysis labels tone.",
+    "trap": "Topics would come from key phrases." },
+  { "id": "escalate-angry", "difficulty": 3,
+    "prompt": "Route chats to a supervisor when a customer's messages turn strongly negative.",
+    "tells": ["turn strongly negative"],
+    "answer": "sentiment-analysis", "decoys": ["content-filters", "key-phrases", "summarization"],
+    "why": "Detecting negative tone is sentiment analysis.",
+    "trap": "Content filters are for harmful content, not unhappy customers." }
 ]

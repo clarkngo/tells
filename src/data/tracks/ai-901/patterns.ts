@@ -41,6 +41,16 @@ export const patterns: Pattern[] = [
     blurb: 'A generative model that creates new images from a text description.',
     signals: ['create a new image', 'from a description', 'no photo exists yet'] },
 
+  { slug: 'next-token', name: 'Next-token prediction', hue: 190, live: true,
+    blurb: 'How generative models work: trained on huge amounts of text, they predict the next token again and again. Fluent is not the same as true.',
+    signals: ['why it sounds confident', 'one word at a time', 'trained on text', 'tokens'] },
+  { slug: 'model-catalog', name: 'Model catalog', hue: 250, live: true,
+    blurb: "Foundry's list of models from Microsoft, OpenAI, Meta and others, with model cards and benchmarks to compare before you deploy.",
+    signals: ['compare models', 'benchmarks', 'which models support', 'browse before deploying'] },
+  { slug: 'fine-tuning', name: 'Fine-tuning', hue: 15, live: true,
+    blurb: "Further train a model on hundreds of your own examples to change its style or behavior. It doesn't add up-to-date facts.",
+    signals: ['hundreds of examples', 'consistent style', 'shorter prompts', 'train a custom version'] },
+
   // Configuration and deployment
   { slug: 'temperature', name: 'Temperature', hue: 280, live: true,
     blurb: 'The setting for randomness: low for consistent, factual answers, high for varied, creative ones.',
@@ -51,6 +61,16 @@ export const patterns: Pattern[] = [
   { slug: 'deployment-type', name: 'Deployment type', hue: 310, live: true,
     blurb: 'How a model is hosted: pay-per-token standard, reserved provisioned throughput, data-zone or batch.',
     signals: ['predictable latency', 'pay per call', 'data must stay in region', 'reserved capacity'] },
+
+  { slug: 'playground', name: 'Portal playground', hue: 300, live: true,
+    blurb: 'Try a deployed model or agent in the Foundry portal: chat, change prompts and settings, then view the code. No code needed.',
+    signals: ['try before coding', 'no code', 'tweak settings and compare', 'in the portal'] },
+  { slug: 'endpoint-auth', name: 'Endpoint and key', hue: 130, live: true,
+    blurb: "An app connects to a deployment with its endpoint URL plus an API key or a Microsoft Entra ID identity.",
+    signals: ['401 unauthorized', 'connection settings', 'keyless', 'where to send requests'] },
+  { slug: 'chat-history', name: 'Conversation history', hue: 350, live: true,
+    blurb: 'Chat models are stateless: the client app must send earlier messages with each request for the model to remember them.',
+    signals: ['forgets what I said', 'follow-up questions', 'messages list', 'each request'] },
 
   // Prompts and agents
   { slug: 'system-prompt', name: 'System prompt', hue: 330, live: true,

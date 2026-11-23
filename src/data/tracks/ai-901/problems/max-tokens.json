@@ -34,5 +34,17 @@
     "tells": ["leaving room for only a few hundred tokens of answer"],
     "answer": "max-tokens", "decoys": ["deployment-type", "temperature", "small-model"],
     "why": "Input and output share the context window, so the room left for the answer caps its length.",
-    "trap": "A different deployment type doesn't enlarge the context window." }
+    "trap": "A different deployment type doesn't enlarge the context window." },
+  { "id": "reply-runaway", "difficulty": 2,
+    "prompt": "A chatbot sometimes writes 2,000-word replies to simple questions, slowing the app and raising costs.",
+    "tells": ["2,000-word replies to simple questions"],
+    "answer": "max-tokens", "decoys": ["temperature", "small-model", "deployment-type"],
+    "why": "A max-token cap stops runaway replies.",
+    "trap": "A smaller model writes just as long if allowed." },
+  { "id": "summary-length", "difficulty": 3,
+    "prompt": "Summaries must fit in a 160-character notification. The prompt asks for brevity, but some run long.",
+    "tells": ["fit in a 160-character notification"],
+    "answer": "max-tokens", "decoys": ["summarization", "system-prompt", "temperature"],
+    "why": "A hard max-token limit guarantees an upper bound.",
+    "trap": "A prompt asks; the limit enforces." }
 ]
