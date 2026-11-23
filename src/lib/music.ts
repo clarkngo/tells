@@ -1,5 +1,6 @@
-// Background music: off by default, remembered per browser. Pages are full
-// reloads, so the playback position is carried across them in sessionStorage.
+// Background music: on by default; the visitor's on/off choice is saved in
+// localStorage. Pages are full reloads, so the playback position is carried
+// across them in sessionStorage.
 const ON_KEY = 'tells:v1:music';
 const POS_KEY = 'tells:music-pos';
 export const MUSIC_CHANGED = 'tells:music-changed';
@@ -9,9 +10,9 @@ let el: HTMLAudioElement | null = null;
 
 export function isMusicOn(): boolean {
   try {
-    return localStorage.getItem(ON_KEY) === '1';
+    return localStorage.getItem(ON_KEY) !== '0'; // unset means on
   } catch {
-    return false;
+    return true;
   }
 }
 
