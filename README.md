@@ -2,8 +2,6 @@
 
 **Every problem has a tell.** A pattern-recognition trainer for coding interviews: read a short problem, catch the signal, and name the pattern in under 20 seconds. It's the warm-up before LeetCode, not a replacement for it.
 
-**Live site:** https://clarkngo.github.io/tells/
-
 ## Develop
 
 ```bash
