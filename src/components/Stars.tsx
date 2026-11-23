@@ -44,7 +44,7 @@ export default function Stars({ track, slug }: { track: string; slug: string }) 
   const [m, setM] = useState<ReturnType<typeof mastery> | null>(null);
   useEffect(() => {
     const refresh = () =>
-      setM(mastery(loadAttempts().filter((a) => a.track === track && a.answer === slug)));
+      setM(mastery(loadAttempts().filter((a) => a.track === track && a.answer === slug && !a.peeked)));
     refresh();
     addEventListener(CHANGED, refresh);
     return () => removeEventListener(CHANGED, refresh);

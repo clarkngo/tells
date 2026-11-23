@@ -7,6 +7,7 @@ export interface Attempt {
   picked: string | null; // null = ran out of time
   ms: number;
   at: number;
+  peeked?: true; // looked at a choice's definition before answering
 }
 
 const KEY = 'tells:v1:attempts';

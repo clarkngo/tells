@@ -7,7 +7,7 @@
 import { loadAttempts, replaceAttempts, type Attempt } from './storage';
 import { loadProfile, saveProfile, sumSources } from './profile';
 
-type Row = [string, string, string, string | null, number, number];
+type Row = [string, string, string, string | null, number, number, 1?];
 interface Payload {
   v: 1;
   a: Row[];
@@ -23,8 +23,10 @@ export interface ImportSummary {
   bests: number;
 }
 
-const toRow = (a: Attempt): Row => [a.track, a.id, a.answer, a.picked, a.ms, a.at];
-const fromRow = ([track, id, answer, picked, ms, at]: Row): Attempt => ({ track, id, answer, picked, ms, at });
+const toRow = (a: Attempt): Row =>
+  a.peeked ? [a.track, a.id, a.answer, a.picked, a.ms, a.at, 1] : [a.track, a.id, a.answer, a.picked, a.ms, a.at];
+const fromRow = ([track, id, answer, picked, ms, at, peeked]: Row): Attempt =>
+  peeked ? { track, id, answer, picked, ms, at, peeked: true } : { track, id, answer, picked, ms, at };
 const keyOf = (a: Attempt) => `${a.track}|${a.id}|${a.at}`;
 
 function toB64url(bytes: Uint8Array) {

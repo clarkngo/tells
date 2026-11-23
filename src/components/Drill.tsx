@@ -11,7 +11,7 @@ type Mode = 'sprint' | 'focus' | 'zen';
 type Phase = 'setup' | 'ask' | 'mark' | 'reveal' | 'done';
 interface Round { problem: Problem; choices: string[]; seen: number } // seen = earlier attempts at this question
 interface Marks { found: Set<number>; total: number; extra: number }
-interface Result { problem: Problem; picked: string | null; ms: number; marks?: Marks }
+interface Result { problem: Problem; picked: string | null; ms: number; marks?: Marks; peeked?: boolean }
 interface Token { text: string; word: boolean; tell: number } // tell = index into problem.tells, or -1
 
 interface Props {
@@ -176,6 +176,11 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const [bestCombo, setBestCombo] = useState(0);
   const [newBest, setNewBest] = useState(false);
   const [openTerm, setOpenTerm] = useState<Term | null>(null);
+  // Press and hold a choice to see what the pattern means. It marks the question
+  // as peeked: no points, and it doesn't count toward stars.
+  const [peek, setPeek] = useState<Pattern | null>(null);
+  const peekedRef = useRef(false);
+  const holdRef = useRef<{ timer: number; fired: boolean }>({ timer: 0, fired: false });
   const matcher = useMemo(() => makeMatcher(glossary), [glossary]);
   const startRef = useRef(0);
   const answeredRef = useRef(false);
@@ -227,6 +232,8 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     setSelected(new Set());
     setMarks(null);
     setOpenTerm(null);
+    setPeek(null);
+    peekedRef.current = false;
     setPhase('ask');
   }
 
@@ -265,10 +272,19 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     answeredRef.current = true;
     const ms = Math.round(performance.now() - startRef.current);
     const right = choice === round.problem.answer;
-    setResults((r) => [...r, { problem: round.problem, picked: choice, ms }]);
-    saveAttempt({ track, id: round.problem.id, answer: round.problem.answer, picked: choice, ms, at: Date.now() });
+    const peeked = peekedRef.current;
+    clearTimeout(holdRef.current.timer);
+    setPeek(null);
+    setResults((r) => [...r, { problem: round.problem, picked: choice, ms, peeked }]);
+    saveAttempt({ track, id: round.problem.id, answer: round.problem.answer, picked: choice, ms, at: Date.now(), ...(peeked ? { peeked: true as const } : {}) });
 
-    if (right) {
+    if (right && peeked) {
+      // Right, but after looking: no points, and the run neither grows nor breaks.
+      award(0);
+      sfx.tap(true);
+      const target = centerOf(btnRefs.current.get(round.problem.answer));
+      if (target) floatText(target.x, target.top, 'peeked, +0', 'cold');
+    } else if (right) {
       const c = comboRef.current + 1;
       comboRef.current = c;
       setCombo(c);
@@ -423,7 +439,8 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   if (phase === 'done') {
     const right = results.filter((r) => r.picked === r.problem.answer);
     const avg = right.length ? right.reduce((s, r) => s + r.ms, 0) / right.length / 1000 : 0;
-    const misses = results.filter((r) => r.picked !== r.problem.answer);
+    const misses = results.filter((r) => r.picked !== r.problem.answer || r.peeked);
+    const peeks = results.filter((r) => r.peeked).length;
     const pct = results.length ? right.length / results.length : 0;
     const ms = results.flatMap((r) => (r.marks ? [r.marks] : []));
     return (
@@ -436,6 +453,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
             <div><strong>{right.length}/{results.length}</strong><span>correct</span></div>
             <div><strong>{avg ? `${avg.toFixed(1)}s` : '–'}</strong><span>avg spot</span></div>
             <div><strong>{bestCombo}</strong><span>best run</span></div>
+            {peeks > 0 && <div><strong>{peeks}</strong><span>peeked</span></div>}
             {ms.length > 0 && (
               <div>
                 <strong>{ms.reduce((s, m) => s + m.found.size, 0)}/{ms.reduce((s, m) => s + m.total, 0)}</strong>
@@ -449,6 +467,14 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               {misses.map((r) => {
                 const ans = bySlug.get(r.problem.answer)!;
                 const you = r.picked ? bySlug.get(r.picked)?.name : 'Out of time';
+                if (r.picked === r.problem.answer) {
+                  return (
+                    <div class="miss">
+                      <p>{highlight(r.problem.prompt, r.problem.tells)}</p>
+                      <p class="miss-line"><span class="muted">Peeked</span> → <span class="pname" style={{ '--h': ans.hue }}>{ans.name}</span></p>
+                    </div>
+                  );
+                }
                 return (
                   <div class="miss">
                     <p>{highlight(r.problem.prompt, r.problem.tells)}</p>
@@ -515,8 +541,14 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
         </p>
       ) : (
         <p class="prompt">
-          {!revealed ? withTerms(p.prompt, hits, openTerm, (t) => setOpenTerm((o) => (o === t ? null : t))) : marks ? markedPrompt(tokens, selected, marks) : highlight(p.prompt, p.tells)}
+          {!revealed ? withTerms(p.prompt, hits, openTerm, (t) => { setPeek(null); setOpenTerm((o) => (o === t ? null : t)); }) : marks ? markedPrompt(tokens, selected, marks) : highlight(p.prompt, p.tells)}
         </p>
+      )}
+      {!revealed && phase !== 'mark' && peek && (
+        <div class="term-def peek-def" role="note" style={{ '--h': peek.hue }}>
+          <p><strong class="pname">{peek.name}</strong> {peek.blurb} <span class="muted">Peeked: this one won't score.</span></p>
+          <button type="button" class="term-close" aria-label="Close definition" onClick={() => setPeek(null)}>×</button>
+        </div>
       )}
       {!revealed && phase !== 'mark' && openTerm && (
         <div class="term-def" role="note">
@@ -533,7 +565,28 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
           return (
             <button type="button" class={`choice ${state}`} style={{ '--h': pat.hue }}
               ref={(el) => { if (el) btnRefs.current.set(slug, el); }}
-              disabled={answered} onClick={() => answer(slug)}>
+              disabled={answered}
+              onPointerDown={(e) => {
+                if (e.button !== 0) return;
+                clearTimeout(holdRef.current.timer);
+                holdRef.current.fired = false;
+                holdRef.current.timer = window.setTimeout(() => {
+                  holdRef.current.fired = true;
+                  peekedRef.current = true;
+                  setOpenTerm(null);
+                  setPeek(pat);
+                  sfx.tap(true);
+                  buzz(8);
+                }, 450);
+              }}
+              onPointerUp={() => clearTimeout(holdRef.current.timer)}
+              onPointerLeave={() => clearTimeout(holdRef.current.timer)}
+              onPointerCancel={() => clearTimeout(holdRef.current.timer)}
+              onContextMenu={(e) => e.preventDefault()}
+              onClick={() => {
+                if (holdRef.current.fired) { holdRef.current.fired = false; return; }
+                answer(slug);
+              }}>
               <kbd>{i + 1}</kbd>
               <span class="dot" />
               {pat.name}
@@ -545,7 +598,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
       {phase === 'mark' && (
         <div class="reveal mark-step">
           <p class={`verdict ${correct ? 'ok' : 'bad'}`} role="status">
-            {correct ? 'Right pattern.' : picked ? `Not quite. It's ${ans.name}.` : `Time's up. It's ${ans.name}.`}
+            {correct ? (results[results.length - 1]?.peeked ? 'Right, after peeking. No points for the pick.' : 'Right pattern.') : picked ? `Not quite. It's ${ans.name}.` : `Time's up. It's ${ans.name}.`}
           </p>
           <p>
             Now tap the words that point to <span class="pname" style={{ '--h': ans.hue }}>{ans.name}</span>.
@@ -570,7 +623,9 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
           )}
           <p class={`verdict ${correct ? 'ok' : 'bad'}`} role={marks ? undefined : 'status'}>
             {correct
-              ? `Spotted in ${((results[results.length - 1]?.ms ?? 0) / 1000).toFixed(1)}s`
+              ? results[results.length - 1]?.peeked
+                ? 'Right, after peeking. No points this time.'
+                : `Spotted in ${((results[results.length - 1]?.ms ?? 0) / 1000).toFixed(1)}s`
               : picked ? `Not quite. It's ${ans.name}.` : `Time's up. It's ${ans.name}.`}
           </p>
           <div class="reveal-card" style={{ '--h': ans.hue }}>

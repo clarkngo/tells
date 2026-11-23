@@ -5,7 +5,7 @@ import type { Pattern } from '../lib/types';
 export default function Progress({ track, patterns }: { track: string; patterns: Pattern[] }) {
   const [attempts, setAttempts] = useState<Attempt[] | null>(null);
   useEffect(() => {
-    const refresh = () => setAttempts(loadAttempts().filter((a) => a.track === track));
+    const refresh = () => setAttempts(loadAttempts().filter((a) => a.track === track && !a.peeked));
     refresh();
     addEventListener(CHANGED, refresh);
     return () => removeEventListener(CHANGED, refresh);
