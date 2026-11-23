@@ -1,0 +1,118 @@
+import type { Pattern } from '../../../lib/types';
+
+// Exam prep for Microsoft Azure AI Fundamentals (AI-901, skills as of April 15, 2026).
+// Each pattern is something the exam asks you to name from a scenario; the
+// explanation after each answer names the Foundry tool that does it.
+export const patterns: Pattern[] = [
+  // Responsible AI
+  { slug: 'fairness', name: 'Fairness', hue: 10, live: true,
+    blurb: 'The system treats similar people alike, without disadvantaging a group.',
+    signals: ['one group gets worse outcomes', 'biased training data', 'approval rates differ by group'] },
+  { slug: 'reliability-safety', name: 'Reliability and safety', hue: 30, live: true,
+    blurb: 'The system works as intended, including in rare or unexpected conditions, and fails safely.',
+    signals: ['edge cases', 'tested before release', 'unexpected input', 'harm if wrong'] },
+  { slug: 'privacy-security', name: 'Privacy and security', hue: 50, live: true,
+    blurb: 'Personal data is protected, used only with consent, and the system resists attack.',
+    signals: ['personal data', 'consent', 'data leaks', 'who can access'] },
+  { slug: 'inclusiveness', name: 'Inclusiveness', hue: 70, live: true,
+    blurb: 'The system works for and empowers everyone, including people with disabilities.',
+    signals: ['accessibility', 'accents and languages', 'people left out', 'disabilities'] },
+  { slug: 'transparency', name: 'Transparency', hue: 90, live: true,
+    blurb: 'People understand what the system does, its limits, and that they are dealing with AI.',
+    signals: ['explain the decision', 'disclose that it is AI', 'known limitations'] },
+  { slug: 'accountability', name: 'Accountability', hue: 110, live: true,
+    blurb: 'People, not the model, own its outcomes: governance, oversight and a way to appeal.',
+    signals: ['who is responsible', 'human oversight', 'governance', 'appeal a decision'] },
+
+  // Models
+  { slug: 'reasoning-model', name: 'Reasoning model', hue: 200, live: true,
+    blurb: 'A model that thinks step by step before answering: best for hard multi-step problems, slower and costlier.',
+    signals: ['multi-step logic', 'math or planning', 'accuracy over speed'] },
+  { slug: 'small-model', name: 'Small language model', hue: 215, live: true,
+    blurb: 'A compact model (like Phi) that is cheap, fast and can run on small hardware for simpler tasks.',
+    signals: ['low cost at high volume', 'on a device', 'simple task', 'low latency'] },
+  { slug: 'embedding-model', name: 'Embedding model', hue: 230, live: true,
+    blurb: 'Turns text into vectors so similar meanings land close together: for search and matching, not chat.',
+    signals: ['find similar', 'semantic search', 'vectors', 'meaning not keywords'] },
+  { slug: 'multimodal-model', name: 'Multimodal model', hue: 245, live: true,
+    blurb: 'One deployed model that takes images or audio along with text in the prompt.',
+    signals: ['photo in the prompt', 'spoken question', 'describe this image', 'one model, several inputs'] },
+  { slug: 'image-generation', name: 'Image generation', hue: 260, live: true,
+    blurb: 'A generative model that creates new images from a text description.',
+    signals: ['create a new image', 'from a description', 'no photo exists yet'] },
+
+  // Configuration and deployment
+  { slug: 'temperature', name: 'Temperature', hue: 280, live: true,
+    blurb: 'The setting for randomness: low for consistent, factual answers, high for varied, creative ones.',
+    signals: ['same question, different answers', 'more creative', 'more consistent'] },
+  { slug: 'max-tokens', name: 'Max tokens', hue: 295, live: true,
+    blurb: 'The cap on how long a response can be. It bounds cost and length; too low cuts answers off.',
+    signals: ['cut off mid-sentence', 'too long', 'limit cost per reply'] },
+  { slug: 'deployment-type', name: 'Deployment type', hue: 310, live: true,
+    blurb: 'How a model is hosted: pay-per-token standard, reserved provisioned throughput, data-zone or batch.',
+    signals: ['predictable latency', 'pay per call', 'data must stay in region', 'reserved capacity'] },
+
+  // Prompts and agents
+  { slug: 'system-prompt', name: 'System prompt', hue: 330, live: true,
+    blurb: "Instructions that set the model's role, rules and tone for the whole conversation.",
+    signals: ['always answer as', 'every reply should', 'set the tone', 'rules for the assistant'] },
+  { slug: 'few-shot', name: 'Few-shot examples', hue: 345, live: true,
+    blurb: 'Show the model a few input-output examples in the prompt so it copies the format or style.',
+    signals: ['show examples', 'match this format', 'a couple of samples'] },
+  { slug: 'rag', name: 'Grounding with your data (RAG)', hue: 0, live: true,
+    blurb: 'Retrieve relevant passages from your own documents and add them to the prompt so answers are based on them.',
+    signals: ['company documents', 'cite sources', 'facts the model was not trained on'] },
+  { slug: 'ai-agent', name: 'AI agent', hue: 20, live: true,
+    blurb: 'A model that plans and takes actions with tools (search, code, functions) to finish a task, not just reply.',
+    signals: ['takes actions', 'calls tools', 'multi-step task', 'books or updates something'] },
+  { slug: 'content-filters', name: 'Content filters', hue: 40, live: true,
+    blurb: 'Safety layers (Azure AI Content Safety) that block harmful input and output and detect jailbreak attempts.',
+    signals: ['harmful content', 'jailbreak', 'block hate or violence', 'unsafe output'] },
+
+  // Text analysis
+  { slug: 'key-phrases', name: 'Key phrase extraction', hue: 140, live: true,
+    blurb: 'Pull out the main talking points of a text as a short list of phrases.',
+    signals: ['main topics', 'talking points', 'tag documents'] },
+  { slug: 'entity-recognition', name: 'Entity recognition', hue: 155, live: true,
+    blurb: 'Find and label named things in text: people, places, organizations, dates, amounts.',
+    signals: ['names, places, dates', 'which companies are mentioned', 'label and categorize'] },
+  { slug: 'pii-detection', name: 'PII detection', hue: 170, live: true,
+    blurb: 'Find personal information like names, phone numbers and IDs, usually to redact it.',
+    signals: ['redact', 'phone numbers and emails', 'before sharing', 'mask personal details'] },
+  { slug: 'sentiment-analysis', name: 'Sentiment analysis', hue: 185, live: true,
+    blurb: 'Score text as positive, negative, neutral or mixed, down to individual opinions.',
+    signals: ['happy or unhappy', 'reviews', 'tone of feedback'] },
+  { slug: 'summarization', name: 'Summarization', hue: 120, live: true,
+    blurb: 'Condense a long text or conversation into its essentials.',
+    signals: ['too long to read', 'short recap', 'condense'] },
+  { slug: 'translation', name: 'Translation', hue: 100, live: true,
+    blurb: 'Convert text (or speech) from one language to another, often detecting the source language first.',
+    signals: ['another language', 'multilingual users', 'which language is this'] },
+
+  // Speech
+  { slug: 'speech-to-text', name: 'Speech to text', hue: 60, live: true,
+    blurb: 'Speech recognition: turn spoken audio into written text.',
+    signals: ['transcribe', 'captions', 'voice commands', 'call recordings'] },
+  { slug: 'text-to-speech', name: 'Text to speech', hue: 80, live: true,
+    blurb: 'Speech synthesis: turn text into natural-sounding spoken audio.',
+    signals: ['read aloud', 'voice output', 'audio version'] },
+
+  // Vision
+  { slug: 'image-analysis', name: 'Image analysis', hue: 270, live: true,
+    blurb: 'Describe an existing image: captions, tags and what is in it.',
+    signals: ['caption a photo', 'tag images', 'alt text', 'what is in this picture'] },
+  { slug: 'ocr', name: 'OCR', hue: 290, live: true,
+    blurb: 'Optical character recognition: read printed or handwritten text in an image.',
+    signals: ['read text in a photo', 'scanned page', 'signs and labels', 'handwriting'] },
+  { slug: 'object-detection', name: 'Object detection', hue: 305, live: true,
+    blurb: 'Find each object in an image and where it is, with a bounding box.',
+    signals: ['where in the image', 'count items', 'bounding boxes'] },
+
+  // Information extraction
+  { slug: 'document-extraction', name: 'Document field extraction', hue: 320, live: true,
+    blurb: 'Content Understanding pulls structured fields (totals, dates, names) out of documents and forms.',
+    signals: ['invoices and receipts', 'fill a database from forms', 'specific fields'] },
+  { slug: 'av-extraction', name: 'Audio and video extraction', hue: 340, live: true,
+    blurb: 'Content Understanding turns recordings and video into structured data: transcripts, scenes, summaries and fields.',
+    signals: ['video library', 'meeting recordings', 'scenes and chapters', 'structured output from media'] },
+];
