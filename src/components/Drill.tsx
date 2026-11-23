@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Pattern, Problem, Term } from '../lib/types';
 import { findTerms, makeMatcher, type TermHit } from '../lib/glossary';
-import { loadAttempts, repeatWeight, saveAttempt, seenCounts } from '../lib/storage';
+import { chooseRound, type Slot } from '../lib/schedule';
+import { loadAttempts, repeatWeight, saveAttempt } from '../lib/storage';
 import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
@@ -9,7 +10,7 @@ import Glyph from './Glyph';
 
 type Mode = 'sprint' | 'focus' | 'zen';
 type Phase = 'setup' | 'ask' | 'mark' | 'reveal' | 'done';
-interface Round { problem: Problem; choices: string[]; seen: number } // seen = earlier attempts at this question
+interface Round { problem: Problem; choices: string[]; seen: number; slot: Slot } // seen = earlier attempts at this question
 interface Marks { found: Set<number>; total: number; extra: number }
 interface Result { problem: Problem; picked: string | null; ms: number; marks?: Marks; peeked?: boolean }
 interface Token { text: string; word: boolean; tell: number } // tell = index into problem.tells, or -1
@@ -197,15 +198,14 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     const pool = m === 'focus'
       ? problems.filter((p) => p.answer === f || p.decoys.includes(f))
       : problems;
-    // Fresh questions first; repeats only once the unseen ones run out.
-    const seen = seenCounts(loadAttempts().filter((a) => a.track === track));
-    const times = (p: Problem) => seen.get(p.id) ?? 0;
-    const picked = shuffle(pool).sort((a, b) => times(a) - times(b)).slice(0, count);
-    return shuffle(picked).map((problem) => ({
-      problem,
-      choices: shuffle([problem.answer, ...problem.decoys]),
-      seen: times(problem),
-    }));
+    // Spaced repetition: recent misses come back first, then new questions,
+    // then right answers that are due for a check (see lib/schedule.ts).
+    const byId = new Map(pool.map((p) => [p.id, p]));
+    const plans = chooseRound([...byId.keys()], loadAttempts().filter((a) => a.track === track), count, shuffle);
+    return shuffle(plans).map((plan) => {
+      const problem = byId.get(plan.id)!;
+      return { problem, choices: shuffle([problem.answer, ...problem.decoys]), seen: plan.seen, slot: plan.slot };
+    });
   }
 
   function start(m = mode, f = focus) {
@@ -512,7 +512,9 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
       <div class="drill-head">
         <span class="qhead">
           <span class="mono">Q{idx + 1}<span class="muted">/{rounds.length}</span></span>
-          {round.seen === 0
+          {round.slot === 'retry'
+            ? <span class="fresh retry" title="You missed or peeked at this one last time. It comes back until you get it right.">Missed last time</span>
+            : round.seen === 0
             ? <span class="fresh new" title="First time seeing this question: full mastery point">New</span>
             : <span class="fresh" title={`You've answered this ${round.seen === 1 ? 'once' : `${round.seen} times`} before. Repeats earn fewer mastery points.`}>
                 Repeat · mastery ×{repeatWeight(round.seen)}
