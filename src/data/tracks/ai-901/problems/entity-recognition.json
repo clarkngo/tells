@@ -34,5 +34,17 @@
     "tells": ["The names should stay visible"],
     "answer": "entity-recognition", "decoys": ["pii-detection", "key-phrases", "translation"],
     "why": "Finding and labeling people for linking is entity recognition.",
-    "trap": "PII detection is for hiding personal data; here the names stay." }
+    "trap": "PII detection is for hiding personal data; here the names stay." },
+  { "id": "travel-entities", "difficulty": 2,
+    "prompt": "Pull the cities, airlines and travel dates out of free-text booking requests.",
+    "tells": ["cities, airlines and travel dates"],
+    "answer": "entity-recognition", "decoys": ["document-extraction", "key-phrases", "translation"],
+    "why": "Places, organizations and dates are entity categories.",
+    "trap": "These are free-text messages, not forms with fixed fields." },
+  { "id": "custom-entities", "difficulty": 3,
+    "prompt": "The standard categories miss the company's own product codes like 'ZX-400', so the team trains the language service to find them.",
+    "tells": ["trains the language service to find them"],
+    "answer": "entity-recognition", "decoys": ["key-phrases", "fine-tuning", "pii-detection"],
+    "why": "Custom named entity recognition learns your own entity types.",
+    "trap": "It's a Language feature for entities, not fine-tuning a generative model." }
 ]

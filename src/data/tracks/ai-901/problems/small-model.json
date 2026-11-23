@@ -40,5 +40,11 @@
     "tells": ["runs entirely on its own laptops"],
     "answer": "small-model", "decoys": ["deployment-type", "privacy-security", "embedding-model"],
     "why": "Only a small model can run on a laptop.",
-    "trap": "A data-zone deployment still sends data to the cloud." }
+    "trap": "A data-zone deployment still sends data to the cloud." },
+  { "id": "router", "difficulty": 2,
+    "prompt": "Most requests are simple greetings and FAQ lookups; only a few need a big model. The team routes the simple ones to a cheaper model.",
+    "tells": ["routes the simple ones to a cheaper model"],
+    "answer": "small-model", "decoys": ["deployment-type", "reasoning-model", "model-catalog"],
+    "why": "Simple, high-volume work suits a small language model.",
+    "trap": "Routing is the strategy; the model for the simple path is a small one." }
 ]

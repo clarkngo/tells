@@ -34,5 +34,17 @@
     "tells": ["newly worded recap"],
     "answer": "summarization", "decoys": ["key-phrases", "translation", "document-extraction"],
     "why": "Abstractive summarization writes a new, shorter version.",
-    "trap": "Extractive summarization copies original sentences." }
+    "trap": "Extractive summarization copies original sentences." },
+  { "id": "doc-brief", "difficulty": 2,
+    "prompt": "Lawyers want a short brief of each new court ruling, written in plain words.",
+    "tells": ["short brief of each new court ruling"],
+    "answer": "summarization", "decoys": ["key-phrases", "translation", "document-extraction"],
+    "why": "A short version of long text is summarization.",
+    "trap": "Extracting fields doesn't give a brief." },
+  { "id": "chat-summary-handoff", "difficulty": 3,
+    "prompt": "When a bot hands a chat to a human agent, the agent sees three lines covering the problem and what's been tried.",
+    "tells": ["three lines covering the problem and what's been tried"],
+    "answer": "summarization", "decoys": ["chat-history", "key-phrases", "sentiment-analysis"],
+    "why": "Conversation summarization condenses the chat for the handoff.",
+    "trap": "The history exists already; the agent needs it condensed." }
 ]

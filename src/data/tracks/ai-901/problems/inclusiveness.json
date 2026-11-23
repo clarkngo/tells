@@ -34,5 +34,17 @@
     "tells": ["many applicants have limited literacy"],
     "answer": "inclusiveness", "decoys": ["transparency", "fairness", "summarization"],
     "why": "Making the system usable by people with different abilities is inclusiveness.",
-    "trap": "Plain language helps people understand, but the reason here is who can use it, which makes this inclusiveness rather than transparency." }
+    "trap": "Plain language helps people understand, but the reason here is who can use it, which makes this inclusiveness rather than transparency." },
+  { "id": "dyslexia", "difficulty": 2,
+    "prompt": "An AI writing helper adds a mode with simpler layouts and read-aloud for users with dyslexia.",
+    "tells": ["users with dyslexia"],
+    "answer": "inclusiveness", "decoys": ["fairness", "transparency", "reliability-safety"],
+    "why": "Designing for people with disabilities is inclusiveness.",
+    "trap": "No one is treated unequally; the mode lets more people use it." },
+  { "id": "local-languages", "difficulty": 3,
+    "prompt": "A farming advice bot only works in English, though most farmers it serves speak Swahili or Hausa.",
+    "tells": ["only works in English"],
+    "answer": "inclusiveness", "decoys": ["fairness", "translation", "transparency"],
+    "why": "Excluding people by language is an inclusiveness gap.",
+    "trap": "Translation would be the fix; the principle is inclusiveness." }
 ]

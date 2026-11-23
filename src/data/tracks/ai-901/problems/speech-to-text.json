@@ -34,5 +34,17 @@
     "tells": ["who said each line"],
     "answer": "speech-to-text", "decoys": ["av-extraction", "entity-recognition", "summarization"],
     "why": "Speaker diarization in speech to text labels who spoke when.",
-    "trap": "Content Understanding returns structured fields; this is a labeled transcript." }
+    "trap": "Content Understanding returns structured fields; this is a labeled transcript." },
+  { "id": "drive-thru", "difficulty": 2,
+    "prompt": "A drive-through takes orders by voice and turns them into text for the kitchen screen.",
+    "tells": ["takes orders by voice"],
+    "answer": "speech-to-text", "decoys": ["text-to-speech", "entity-recognition", "multimodal-model"],
+    "why": "Turning speech into text is speech recognition.",
+    "trap": "The kitchen needs text, so it's speech to text." },
+  { "id": "real-time-vs-batch", "difficulty": 3,
+    "prompt": "A team needs transcripts of last year's 10,000 recorded calls, with no need for live results.",
+    "tells": ["no need for live results"],
+    "answer": "speech-to-text", "decoys": ["av-extraction", "summarization", "deployment-type"],
+    "why": "Batch transcription in Azure Speech suits large sets of recordings.",
+    "trap": "No fields or structure were asked for, just transcripts." }
 ]

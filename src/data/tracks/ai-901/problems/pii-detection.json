@@ -34,5 +34,17 @@
     "tells": ["leave product names and order numbers as they are"],
     "answer": "pii-detection", "decoys": ["entity-recognition", "key-phrases", "document-extraction"],
     "why": "PII detection lets you pick which categories of personal data to redact.",
-    "trap": "Entity recognition would label products too; the goal is hiding personal data." }
+    "trap": "Entity recognition would label products too; the goal is hiding personal data." },
+  { "id": "health-records", "difficulty": 2,
+    "prompt": "Medical notes shared with researchers must have patient names, birthdates and record numbers removed.",
+    "tells": ["patient names, birthdates and record numbers removed"],
+    "answer": "pii-detection", "decoys": ["entity-recognition", "privacy-security", "summarization"],
+    "why": "Removing identifying details is PII detection and redaction.",
+    "trap": "Privacy is the principle; PII detection does the removal." },
+  { "id": "pii-in-speech", "difficulty": 3,
+    "prompt": "Recorded calls are transcribed, and any card numbers the customer says must be removed from the transcript.",
+    "tells": ["must be removed from the transcript"],
+    "answer": "pii-detection", "decoys": ["speech-to-text", "av-extraction", "content-filters"],
+    "why": "Redacting personal data from text is PII detection.",
+    "trap": "Transcription comes first; the task asked about is removal." }
 ]

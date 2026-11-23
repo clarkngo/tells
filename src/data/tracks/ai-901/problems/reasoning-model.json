@@ -34,5 +34,17 @@
     "tells": ["point to the first wrong step"],
     "answer": "reasoning-model", "decoys": ["small-model", "summarization", "embedding-model"],
     "why": "Checking a long chain of steps is reasoning-model work.",
-    "trap": "A summary of the calculation wouldn't find the error." }
+    "trap": "A summary of the calculation wouldn't find the error." },
+  { "id": "logic-puzzle", "difficulty": 2,
+    "prompt": "A model often gets multi-step logic puzzles wrong. A different model that works through the steps first gets them right.",
+    "tells": ["works through the steps first"],
+    "answer": "reasoning-model", "decoys": ["temperature", "few-shot", "small-model"],
+    "why": "Models that reason before answering handle multi-step logic better.",
+    "trap": "Lower temperature makes answers consistent, not better at logic." },
+  { "id": "reasoning-cost", "difficulty": 3,
+    "prompt": "Why might a reasoning model cost more per answer than a standard model, even when the visible answer is short?",
+    "tells": ["even when the visible answer is short"],
+    "answer": "reasoning-model", "decoys": ["max-tokens", "deployment-type", "small-model"],
+    "why": "Reasoning models spend extra tokens thinking before the answer, and those are billed.",
+    "trap": "The deployment type isn't the cause; the hidden reasoning tokens are." }
 ]

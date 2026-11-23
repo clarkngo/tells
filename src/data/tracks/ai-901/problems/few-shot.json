@@ -34,5 +34,17 @@
     "tells": ["without training anything"],
     "answer": "few-shot", "decoys": ["rag", "system-prompt", "small-model"],
     "why": "Put the examples in the prompt: few-shot. Fine-tuning needs training.",
-    "trap": "RAG adds facts; these are examples of the task." }
+    "trap": "RAG adds facts; these are examples of the task." },
+  { "id": "extract-format", "difficulty": 2,
+    "prompt": "To get product data in the same shape every time, the prompt shows two filled-in examples before the new product.",
+    "tells": ["shows two filled-in examples"],
+    "answer": "few-shot", "decoys": ["system-prompt", "document-extraction", "fine-tuning"],
+    "why": "Examples in the prompt are few-shot prompting.",
+    "trap": "Fine-tuning trains on examples; these are in the prompt." },
+  { "id": "one-shot", "difficulty": 3,
+    "prompt": "A prompt includes exactly one sample question with its ideal answer before the real question.",
+    "tells": ["exactly one sample question with its ideal answer"],
+    "answer": "few-shot", "decoys": ["system-prompt", "chat-history", "rag"],
+    "why": "One example is one-shot, a case of few-shot prompting.",
+    "trap": "It's not real conversation history; it's an example." }
 ]

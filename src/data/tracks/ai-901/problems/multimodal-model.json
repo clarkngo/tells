@@ -34,5 +34,17 @@
     "tells": ["asks out loud what it is"],
     "answer": "multimodal-model", "decoys": ["object-detection", "speech-to-text", "image-analysis"],
     "why": "One model taking image and audio input is multimodal.",
-    "trap": "Chaining separate vision and speech tools isn't what's described." }
+    "trap": "Chaining separate vision and speech tools isn't what's described." },
+  { "id": "receipt-question", "difficulty": 2,
+    "prompt": "A user uploads a photo of a restaurant bill and asks the chat model how to split it among four people.",
+    "tells": ["how to split it among four people"],
+    "answer": "multimodal-model", "decoys": ["document-extraction", "ocr", "reasoning-model"],
+    "why": "Answering a question about an image is a multimodal model's job.",
+    "trap": "Extracting fields doesn't answer the question." },
+  { "id": "accessibility-describe", "difficulty": 3,
+    "prompt": "A blind user points their phone at a street and asks out loud whether it's safe to cross. One deployed model answers.",
+    "tells": ["asks out loud whether it's safe to cross"],
+    "answer": "multimodal-model", "decoys": ["object-detection", "image-analysis", "text-to-speech"],
+    "why": "A model taking live image and spoken input is multimodal.",
+    "trap": "Detection finds cars, but answering the question needs a multimodal model." }
 ]

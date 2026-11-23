@@ -34,5 +34,17 @@
     "tells": ["the same label every time for the same ticket"],
     "answer": "temperature", "decoys": ["max-tokens", "few-shot", "deployment-type"],
     "why": "Temperature 0 makes output as deterministic as possible.",
-    "trap": "Max tokens set to 0 would return nothing at all." }
+    "trap": "Max tokens set to 0 would return nothing at all." },
+  { "id": "random-tone", "difficulty": 2,
+    "prompt": "A support assistant sometimes adds jokes and odd phrasing. The team wants calm, predictable replies.",
+    "tells": ["calm, predictable replies"],
+    "answer": "temperature", "decoys": ["system-prompt", "max-tokens", "content-filters"],
+    "why": "Lower temperature reduces random word choices.",
+    "trap": "A system prompt sets the tone; the randomness comes from temperature." },
+  { "id": "creative-names", "difficulty": 3,
+    "prompt": "Product-name suggestions all sound alike. Raising which setting is most likely to widen the variety?",
+    "tells": ["widen the variety"],
+    "answer": "temperature", "decoys": ["max-tokens", "few-shot", "deployment-type"],
+    "why": "Higher temperature produces more varied output.",
+    "trap": "Longer replies don't make them more varied." }
 ]

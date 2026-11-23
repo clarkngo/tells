@@ -34,5 +34,17 @@
     "tells": ["line-item table"],
     "answer": "document-extraction", "decoys": ["ocr", "key-phrases", "summarization"],
     "why": "Content Understanding extracts tables and fields from documents.",
-    "trap": "OCR gives the words, but not which cell belongs to which column." }
+    "trap": "OCR gives the words, but not which cell belongs to which column." },
+  { "id": "mortgage-docs", "difficulty": 2,
+    "prompt": "Loan applications arrive as pay slips, bank statements and tax forms. The app needs income and employer from each.",
+    "tells": ["income and employer from each"],
+    "answer": "document-extraction", "decoys": ["entity-recognition", "ocr", "summarization"],
+    "why": "Pulling defined fields from mixed documents is Content Understanding.",
+    "trap": "OCR gives all the text; the fields need extraction." },
+  { "id": "image-fields", "difficulty": 3,
+    "prompt": "From photos of shipping labels, return the tracking number, sender and weight as fields.",
+    "tells": ["return the tracking number, sender and weight as fields"],
+    "answer": "document-extraction", "decoys": ["ocr", "object-detection", "image-analysis"],
+    "why": "Content Understanding extracts fields from images too.",
+    "trap": "OCR alone returns unlabeled text." }
 ]

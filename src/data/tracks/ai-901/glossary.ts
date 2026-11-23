@@ -5,7 +5,7 @@ import type { Term } from '../../../lib/types';
 export const glossary: Term[] = [
   // Microsoft Foundry
   { term: 'Microsoft Foundry', aliases: ['Foundry'], def: "Microsoft's platform for building AI apps and agents: browse and deploy models, test them in a playground, and use AI tools from one place." },
-  { term: 'Foundry portal', aliases: ['portal'], def: 'The web interface for Foundry, where you deploy models, try them in the playground and build agents without code.' },
+  { term: 'Foundry portal', aliases: ['portal'], def: 'The web interface for Microsoft Foundry, used from a browser.' },
   { term: 'Foundry SDK', aliases: ['SDK', 'SDKs'], def: 'Code libraries (for Python and other languages) for calling deployed models and agents from your own app.' },
   { term: 'Foundry Tools', def: 'The ready-made AI services available in Foundry, such as Azure Speech, Azure Language, Azure Vision, Azure Translator and Content Understanding.' },
   { term: 'Foundry Agent Service', aliases: ['Agent Service'], def: 'The Foundry service for building, running and testing agents that combine a model, instructions and tools.' },
@@ -96,4 +96,21 @@ export const glossary: Term[] = [
   { term: 'screen reader', aliases: ['screen readers'], def: 'Software that reads what is on a screen aloud for people who are blind or have low vision.' },
   { term: 'governance', def: 'The policies, roles and reviews an organization uses to control how AI is built and used.' },
   { term: 'human oversight', aliases: ['human in the loop', 'human review'], def: 'People reviewing or approving AI decisions, especially high-stakes ones.' },
+
+  // Building apps
+  { term: 'model card', def: "A model's description: what it's for, its limits, training data notes, license and benchmark results." },
+  { term: 'benchmark', aliases: ['benchmarks'], def: 'A standard test used to score and compare models on quality, safety, cost or speed.' },
+  { term: 'API key', aliases: ['api-key'], def: 'A secret string an app sends with each request to prove it may use a deployment. Keep it out of source code.' },
+  { term: 'Microsoft Entra ID', aliases: ['Entra ID', 'managed identity'], def: "Microsoft's identity service. Apps can sign in with an identity instead of a key (keyless authentication)." },
+  { term: 'environment variables', def: 'Settings stored outside the source code that an app reads when it starts.' },
+  { term: 'stateless', def: "Remembering nothing between requests. Chat models are stateless, so the app resends the conversation." },
+  { term: 'training job', def: 'A long-running task in Foundry that trains a model on data you upload.' },
+  { term: 'pretraining', def: 'The first, huge training run where a model learns language by predicting the next token across vast amounts of text.' },
+  { term: 'knowledge cutoff', def: 'The date the training data ends. The model knows nothing later unless you give it in the prompt.' },
+  { term: 'attention', def: 'The transformer mechanism that lets each token weigh every other token in the context.' },
+  { term: 'sampling', def: 'Picking the next token at random according to its probability. Temperature and top_p shape it.' },
+  { term: 'red-teaming', aliases: ['red-team'], def: 'Deliberately attacking your own AI system to find harmful or unsafe behavior before users do.' },
+  { term: 'diarization', aliases: ['speaker diarization'], def: 'Labeling who spoke when in a transcript.' },
+  { term: 'custom NER', aliases: ['custom named entity recognition'], def: 'Training the Language service to find your own entity types, such as product codes.' },
+  { term: 'indirect prompt attack', aliases: ['prompt injection', 'indirect attack'], def: 'Instructions hidden in a document or web page the model reads, trying to hijack it.' },
 ];

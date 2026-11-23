@@ -34,5 +34,17 @@
     "tells": ["excluded from any future training"],
     "answer": "privacy-security", "decoys": ["transparency", "accountability", "inclusiveness"],
     "why": "Giving people control over their data is privacy.",
-    "trap": "Telling users what you do with data is transparency; letting them delete it is privacy." }
+    "trap": "Telling users what you do with data is transparency; letting them delete it is privacy." },
+  { "id": "encrypt", "difficulty": 2,
+    "prompt": "Customer documents uploaded to an AI app must be encrypted and kept only in the company's own storage.",
+    "tells": ["must be encrypted"],
+    "answer": "privacy-security", "decoys": ["accountability", "transparency", "deployment-type"],
+    "why": "Protecting data at rest and controlling where it lives is privacy and security.",
+    "trap": "Data zones control processing location; encryption and storage are privacy controls." },
+  { "id": "face-opt-in", "difficulty": 3,
+    "prompt": "A store wants to recognize returning shoppers by face. Lawyers insist shoppers must opt in first.",
+    "tells": ["must opt in first"],
+    "answer": "privacy-security", "decoys": ["transparency", "fairness", "accountability"],
+    "why": "Consent before using biometric data is privacy.",
+    "trap": "Telling shoppers is transparency; needing their agreement is privacy." }
 ]

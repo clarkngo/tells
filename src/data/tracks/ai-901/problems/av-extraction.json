@@ -34,5 +34,17 @@
     "tells": ["return the customer's budget, timeline and objections as fields"],
     "answer": "av-extraction", "decoys": ["speech-to-text", "entity-recognition", "summarization"],
     "why": "Content Understanding extracts defined fields from audio.",
-    "trap": "Speech to text gives a transcript, not fields." }
+    "trap": "Speech to text gives a transcript, not fields." },
+  { "id": "training-video-qa", "difficulty": 2,
+    "prompt": "For each safety-training video, produce a list of the hazards shown and when they appear.",
+    "tells": ["when they appear"],
+    "answer": "av-extraction", "decoys": ["object-detection", "image-analysis", "summarization"],
+    "why": "Content Understanding for video returns timed, structured findings.",
+    "trap": "Object detection works on single images, not whole videos." },
+  { "id": "voicemail-fields", "difficulty": 3,
+    "prompt": "From each customer voicemail, extract the caller's name, callback number and reason as structured data.",
+    "tells": ["callback number and reason as structured data"],
+    "answer": "av-extraction", "decoys": ["speech-to-text", "pii-detection", "entity-recognition"],
+    "why": "Structured fields from audio come from Content Understanding.",
+    "trap": "A transcript alone isn't structured." }
 ]

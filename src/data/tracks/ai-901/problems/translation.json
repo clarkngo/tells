@@ -34,5 +34,17 @@
     "tells": ["must stay unchanged"],
     "answer": "translation", "decoys": ["entity-recognition", "system-prompt", "pii-detection"],
     "why": "Translator supports custom glossaries and do-not-translate terms.",
-    "trap": "Recognizing the name as an entity doesn't stop it being translated." }
+    "trap": "Recognizing the name as an entity doesn't stop it being translated." },
+  { "id": "speech-translate", "difficulty": 2,
+    "prompt": "A tour guide speaks Italian, and tourists hear the words in Japanese through an app.",
+    "tells": ["tourists hear the words in Japanese"],
+    "answer": "translation", "decoys": ["text-to-speech", "speech-to-text", "multimodal-model"],
+    "why": "Speech translation goes from spoken Italian to Japanese.",
+    "trap": "Text to speech is only the last step; the core is translation." },
+  { "id": "auto-detect", "difficulty": 3,
+    "prompt": "Messages arrive in unknown languages; each must be translated to English without the sender saying which language they used.",
+    "tells": ["without the sender saying which language they used"],
+    "answer": "translation", "decoys": ["entity-recognition", "key-phrases", "summarization"],
+    "why": "Translator detects the source language automatically.",
+    "trap": "Detection here is part of translating, not a separate goal." }
 ]

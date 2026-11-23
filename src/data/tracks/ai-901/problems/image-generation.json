@@ -34,5 +34,17 @@
     "tells": ["returns a picture that didn't exist before"],
     "answer": "image-generation", "decoys": ["image-analysis", "object-detection", "multimodal-model"],
     "why": "Text in, new image out: image generation.",
-    "trap": "Multimodal models take images in; generation creates them." }
+    "trap": "Multimodal models take images in; generation creates them." },
+  { "id": "logo-variants", "difficulty": 2,
+    "prompt": "A startup wants a model to create several original logo concepts from a short brand description.",
+    "tells": ["create several original logo concepts"],
+    "answer": "image-generation", "decoys": ["image-analysis", "few-shot", "multimodal-model"],
+    "why": "Making new images from text is image generation.",
+    "trap": "There's nothing to analyze yet." },
+  { "id": "icon-set", "difficulty": 2,
+    "prompt": "A design team wants a set of new icons in a consistent flat style, described only in words.",
+    "tells": ["described only in words"],
+    "answer": "image-generation", "decoys": ["image-analysis", "few-shot", "object-detection"],
+    "why": "New images from text descriptions are image generation.",
+    "trap": "There's no existing image to analyze." }
 ]

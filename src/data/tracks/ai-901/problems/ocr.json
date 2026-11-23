@@ -34,5 +34,17 @@
     "tells": ["Prices don't need to be matched to dishes"],
     "answer": "ocr", "decoys": ["document-extraction", "translation", "image-analysis"],
     "why": "All the words, unstructured: OCR.",
-    "trap": "Matching prices to dishes would be structured extraction." }
+    "trap": "Matching prices to dishes would be structured extraction." },
+  { "id": "license-plates", "difficulty": 2,
+    "prompt": "A parking garage reads license plates from entrance camera images.",
+    "tells": ["reads license plates"],
+    "answer": "ocr", "decoys": ["object-detection", "image-analysis", "document-extraction"],
+    "why": "Reading characters from images is OCR.",
+    "trap": "Finding the car isn't the goal; reading the plate is." },
+  { "id": "pdf-scan", "difficulty": 3,
+    "prompt": "Scanned PDFs have no selectable text. The team needs all the words so they can be indexed.",
+    "tells": ["no selectable text"],
+    "answer": "ocr", "decoys": ["document-extraction", "summarization", "embedding-model"],
+    "why": "OCR turns scanned images of text into text.",
+    "trap": "No fields are needed, just the words." }
 ]

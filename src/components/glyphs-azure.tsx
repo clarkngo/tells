@@ -142,6 +142,22 @@ export const azureShapes: Record<string, Shape> = {
     </g>
   ),
 
+  'next-token': () => (
+    <g>
+      {[0, 1, 2, 3].map((i) => <rect class="g-node" x={8 + i * 26} y={20} width={22} height={16} rx={3} />)}
+      <rect class="g-fill g-bs" x={112} y={20} width={22} height={16} rx={3} />
+      {[0, 1, 2].map((i) => <rect class="g-tint" x={140} y={10 + i * 13} width={14} height={9} rx={2} />)}
+      <path class="g-flow" d="M112 44 C90 54 40 54 18 40" />
+    </g>
+  ),
+  'model-catalog': () => (
+    <g>
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <rect class={i === 4 ? 'g-fill g-heap' : 'g-node'} x={12 + (i % 3) * 46} y={6 + Math.floor(i / 3) * 24} width={40} height={20} rx={3} />
+      ))}
+    </g>
+  ),
+
   // Configuration and deployment
   temperature: () => (
     <g>
@@ -169,6 +185,35 @@ export const azureShapes: Record<string, Shape> = {
         </g>
       ))}
       <path class="g-stroke g-sway" style={v({ '--dx': '40px' })} d="M18 6 h42 v44 h-42 z" />
+    </g>
+  ),
+
+  playground: () => (
+    <g>
+      <rect class="g-node" x={8} y={4} width={144} height={48} rx={4} />
+      <rect class="g-node g-bs" x={16} y={12} width={60} height={9} rx={4} />
+      <rect class="g-tint g-bs" style={d(0.6)} x={50} y={26} width={70} height={9} rx={4} />
+      <path class="g-line" d="M130 14 h14 M130 26 h14 M130 38 h14" />
+      <circle class="g-fill g-sway" style={v({ '--dx': '10px' })} cx={132} cy={26} r={3} />
+    </g>
+  ),
+  'endpoint-auth': () => (
+    <g>
+      <rect class="g-node" x={104} y={10} width={48} height={36} rx={4} />
+      <path class="g-line" d="M112 22 h32 M112 30 h24" />
+      <g class="g-sway" style={v({ '--dx': '44px' })}>
+        <circle class="g-stroke" cx={22} cy={28} r={8} />
+        <path class="g-stroke" d="M30 28 H56 M48 28 v6 M54 28 v5" />
+      </g>
+    </g>
+  ),
+  'chat-history': () => (
+    <g>
+      {[0, 1, 2].map((i) => <rect class="g-node g-faint" x={i % 2 ? 44 : 10} y={6 + i * 12} width={48} height={8} rx={4} />)}
+      <rect class="g-fill g-bs" x={10} y={42} width={48} height={8} rx={4} />
+      <path class="g-flow" d="M98 28 H124" />
+      <rect class="g-node" x={128} y={14} width={24} height={28} rx={6} />
+      <path class="g-line g-dash" d="M8 3 H96 V53 H8 Z" />
     </g>
   ),
 

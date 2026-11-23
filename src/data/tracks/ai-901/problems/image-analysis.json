@@ -34,5 +34,17 @@
     "tells": ["describe the overall scene in one sentence"],
     "answer": "image-analysis", "decoys": ["object-detection", "multimodal-model", "ocr"],
     "why": "A caption of the whole scene is image analysis.",
-    "trap": "A multimodal model could, but no question is being asked; it's a standard caption." }
+    "trap": "A multimodal model could, but no question is being asked; it's a standard caption." },
+  { "id": "describe-for-search", "difficulty": 2,
+    "prompt": "An online store wants each product photo described in words so customers can search by description.",
+    "tells": ["described in words"],
+    "answer": "image-analysis", "decoys": ["ocr", "object-detection", "image-generation"],
+    "why": "Captions and tags make images searchable.",
+    "trap": "No text in the photo needs reading." },
+  { "id": "people-count", "difficulty": 3,
+    "prompt": "Count how many people are in each frame of a lobby camera, without saying where they are.",
+    "tells": ["without saying where they are"],
+    "answer": "image-analysis", "decoys": ["object-detection", "av-extraction", "multimodal-model"],
+    "why": "Image analysis can detect people and give a count.",
+    "trap": "Locations would make it object detection; here they're not needed." }
 ]

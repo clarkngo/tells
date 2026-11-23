@@ -34,5 +34,17 @@
     "tells": ["underperforms for older patients", "adds more data from patients over 70"],
     "answer": "fairness", "decoys": ["inclusiveness", "reliability-safety", "accountability"],
     "why": "Rebalancing training data to close a gap between groups is a fairness fix.",
-    "trap": "The patients can use the system; it just treats them worse, which is fairness rather than inclusiveness." }
+    "trap": "The patients can use the system; it just treats them worse, which is fairness rather than inclusiveness." },
+  { "id": "ad-targeting", "difficulty": 2,
+    "prompt": "A job-ad system shows high-paying roles mostly to men, because men clicked those ads more in the past.",
+    "tells": ["mostly to men"],
+    "answer": "fairness", "decoys": ["transparency", "inclusiveness", "privacy-security"],
+    "why": "Allocating opportunities unequally by group is a fairness harm.",
+    "trap": "Past clicks explain the bias; they don't excuse it." },
+  { "id": "gen-stereotype", "difficulty": 3,
+    "prompt": "An image model asked for 'a CEO' almost always draws a middle-aged white man.",
+    "tells": ["almost always draws a middle-aged white man"],
+    "answer": "fairness", "decoys": ["content-filters", "transparency", "inclusiveness"],
+    "why": "Stereotyped outputs that underrepresent groups are a fairness issue in generative AI.",
+    "trap": "Content filters block harmful content; stereotyping is a fairness concern." }
 ]
