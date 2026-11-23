@@ -67,6 +67,14 @@ section { margin-top: 56px; }
 .logo-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 var(--accent); animation: ping 2.4s infinite; }
 @keyframes ping { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 60%, transparent); } 80%, 100% { box-shadow: 0 0 0 10px transparent; } }
 nav { display: flex; gap: 20px; }
+/* Logo and player on the first row; track links get their own row, scrolling sideways if needed. */
+.site-head { flex-wrap: wrap; row-gap: 6px; padding-bottom: 8px; }
+.site-head .head-right { display: contents; }
+.site-head nav {
+  order: 3; width: 100%; gap: 22px; font-size: 0.95rem;
+  overflow-x: auto; white-space: nowrap; scrollbar-width: none;
+}
+.site-head nav::-webkit-scrollbar { display: none; }
 nav a { text-decoration: none; color: var(--muted); }
 nav a:hover, nav a[aria-current='page'] { color: var(--text); }
 .site-foot {
@@ -322,14 +330,8 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .music.on { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 50%, var(--border)); }
 .mute svg { width: 18px; height: 18px; }
 @media (max-width: 480px) {
-  /* Logo and player on the first row; track links get their own scrollable row. */
-  .site-head { padding: 14px 16px 6px; flex-wrap: wrap; row-gap: 4px; }
-  .head-right { display: contents; }
-  nav {
-    order: 3; width: 100%; gap: 18px; font-size: 0.9rem;
-    overflow-x: auto; white-space: nowrap; scrollbar-width: none;
-  }
-  nav::-webkit-scrollbar { display: none; }
+  .site-head { padding: 14px 16px 6px; }
+  .site-head nav { gap: 18px; font-size: 0.9rem; }
   .lv, .mute { width: 30px; height: 30px; }
 }
 
