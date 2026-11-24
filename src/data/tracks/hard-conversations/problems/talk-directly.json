@@ -32,7 +32,7 @@
   { "id": "anonymous-note", "difficulty": 3,
     "prompt": "An engineer drafts an anonymous note to HR about a teammate's sloppy code reviews. A mentor asks whether they've told the teammate.",
     "tells": ["asks whether they've told the teammate"],
-    "answer": "talk-directly", "decoys": ["coach-with-questions", "sbi-feedback", "find-the-grain-of-truth"],
+    "answer": "talk-directly", "decoys": ["lower-the-temperature", "sbi-feedback", "find-the-grain-of-truth"],
     "why": "For an everyday issue like this, the person deserves to hear it first.",
-    "trap": "The mentor asks a question, but what it points to is a direct talk." }
+    "trap": "SBI is how to say it; the first step is saying it to them." }
 ]

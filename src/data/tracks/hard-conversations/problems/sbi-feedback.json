@@ -20,7 +20,7 @@
   { "id": "positive-sbi", "difficulty": 3,
     "prompt": "A manager tells a report: 'In yesterday's incident, you posted updates every 15 minutes, and the support team said it was the first time they never had to chase us.'",
     "tells": ["you posted updates every 15 minutes, and the support team said"],
-    "answer": "sbi-feedback", "decoys": ["praise-specifically", "close-the-loop", "make-a-clear-request"],
+    "answer": "sbi-feedback", "decoys": ["ask-their-view-first", "close-the-loop", "make-a-clear-request"],
     "why": "SBI works for praise too: situation, behavior, impact.",
     "trap": "It is praise, but the cue is the full situation-behavior-impact form." },
   { "id": "code-review-tone", "difficulty": 2,

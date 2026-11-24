@@ -26,13 +26,13 @@
   { "id": "credit-it", "difficulty": 3,
     "prompt": "In a planning meeting, a PM who opposed an idea says, 'Sam's objection about support load is valid, and I hadn't considered it.'",
     "tells": ["'Sam's objection about support load is valid, and I hadn't considered it.'"],
-    "answer": "concede-the-point", "decoys": ["steelman", "praise-specifically", "listen-dont-defend"],
+    "answer": "concede-the-point", "decoys": ["steelman", "hold-your-ground", "listen-dont-defend"],
     "why": "Acknowledge a good point openly.",
-    "trap": "It's not praise for work; it's granting an argument." },
+    "trap": "It's not restating Sam's case; it's granting it." },
   { "id": "behavioral-mind", "difficulty": 1,
     "prompt": "In an interview, asked about changing their mind, a candidate describes telling a junior engineer in front of the team that the junior's approach was better.",
     "tells": ["the junior's approach was better"],
-    "answer": "concede-the-point", "decoys": ["praise-specifically", "close-the-loop", "hold-your-ground"],
+    "answer": "concede-the-point", "decoys": ["steelman", "close-the-loop", "hold-your-ground"],
     "why": "Admitting you're wrong builds trust.",
-    "trap": "It reads like praise, but it's conceding an argument." }
+    "trap": "It's admitting they were wrong in a disagreement." }
 ]

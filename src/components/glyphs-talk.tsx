@@ -39,7 +39,7 @@ export const talkShapes: Record<string, Shape> = {
     <g>
       <rect class="g-node" x={70} y={4} width={12} height={40} rx={6} />
       <circle class="g-node" cx={76} cy={46} r={8} />
-      <rect class="g-fill g-move" style={v({ '--dy': '16px', '--t': '3s' })} x={73} y={14} width={6} height={30} rx={3} />
+      <rect class="g-fill g-move" style={v({ '--dy': '8px', '--t': '3s' })} x={73} y={14} width={6} height={30} rx={3} />
       <circle class="g-fill" cx={76} cy={46} r={5} />
       {[0, 1, 2].map((i) => <path class="g-flow" style={d(i * 0.3)} d={`M${100 + i * 14} 10 q4 8 0 16 q-4 8 0 16`} />)}
     </g>
