@@ -704,8 +704,9 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
     -webkit-overflow-scrolling: touch; padding: 14px 16px 20px;
     display: flex; flex-direction: column;
   }
-  /* Choices sit low, in thumb reach, until the question is answered. */
-  html.drilling .drill-body .choices { margin-top: auto; padding-top: 12px; }
+  /* Choices sit right under the question, so the eye doesn't travel and a hand
+     holding the bottom of the phone doesn't cover them. */
+  html.drilling .drill-body .choices { margin-top: 6px; }
   html.drilling .drill-body .choice { padding: 15px 16px; min-height: 52px; }
   /* Once answered, only the right and the picked choice stay: less to scroll past. */
   html.drilling .drill-body .choice.dim { display: none; }
