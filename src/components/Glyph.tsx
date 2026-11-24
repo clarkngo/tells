@@ -6,6 +6,7 @@ import { azureShapes } from './glyphs-azure';
 import { discShapes } from './glyphs-disc';
 import { gameShapes } from './glyphs-game';
 import { engShapes } from './glyphs-eng';
+import { talkShapes } from './glyphs-talk';
 
 // Small looping animation that shows each pattern's "shape". Colored by --h.
 const cells = Array.from({ length: 8 }, (_, i) => 8 + i * 18);
@@ -132,7 +133,7 @@ const shapes: Record<string, () => preact.JSX.Element> = {
 };
 
 export default function Glyph({ slug, hue }: { slug: string; hue: number }) {
-  const Shape = shapes[slug] ?? extraShapes[slug] ?? moreShapes[slug] ?? newShapes[slug] ?? garchShapes[slug] ?? azureShapes[slug] ?? discShapes[slug] ?? gameShapes[slug] ?? engShapes[slug];
+  const Shape = shapes[slug] ?? extraShapes[slug] ?? moreShapes[slug] ?? newShapes[slug] ?? garchShapes[slug] ?? azureShapes[slug] ?? discShapes[slug] ?? gameShapes[slug] ?? engShapes[slug] ?? talkShapes[slug];
   return (
     <svg class="glyph" style={{ '--h': hue }} viewBox="0 0 160 56" aria-hidden="true">
       {Shape ? <Shape /> : <Cells />}

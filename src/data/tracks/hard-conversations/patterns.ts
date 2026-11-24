@@ -1,0 +1,75 @@
+import type { Pattern } from '../../../lib/types';
+
+// Hard conversations at work: name the move a tense or tricky moment calls for,
+// from conflict and feedback to pushback and being the expert in the room.
+export const patterns: Pattern[] = [
+  // Conflict
+  { slug: 'talk-directly', name: 'Talk directly', hue: 0, live: true,
+    blurb: 'Raise the issue with the person, privately and early, instead of stewing or going around them.',
+    signals: ['venting to others', 'going over their head', 'it keeps bugging me', 'have the conversation'] },
+  { slug: 'interests-not-positions', name: 'Interests, not positions', hue: 15, live: true,
+    blurb: 'Look past what each side demands to why they want it; solutions often meet both needs.',
+    signals: ['stuck on demands', 'why do you want that', 'underlying need', 'both can win'] },
+  { slug: 'lower-the-temperature', name: 'Lower the temperature', hue: 30, live: true,
+    blurb: 'When emotions run high, slow down: acknowledge the feeling, pause, and talk when calmer.',
+    signals: ['raised voices', 'heated', 'take a break', 'I can see you are frustrated'] },
+  { slug: 'shared-goal', name: 'Shared goal', hue: 45, live: true,
+    blurb: 'Remind both sides of what they both want, so the fight becomes a problem to solve together.',
+    signals: ['us vs them', 'we both want', 'same side', 'common ground'] },
+
+  // Giving feedback
+  { slug: 'sbi-feedback', name: 'Situation, behavior, impact', hue: 200, live: true,
+    blurb: 'Describe when it happened, what the person did and what it caused, not what kind of person they are.',
+    signals: ['you always', 'you are lazy', 'specific moment', 'observable behavior'] },
+  { slug: 'ask-their-view-first', name: 'Ask their view first', hue: 215, live: true,
+    blurb: 'Before giving feedback, ask how they think it went; they often name the issue themselves.',
+    signals: ['how do you think it went', 'self-assessment', 'start with a question', 'their read'] },
+  { slug: 'praise-specifically', name: 'Praise specifically', hue: 230, live: true,
+    blurb: 'Name exactly what was good and why it mattered, so it can be repeated.',
+    signals: ['good job', 'great work', 'vague praise', 'what exactly worked'] },
+  { slug: 'make-a-clear-request', name: 'Make a clear request', hue: 245, live: true,
+    blurb: 'End with a specific, doable ask for what to do differently next time.',
+    signals: ['so what do you want', 'next time', 'concrete ask', 'agreed change'] },
+
+  // Taking feedback
+  { slug: 'listen-dont-defend', name: "Listen, don't defend", hue: 270, live: true,
+    blurb: 'Hear feedback out: thank them, ask questions, and save explanations for later.',
+    signals: ['but I', 'that is not fair', 'excuses', 'thank you for telling me'] },
+  { slug: 'ask-for-examples', name: 'Ask for examples', hue: 285, live: true,
+    blurb: 'When feedback is vague, ask for a specific moment so you know what to change.',
+    signals: ['be more strategic', 'vague feedback', 'can you give an example', 'what did that look like'] },
+  { slug: 'find-the-grain-of-truth', name: 'Find the grain of truth', hue: 300, live: true,
+    blurb: 'Even when feedback feels unfair or badly delivered, look for the part that is true and useful.',
+    signals: ['feels unfair', 'badly delivered', 'mostly wrong', 'something to it'] },
+  { slug: 'close-the-loop', name: 'Close the loop', hue: 315, live: true,
+    blurb: 'Later, go back and show what you changed because of the feedback.',
+    signals: ['follow up', 'here is what I changed', 'weeks later', 'check back'] },
+
+  // Pushback and devil's advocate
+  { slug: 'steelman', name: 'Steelman', hue: 100, live: true,
+    blurb: 'Restate the other view in its strongest form, and check you got it, before answering.',
+    signals: ['let me make sure I understand', 'strongest version', 'restate', 'did I get that right'] },
+  { slug: 'agree-on-criteria', name: 'Agree on criteria', hue: 115, live: true,
+    blurb: 'Stop arguing conclusions; agree what evidence or test would settle it.',
+    signals: ['going in circles', 'what would convince you', 'decide by data', 'success measure'] },
+  { slug: 'concede-the-point', name: 'Concede the point', hue: 130, live: true,
+    blurb: 'Openly admit when the other side is right about something, even mid-argument.',
+    signals: ['you are right', 'fair point', 'I had not considered', 'changes my view'] },
+  { slug: 'hold-your-ground', name: 'Hold your ground', hue: 145, live: true,
+    blurb: 'Having truly listened, calmly restate your view and the reasons when they still stand.',
+    signals: ['pressure to fold', 'still disagree', 'calmly restate', 'evidence still holds'] },
+
+  // The expert in the room
+  { slug: 'bottom-line-first', name: 'Bottom line first', hue: 170, live: true,
+    blurb: 'Lead with the answer or recommendation, then give the reasons and detail.',
+    signals: ['long backstory', 'what is the answer', 'executive', 'short on time'] },
+  { slug: 'say-i-dont-know', name: "Say \"I don't know\"", hue: 185, live: true,
+    blurb: "Admit what you don't know, say how you'll find out, and follow up.",
+    signals: ['bluffing', 'not sure', 'I will find out', 'making it up'] },
+  { slug: 'ask-what-its-for', name: "Ask what it's for", hue: 60, live: true,
+    blurb: 'Before answering a request, ask what decision or goal it serves, so the answer fits.',
+    signals: ['quick question', 'what is this for', 'what decision', 'the real need'] },
+  { slug: 'coach-with-questions', name: 'Coach with questions', hue: 75, live: true,
+    blurb: 'Help someone reach their own answer by asking questions, instead of solving it for them.',
+    signals: ['what have you considered', 'mentoring', 'let them think', 'what would you do'] },
+];
