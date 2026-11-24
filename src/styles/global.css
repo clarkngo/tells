@@ -668,3 +668,55 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .sc-sun { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; }
 .sc-sun.lit { fill: #ffd27a; stroke: #ffd27a; }
 .sc-sun.miss { stroke: var(--bad); stroke-width: 2; }
+
+/* ---------- drill: phone layout ----------
+   Desktop keeps the card in the page. On a phone, while a question is open on
+   the drill page, the card fills the screen: a slim top bar (home, progress,
+   map), the question and answer scrolling in the middle, and the action button
+   pinned at the bottom where a thumb is. Swipe left to go on. */
+.drill-top { display: none; }
+.drill-foot { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+.swipe-hint { display: none; }
+@media (max-width: 640px) {
+  html.drilling, html.drilling body { overflow: hidden; overscroll-behavior: none; }
+  html.drilling .site-head, html.drilling .site-foot, html.drilling .page-head { display: none; }
+  html.drilling .drill-live {
+    position: fixed; inset: 0; z-index: 40; min-height: 0;
+    display: flex; flex-direction: column;
+    border: 0; border-radius: 0; padding: 0;
+    padding-top: env(safe-area-inset-top);
+    background: var(--surface);
+  }
+  html.drilling .drill-top {
+    display: flex; align-items: center; gap: 10px; padding: 6px 10px; flex: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .dt-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; color: var(--muted); flex: none; }
+  .dt-btn:active { background: var(--surface-2); }
+  .dt-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .dt-steps { flex: 1; display: flex; gap: 4px; }
+  .dt-steps i { flex: 1; height: 5px; border-radius: 3px; background: var(--surface-2); }
+  .dt-steps i.now { background: var(--muted); }
+  .dt-steps i.ok { background: var(--good); }
+  .dt-steps i.bad { background: var(--bad); }
+  html.drilling .drill-body {
+    flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch; padding: 14px 16px 20px;
+    display: flex; flex-direction: column;
+  }
+  /* Choices sit low, in thumb reach, until the question is answered. */
+  html.drilling .drill-body .choices { margin-top: auto; padding-top: 12px; }
+  html.drilling .drill-body .choice { padding: 15px 16px; min-height: 52px; }
+  /* Once answered, only the right and the picked choice stay: less to scroll past. */
+  html.drilling .drill-body .choice.dim { display: none; }
+  html.drilling .drill-body .reveal { margin-top: 16px; }
+  html.drilling .drill-body .reveal-card { grid-template-columns: 96px 1fr; gap: 12px; padding: 12px; }
+  html.drilling .drill-body .trap { margin-bottom: 8px; }
+  html.drilling .drill-foot {
+    flex: none; margin: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border); background: var(--surface);
+    animation: rise 0.2s ease-out;
+  }
+  html.drilling .drill-foot .btn { flex: 1; justify-content: center; min-height: 50px; font-size: 1.05rem; }
+  html.drilling .swipe-hint { display: block; color: var(--muted); font-size: 0.8rem; flex: none; }
+}

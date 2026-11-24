@@ -420,6 +420,69 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     return () => clearInterval(t);
   }, [phase, idx, rounds]);
 
+  // Phones: while a question is open on the drill page, the card takes the whole
+  // screen (see .drilling in global.css), the answer area scrolls inside it, and
+  // the action button stays pinned at the bottom.
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const inQuestion = setup && (phase === 'ask' || phase === 'mark' || phase === 'reveal');
+  useEffect(() => {
+    document.documentElement.classList.toggle('drilling', inQuestion);
+    return () => document.documentElement.classList.remove('drilling');
+  }, [inQuestion]);
+  // New question: back to the top. Answered: bring the explanation into view.
+  useEffect(() => {
+    const b = bodyRef.current;
+    if (!b) return;
+    if (phase === 'ask') b.scrollTop = 0;
+    else if (phase === 'reveal' || phase === 'mark') {
+      requestAnimationFrame(() => b.querySelector('.reveal')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' }));
+    }
+  }, [phase, idx]);
+
+  // Swipe left to go on, once the answer is shown. The card follows the finger.
+  const swipeRef = useRef<{ x: number; y: number; dx: number; horiz: boolean | null } | null>(null);
+  const leavingRef = useRef(false);
+  function swipeTo(dx: number, animate: boolean) {
+    const b = bodyRef.current;
+    if (!b) return;
+    b.style.transition = animate ? 'transform 0.18s ease-out, opacity 0.18s ease-out' : 'none';
+    b.style.transform = dx ? `translateX(${dx}px)` : '';
+    b.style.opacity = dx ? String(Math.max(0.3, 1 + dx / 400)) : '';
+  }
+  function goNext() {
+    if (leavingRef.current) return;
+    leavingRef.current = true;
+    swipeTo(-innerWidth, true);
+    setTimeout(() => {
+      leavingRef.current = false;
+      swipeTo(0, false);
+      next();
+    }, 180);
+  }
+  const touch = {
+    onTouchStart: (e: TouchEvent) => {
+      if (phase !== 'reveal' || e.touches.length !== 1) return;
+      swipeRef.current = { x: e.touches[0].clientX, y: e.touches[0].clientY, dx: 0, horiz: null };
+    },
+    onTouchMove: (e: TouchEvent) => {
+      const s = swipeRef.current;
+      if (!s) return;
+      const dx = e.touches[0].clientX - s.x;
+      const dy = e.touches[0].clientY - s.y;
+      if (s.horiz === null && Math.hypot(dx, dy) > 10) s.horiz = Math.abs(dx) > Math.abs(dy) * 1.3;
+      if (!s.horiz) return;
+      s.dx = Math.min(0, dx);
+      swipeTo(s.dx * 0.8, false);
+    },
+    onTouchEnd: () => {
+      const s = swipeRef.current;
+      swipeRef.current = null;
+      if (!s || !s.horiz) return;
+      if (s.dx < -70) goNext();
+      else swipeTo(0, true);
+    },
+  };
+
   // Keyboard: 1–4 to answer, Enter / Space for next. The ref always holds this
   // render's handler, so fast key presses never see stale state.
   const onKey = useRef<(e: KeyboardEvent) => void>(() => {});
@@ -580,7 +643,28 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const mult = multOf(combo);
 
   return (
-    <div class="drill" ref={cardRef}>
+    <div class={`drill ${setup ? 'drill-live' : ''}`} ref={cardRef}
+      onTouchStart={touch.onTouchStart} onTouchMove={touch.onTouchMove} onTouchEnd={touch.onTouchEnd} onTouchCancel={touch.onTouchEnd}>
+      {setup && (
+        <div class="drill-top">
+          <a class="dt-btn" href={BASE} aria-label="Home">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5M6.5 10v9h11v-9" /></svg>
+          </a>
+          <div class="dt-steps" role="img" aria-label={`Question ${idx + 1} of ${rounds.length}`}>
+            {rounds.map((_, i) => {
+              const r = results[i];
+              const cls = r ? (r.picked === r.problem.answer && !r.peeked ? 'ok' : 'bad') : i === idx ? 'now' : '';
+              return <i class={cls} />;
+            })}
+          </div>
+          <a class="dt-btn" href={`${BASE}map/`} aria-label="Progress map">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="3.2" /><ellipse cx="12" cy="12" rx="9.5" ry="4.2" transform="rotate(-25 12 12)" />
+            </svg>
+          </a>
+        </div>
+      )}
+      <div class="drill-body" ref={bodyRef}>
       <div class="drill-head">
         <span class="qhead">
           <span class="mono">Q{idx + 1}<span class="muted">/{rounds.length}</span></span>
@@ -678,11 +762,6 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
             Now tap the words that point to <span class="pname" style={{ '--h': ans.hue }}>{ans.name}</span>.
             <span class="muted"> There {p.tells.length === 1 ? 'is 1 tell' : `are ${p.tells.length} tells`}; one word from each is enough. +25 each, −10 per extra word.</span>
           </p>
-          <div class="row">
-            <button type="button" class="btn primary" onClick={checkMarks}>
-              Check {selected.size > 0 && <span class="mono">({selected.size})</span>} <kbd>↵</kbd>
-            </button>
-          </div>
         </div>
       )}
 
@@ -718,12 +797,23 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               </dl>
             </details>
           )}
-          <div class="row">
-            <button type="button" class="btn primary" onClick={next} autoFocus>
-              {idx + 1 >= rounds.length ? 'See results' : 'Next'} <kbd>↵</kbd>
-            </button>
-            {p.leetcode && <a class="btn ghost" href={p.leetcode} target="_blank" rel="noopener">Solve it on LeetCode ↗</a>}
-          </div>
+          {p.leetcode && <p><a class="btn ghost" href={p.leetcode} target="_blank" rel="noopener">Solve it on LeetCode ↗</a></p>}
+        </div>
+      )}
+      </div>
+      {phase === 'mark' && (
+        <div class="drill-foot">
+          <button type="button" class="btn primary" onClick={checkMarks}>
+            Check {selected.size > 0 && <span class="mono">({selected.size})</span>} <kbd>↵</kbd>
+          </button>
+        </div>
+      )}
+      {revealed && (
+        <div class="drill-foot">
+          <button type="button" class="btn primary" onClick={() => (setup ? goNext() : next())} autoFocus>
+            {idx + 1 >= rounds.length ? 'See results' : 'Next'} <kbd>↵</kbd>
+          </button>
+          {setup && <span class="swipe-hint" aria-hidden="true">or swipe ←</span>}
         </div>
       )}
     </div>
