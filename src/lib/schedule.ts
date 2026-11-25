@@ -2,7 +2,8 @@
 // the answer history on this device (no clocks, no server).
 //
 // Each question is in one of four states, by its history in this track:
-//   retry  – the last answer was wrong, timed out or peeked: bring it back soon.
+//   retry  – the last answer was wrong, timed out, peeked or a lucky guess:
+//            bring it back soon. Misses you were sure of come back first.
 //   new    – never answered.
 //   due    – answered right, and enough other answers have happened since that
 //            it's time to check it again. The gap grows with each right answer
@@ -11,7 +12,7 @@
 //
 // A round takes retries first (capped, so new questions keep flowing), then
 // new questions, then due reviews (most overdue first), then the rest.
-import type { Attempt } from './storage';
+import { needsRetry, type Attempt } from './storage';
 
 export type Slot = 'retry' | 'new' | 'due' | 'later';
 
@@ -24,6 +25,8 @@ export interface Plan {
   overdue: number;
   /** Times answered before. */
   seen: number;
+  /** The latest answer was wrong although you said you were sure. */
+  sureMiss?: boolean;
 }
 
 const BASE_GAP = 10;
@@ -32,7 +35,7 @@ const MAX_RETRIES = 4;
 
 export const gapFor = (streak: number) => BASE_GAP * GROWTH ** Math.max(0, streak - 1);
 
-const isRight = (a: Attempt) => a.picked === a.answer && !a.peeked;
+const isRight = (a: Attempt) => !needsRetry(a);
 
 /** Works out each question's state from one track's attempts (oldest first). */
 export function planAll(ids: string[], attempts: Attempt[]): Map<string, Plan> {
@@ -55,7 +58,9 @@ export function planAll(ids: string[], attempts: Attempt[]): Map<string, Plan> {
     const since = total - 1 - h[h.length - 1]; // answers in this track since the last one
     const overdue = since - gapFor(streak);
     const slot: Slot = streak === 0 ? 'retry' : overdue >= 0 ? 'due' : 'later';
-    plans.set(id, { id, slot, streak, overdue, seen: h.length });
+    const last = attempts[h[h.length - 1]];
+    const sureMiss = last.conf === 'sure' && last.picked !== last.answer;
+    plans.set(id, { id, slot, streak, overdue, seen: h.length, ...(sureMiss ? { sureMiss } : {}) });
   }
   return plans;
 }
@@ -72,8 +77,9 @@ export function chooseRound(
 ): Plan[] {
   const plans = [...planAll(ids, attempts).values()];
   const of = (slot: Slot) => shuffle(plans.filter((p) => p.slot === slot));
-  // Retries: the ones missed longest ago first, so a miss never waits forever.
-  const retry = of('retry').sort((a, b) => b.overdue - a.overdue);
+  // Retries: confident misses first (the ones most worth fixing), then the ones
+  // missed longest ago, so a miss never waits forever.
+  const retry = of('retry').sort((a, b) => Number(!!b.sureMiss) - Number(!!a.sureMiss) || b.overdue - a.overdue);
   const fresh = of('new');
   const due = of('due').sort((a, b) => b.overdue - a.overdue);
   const later = of('later').sort((a, b) => b.overdue - a.overdue);

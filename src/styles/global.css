@@ -188,6 +188,16 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 6px; border-rad
 .reveal-card p { margin: 0; }
 .pname { color: var(--pc); font-weight: 700; margin: 0 0 4px; }
 .trap { margin: 14px 0 20px; color: var(--muted); }
+/* recall first: the choices wait until you've named the pattern */
+.recall {
+  margin: 18px 0 0; padding: 18px; border-radius: 12px; text-align: center;
+  border: 1px dashed var(--border); background: var(--surface-2);
+}
+.recall p { margin: 0 0 14px; }
+.recall-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.recall-btns .btn { min-width: 140px; min-height: 48px; }
+.conf-note { margin: 0 0 14px; font-size: 0.95rem; color: var(--muted); }
+.conf-note.sure-miss { color: var(--bad); }
 .label { font-family: var(--mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--bad); border: 1px solid currentColor; border-radius: 4px; padding: 1px 6px; margin-right: 10px; }
 @media (max-width: 560px) {
   .drill { padding: 18px; }
@@ -205,6 +215,9 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 6px; border-rad
 }
 .mode span { color: var(--muted); font-size: 0.9rem; }
 .mode.on { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.recall-pick { display: flex; gap: 10px; align-items: flex-start; margin: 0 0 16px; font-size: 0.9rem; color: var(--muted); cursor: pointer; max-width: 560px; }
+.recall-pick input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+.recall-pick strong { color: var(--text); margin-right: 4px; }
 .focus-pick { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; font-size: 0.9rem; color: var(--muted); max-width: 280px; }
 select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface-2); color: var(--text); }
 
@@ -217,6 +230,9 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .miss p { margin: 0 0 6px; }
 .miss-line { font-size: 0.92rem; }
 .strike { text-decoration: line-through; color: var(--muted); }
+.sure-tag { font-family: var(--mono); font-size: 0.72rem; color: var(--bad); border: 1px solid currentColor; border-radius: 4px; padding: 0 5px; margin-right: 8px; }
+.calib { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 18px 0 0; font-size: 0.95rem; }
+.calib .muted { flex-basis: 100%; font-size: 0.88rem; }
 .done .pname { display: inline; }
 
 /* ---------- pattern cards ---------- */

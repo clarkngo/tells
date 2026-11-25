@@ -7,7 +7,8 @@
 import { loadAttempts, replaceAttempts, type Attempt } from './storage';
 import { loadProfile, saveProfile, sumSources } from './profile';
 
-type Row = [string, string, string, string | null, number, number, 1?];
+// Row: track, id, answer, picked, ms, at, then optional peeked (1/0) and confidence (1 sure, 2 guess).
+type Row = [string, string, string, string | null, number, number, (1 | 0)?, (1 | 2)?];
 interface Payload {
   v: 1;
   a: Row[];
@@ -23,10 +24,18 @@ export interface ImportSummary {
   bests: number;
 }
 
-const toRow = (a: Attempt): Row =>
-  a.peeked ? [a.track, a.id, a.answer, a.picked, a.ms, a.at, 1] : [a.track, a.id, a.answer, a.picked, a.ms, a.at];
-const fromRow = ([track, id, answer, picked, ms, at, peeked]: Row): Attempt =>
-  peeked ? { track, id, answer, picked, ms, at, peeked: true } : { track, id, answer, picked, ms, at };
+function toRow(a: Attempt): Row {
+  const row: Row = [a.track, a.id, a.answer, a.picked, a.ms, a.at];
+  if (a.conf) row.push(a.peeked ? 1 : 0, a.conf === 'sure' ? 1 : 2);
+  else if (a.peeked) row.push(1);
+  return row;
+}
+function fromRow([track, id, answer, picked, ms, at, peeked, conf]: Row): Attempt {
+  const a: Attempt = { track, id, answer, picked, ms, at };
+  if (peeked) a.peeked = true;
+  if (conf) a.conf = conf === 1 ? 'sure' : 'guess';
+  return a;
+}
 const keyOf = (a: Attempt) => `${a.track}|${a.id}|${a.at}`;
 
 function toB64url(bytes: Uint8Array) {

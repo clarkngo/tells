@@ -8,7 +8,13 @@ export interface Attempt {
   ms: number;
   at: number;
   peeked?: true; // looked at a choice's definition before answering
+  // Said before seeing the choices (recall first): 'sure' = had the name in mind,
+  // 'guess' = didn't. A right guess isn't learned yet, so it comes back like a miss.
+  conf?: 'sure' | 'guess';
 }
+
+/** Wrong, timed out, peeked, or right only by guessing: not learned yet. */
+export const needsRetry = (a: Attempt) => a.picked !== a.answer || !!a.peeked || a.conf === 'guess';
 
 const KEY = 'tells:v1:attempts';
 const MAX = 5000;
@@ -35,11 +41,11 @@ export function saveAttempt(a: Attempt) {
   }
 }
 
-/** The latest attempt at each question that was wrong, timed out or peeked, newest first: the misses waiting for a retry. */
+/** The latest attempt at each question that still needs a retry (see needsRetry), newest first. */
 export function waitingMisses(attempts: Attempt[]): Attempt[] {
   const last = new Map<string, Attempt>();
   for (const a of attempts) last.set(`${a.track}:${a.id}`, a);
-  return [...last.values()].filter((a) => a.picked !== a.answer || a.peeked).sort((a, b) => b.at - a.at);
+  return [...last.values()].filter(needsRetry).sort((a, b) => b.at - a.at);
 }
 
 // Repeats still count toward mastery, but less each time: a question's first
