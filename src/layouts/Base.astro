@@ -44,6 +44,7 @@ const nav = tracks.map((t) => ({ prefix: `${base}${t.slug}/`, label: t.short }))
       <a href={`${base}gallery/`}>Pattern gallery</a>
       <a href={`${base}map/`}>Progress map</a>
       <a href={`${base}sync/`}>Sync progress</a>
+      <span class="muted offline-note" hidden>Saved for offline use</span>
       <span class="muted">Designed and built by Clark Ngo.</span>
       <span class="muted credit">
         Music by <a href="https://pixabay.com/users/the_mountain-3616498/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=602501">Dmitrii Kolesnikov</a>
@@ -54,5 +55,19 @@ const nav = tracks.map((t) => ({ prefix: `${base}${t.slug}/`, label: t.short }))
         from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=612040">Pixabay</a>
       </span>
     </footer>
+    <script>
+      // Offline: register the service worker (production only) and say so in
+      // the footer once the pages are saved.
+      if ('serviceWorker' in navigator && import.meta.env.PROD) {
+        const base = import.meta.env.BASE_URL;
+        const note = () => caches.keys().then((ks) => {
+          const el = document.querySelector<HTMLElement>('.offline-note');
+          if (el) el.hidden = !ks.some((k) => k.startsWith('tells-pages-'));
+        }).catch(() => {});
+        navigator.serviceWorker.register(`${base}sw.js`, { scope: base }).then(note, () => {});
+        navigator.serviceWorker.addEventListener('controllerchange', note);
+        note();
+      }
+    </script>
   </body>
 </html>
