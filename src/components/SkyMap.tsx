@@ -3,6 +3,7 @@ import { CHANGED, loadAttempts, type Attempt } from '../lib/storage';
 import { planAll, type Slot } from '../lib/schedule';
 import { mastery } from './Stars';
 import Glyph from './Glyph';
+import TellApart from './TellApart';
 import { copyText, loadWishes, removeWish, wishText, WISHES_CHANGED, type Wish } from '../lib/wishes';
 
 const wishKey = (w: Wish) => `${w.forTrack}>${w.slug}`;
@@ -12,7 +13,7 @@ const wishKey = (w: Wish) => `${w.forTrack}>${w.slug}`;
 // missed last time are waiting, moons are single questions, and red arcs join
 // patterns you've mixed up.
 
-export interface MapPattern { slug: string; name: string; hue: number; blurb: string }
+export interface MapPattern { slug: string; name: string; hue: number; blurb: string; signals: string[] }
 export interface MapTrack {
   slug: string;
   name: string;
@@ -430,8 +431,13 @@ function TrackDetail({ track, st, sel, setSel, base }: {
     .sort((a, b) => b.c - a.c)
     .slice(0, p ? 5 : 3);
 
+  const [vs, setVs] = useState('');
   if (p) {
     const ps = st.pats.get(p.slug)!;
+    const others = mixes.map((m) => (m.pair[0] === p.slug ? m.pair[1] : m.pair[0]));
+    const cmpSlug = others.includes(vs) ? vs : others[0];
+    const cmp = track.patterns.find((x) => x.slug === cmpSlug);
+    const cmpN = mixes.find((m) => m.pair.includes(cmpSlug ?? ''))?.c;
     return (
       <section class="map-detail" style={{ '--h': p.hue }}>
         <div class="map-detail-head">
@@ -451,12 +457,15 @@ function TrackDetail({ track, st, sel, setSel, base }: {
               return (
                 <>
                   {i > 0 && ' · '}
-                  <button class="linkish" onClick={() => setSel(other)}>{name(other)} ({m.c})</button>
+                  <button class="linkish" aria-pressed={other === cmpSlug} onClick={() => setVs(other)}>
+                    {other === cmpSlug ? <strong>{name(other)}</strong> : name(other)} ({m.c})
+                  </button>
                 </>
               );
             })}
           </p>
         )}
+        {cmp && <TellApart a={p} b={cmp} times={cmpN} />}
         <a class="btn primary" href={`${base}${track.slug}/drill/?focus=${p.slug}`}>Drill {p.name} →</a>
       </section>
     );
@@ -471,7 +480,7 @@ function TrackDetail({ track, st, sel, setSel, base }: {
           {mixes.map((m, i) => (
             <>
               {i > 0 && ' · '}
-              <button class="linkish" onClick={() => setSel(m.pair[0])}>{name(m.pair[0])} ↔ {name(m.pair[1])} ({m.c})</button>
+              <button class="linkish" onClick={() => { setVs(m.pair[1]); setSel(m.pair[0]); }}>{name(m.pair[0])} ↔ {name(m.pair[1])} ({m.c})</button>
             </>
           ))}
         </p>

@@ -7,7 +7,7 @@ const data = tracks.map((t) => ({
   slug: t.slug,
   name: t.name,
   short: t.short,
-  patterns: t.patterns.filter((p) => p.live).map(({ slug, name, hue, blurb }) => ({ slug, name, hue, blurb })),
+  patterns: t.patterns.filter((p) => p.live).map(({ slug, name, hue, blurb, signals }) => ({ slug, name, hue, blurb, signals })),
   questions: t.problems.map((p) => ({ id: p.id, answer: p.answer })),
 }));
 ---

@@ -663,6 +663,21 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .sky-card-text strong { font-size: 1.1rem; }
 .sky-card-text span { color: var(--muted); font-size: 0.9rem; }
 .sky-card-go { font-size: 1.3rem; color: var(--muted); }
+.apart-wrap { margin: -6px 0 18px; border: 1px solid var(--border); border-radius: var(--radius); padding: 10px 14px; }
+.apart-wrap summary { cursor: pointer; color: var(--muted); }
+.apart-wrap summary strong { color: var(--text); font-weight: 600; }
+.apart-wrap[open] summary { margin-bottom: 10px; }
+.apart-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.apart-col { border-top: 3px solid var(--pc); background: var(--surface-2); border-radius: 8px; padding: 10px 12px; min-width: 0; }
+.apart-col p { margin: 0 0 6px; }
+.apart-tag { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.apart-blurb { font-size: 0.92rem; }
+.apart-signals { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 5px; }
+.apart-signals li { font-family: var(--mono); font-size: 0.72rem; border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; }
+.apart-signals li.shared { text-decoration: line-through; color: var(--muted); }
+.apart-note { font-size: 0.85rem; margin: 8px 0 0; }
+.map-detail .apart { margin: 6px 0 14px; }
+@media (max-width: 420px) { .apart-cols { grid-template-columns: 1fr; } }
 .fix-card {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-top: 10px;
   padding: 12px 18px; min-height: 52px; text-decoration: none; color: var(--text);
