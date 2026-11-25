@@ -59,7 +59,7 @@ export default function Review({ base }: { base: string }) {
       <div class="drill"><div class="done">
         <p class="eyebrow">Nothing to fix</p>
         <p class="big-points">All clear</p>
-        <p class="muted">Every question you've missed or peeked at has since been answered right. Misses show up here as you drill.</p>
+        <p class="muted">Every question you've missed, peeked at or guessed has since been answered right. Misses show up here as you drill.</p>
         <div class="row">
           <a class="btn primary big" href={base}>Pick a track</a>
           <a class="btn" href={`${base}map/`}>See your map →</a>

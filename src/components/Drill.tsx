@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Pattern, Problem, Term } from '../lib/types';
 import { findTerms, makeMatcher, type TermHit } from '../lib/glossary';
 import { chooseRound, type Slot } from '../lib/schedule';
-import { loadAttempts, repeatWeight, saveAttempt, waitingMisses } from '../lib/storage';
+import { loadAttempts, repeatWeight, saveAttempt, waitingMisses, type Attempt } from '../lib/storage';
 import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
@@ -25,7 +25,8 @@ type Mode = 'sprint' | 'focus' | 'zen';
 type Phase = 'setup' | 'ask' | 'mark' | 'reveal' | 'done';
 interface Round { problem: Problem; choices: string[]; seen: number; slot: Slot } // seen = earlier attempts at this question
 interface Marks { found: Set<number>; total: number; extra: number }
-interface Result { problem: Problem; picked: string | null; ms: number; marks?: Marks; peeked?: boolean }
+interface Result { problem: Problem; picked: string | null; ms: number; marks?: Marks; peeked?: boolean; conf?: Conf }
+type Conf = NonNullable<Attempt['conf']>;
 interface Token { text: string; word: boolean; tell: number } // tell = index into problem.tells, or -1
 
 interface Props {
@@ -54,6 +55,17 @@ const MODES: Record<Mode, { label: string; desc: string; timed: boolean }> = {
   focus: { label: 'Focus', desc: 'One pattern against its look-alikes, then mark the tells', timed: true },
   zen: { label: 'Zen', desc: 'No timer. Read slowly, think about the tells', timed: false },
 };
+
+// Recall first: the choices stay hidden until you've named the pattern in your
+// head and said whether you're sure. Recalling beats recognising, and the
+// sure/guess answer steers review (see needsRetry in lib/storage). On by default.
+const RECALL_KEY = 'tells:v1:recall';
+function loadRecall() {
+  try { return localStorage.getItem(RECALL_KEY) !== '0'; } catch { return true; }
+}
+function saveRecall(on: boolean) {
+  try { localStorage.setItem(RECALL_KEY, on ? '1' : '0'); } catch { /* not kept */ }
+}
 
 // Combo multipliers: 3 in a row ×1.5, 5 ×2, 8 ×3.
 const MULTS: [number, number][] = [[8, 3], [5, 2], [3, 1.5]];
@@ -200,6 +212,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const [bestCombo, setBestCombo] = useState(0);
   const [newBest, setNewBest] = useState(false);
   const [openTerm, setOpenTerm] = useState<Term | null>(null);
+  const [recall, setRecall] = useState(loadRecall);
+  // Recall step: choices hidden until `conf` is set for this question.
+  const [conf, setConf] = useState<Conf | null>(null);
+  const confRef = useRef<Conf | null>(null);
   // Low score: an easier round on the missed patterns, easier tracks, or a wish.
   const [easyRound, setEasyRound] = useState(false);
   const [wish, setWish] = useState<Wish | null>(null);
@@ -285,6 +301,8 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     setOpenTerm(null);
     setPeek(null);
     peekedRef.current = false;
+    confRef.current = null;
+    setConf(null);
     setPhase('ask');
   }
 
@@ -324,13 +342,14 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     const ms = Math.round(performance.now() - startRef.current);
     const right = choice === round.problem.answer;
     const peeked = peekedRef.current;
+    const c = recall ? confRef.current ?? undefined : undefined;
     clearTimeout(holdRef.current.timer);
     setPeek(null);
-    setResults((r) => [...r, { problem: round.problem, picked: choice, ms, peeked }]);
+    setResults((r) => [...r, { problem: round.problem, picked: choice, ms, peeked, ...(c ? { conf: c } : {}) }]);
     const [realTrack, id] = unpack(round.problem.id, track);
     saveAttempt({
       track: realTrack, id, answer: unpack(round.problem.answer, track)[1], picked: choice && unpack(choice, track)[1],
-      ms, at: Date.now(), ...(peeked ? { peeked: true as const } : {}),
+      ms, at: Date.now(), ...(peeked ? { peeked: true as const } : {}), ...(c ? { conf: c } : {}),
     });
 
     if (right && peeked) {
@@ -367,6 +386,13 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     }
     setPicked(choice);
     setPhase(marking ? 'mark' : 'reveal');
+  }
+
+  function sayConf(v: Conf) {
+    if (confRef.current || answeredRef.current) return;
+    confRef.current = v;
+    setConf(v);
+    sfx.tap(v === 'sure');
   }
 
   function toggleWord(i: number) {
@@ -515,7 +541,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   onKey.current = (e) => {
     const tag = (e.target as HTMLElement)?.tagName;
     if (tag === 'SELECT' || tag === 'INPUT' || tag === 'TEXTAREA') return;
-    if (phase === 'ask' && round) {
+    if (phase === 'ask' && round && recall && !confRef.current) {
+      if (e.key === 'Enter' || e.key.toLowerCase() === 's') { e.preventDefault(); sayConf('sure'); }
+      else if (e.key.toLowerCase() === 'g') sayConf('guess');
+    } else if (phase === 'ask' && round) {
       const n = Number(e.key);
       if (n >= 1 && n <= round.choices.length) answer(round.choices[n - 1]);
     } else if (phase === 'mark' && e.key === 'Enter') {
@@ -556,6 +585,14 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               </select>
             </label>
           )}
+          <label class="recall-pick">
+            <input type="checkbox" checked={recall} onChange={(e) => {
+              const on = (e.target as HTMLInputElement).checked;
+              setRecall(on);
+              saveRecall(on);
+            }} />
+            <span><strong>Recall first</strong> Name the pattern in your head before the choices show, and say if you're sure. Lucky guesses come back for another go.</span>
+          </label>
           <p class="muted scoring-hint">
             100 points per correct answer, up to +100 more for speed. Answers in a row multiply them: 3 → ×1.5, 5 → ×2, 8 → ×3.
           </p>
@@ -568,7 +605,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   if (phase === 'done') {
     const right = results.filter((r) => r.picked === r.problem.answer);
     const avg = right.length ? right.reduce((s, r) => s + r.ms, 0) / right.length / 1000 : 0;
-    const misses = results.filter((r) => r.picked !== r.problem.answer || r.peeked);
+    const misses = results.filter((r) => r.picked !== r.problem.answer || r.peeked || r.conf === 'guess');
+    const sure = results.filter((r) => r.conf === 'sure');
+    const guess = results.filter((r) => r.conf === 'guess');
+    const rightOf = (rs: Result[]) => rs.filter((r) => r.picked === r.problem.answer && !r.peeked).length;
     const peeks = results.filter((r) => r.peeked).length;
     const pct = results.length ? right.length / results.length : 0;
     const ms = results.flatMap((r) => (r.marks ? [r.marks] : []));
@@ -594,6 +634,13 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               </div>
             )}
           </div>
+          {sure.length + guess.length > 0 && (
+            <p class="calib">
+              {sure.length > 0 && <span>Sure: <strong>{rightOf(sure)}/{sure.length}</strong> right</span>}
+              {guess.length > 0 && <span>Not sure: <strong>{rightOf(guess)}/{guess.length}</strong> right</span>}
+              <span class="muted">{calibNote(rightOf(sure), sure.length, rightOf(guess), guess.length)}</span>
+            </p>
+          )}
           {misses.length > 0 && (
             <div class="misses">
               <h3>Review these</h3>
@@ -604,7 +651,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
                   return (
                     <div class="miss">
                       <p>{highlight(r.problem.prompt, r.problem.tells)}</p>
-                      <p class="miss-line"><span class="muted">Peeked</span> → <span class="pname" style={{ '--h': ans.hue }}>{ans.name}</span></p>
+                      <p class="miss-line"><span class="muted">{r.peeked ? 'Peeked' : 'Guessed right'}</span> → <span class="pname" style={{ '--h': ans.hue }}>{ans.name}</span></p>
                     </div>
                   );
                 }
@@ -612,6 +659,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
                   <div class="miss">
                     <p>{highlight(r.problem.prompt, r.problem.tells)}</p>
                     <p class="miss-line">
+                      {r.conf === 'sure' && <span class="sure-tag">was sure</span>}
                       <span class="strike">{you}</span> → <span class="pname" style={{ '--h': ans.hue }}>{ans.name}</span>
                     </p>
                   </div>
@@ -670,6 +718,12 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   // Wrong pick: offer a side-by-side of the two patterns. Opens by itself once
   // the same pair has been mixed up before.
   const mixed = revealed && picked && !correct ? bySlug.get(picked) ?? null : null;
+  const hidden = phase === 'ask' && recall && !conf;
+  const last = results[results.length - 1];
+  // Said "sure" and got it wrong: the error most worth fixing, so say so and open
+  // the side-by-side. Said "not sure" and got it right: it comes back to check.
+  const sureMiss = answered && last?.conf === 'sure' && !correct;
+  const luckyGuess = answered && last?.conf === 'guess' && correct && !last.peeked;
   const mixTimes = mixed ? mixCount(unpack(p.id, track)[0], unpack(p.answer, track)[1], unpack(mixed.slug, track)[1]) : 0;
 
   return (
@@ -749,6 +803,15 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
       )}
       {p.constraints && <p class="chip mono">{p.constraints}</p>}
 
+      {hidden ? (
+        <div class="recall" role="group" aria-label="Recall first">
+          <p>Name the pattern in your head. <span class="muted">Then say if you're sure.</span></p>
+          <div class="recall-btns">
+            <button type="button" class="btn primary" onClick={() => sayConf('sure')}>I've got it <kbd>S</kbd></button>
+            <button type="button" class="btn" onClick={() => sayConf('guess')}>Not sure <kbd>G</kbd></button>
+          </div>
+        </div>
+      ) : (
       <div class="choices">
         {round.choices.map((slug, i) => {
           const pat = bySlug.get(slug)!;
@@ -785,6 +848,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
           );
         })}
       </div>
+      )}
 
       {phase === 'mark' && (
         <div class="reveal mark-step">
@@ -814,6 +878,8 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
                 : `Spotted in ${((results[results.length - 1]?.ms ?? 0) / 1000).toFixed(1)}s`
               : picked ? `Not quite. It's ${ans.name}.` : `Time's up. It's ${ans.name}.`}
           </p>
+          {sureMiss && <p class="conf-note sure-miss">You were sure, so this is the one most worth a close look. It comes back first.</p>}
+          {luckyGuess && <p class="conf-note">Right, but you weren't sure. It comes back soon to check it's learned.</p>}
           <div class="reveal-card" style={{ '--h': ans.hue }}>
             <Glyph slug={unpack(ans.slug, track)[1]} hue={ans.hue} />
             <div>
@@ -823,7 +889,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
           </div>
           <p class="trap"><span class="label">Trap</span>{p.trap}</p>
           {mixed && (
-            <details class="apart-wrap" open={mixTimes > 1}>
+            <details class="apart-wrap" open={mixTimes > 1 || sureMiss}>
               <summary>How to tell <strong>{ans.name}</strong> from <strong>{mixed.name}</strong></summary>
               <TellApart a={ans} b={mixed} times={mixTimes} tags={['right answer', 'you picked']} />
             </details>
@@ -874,6 +940,14 @@ function ReviewNext() {
       </div>
     </>
   );
+}
+
+/** One line on how well "sure" matched being right, this round. */
+function calibNote(sr: number, sn: number, gr: number, gn: number) {
+  if (sn && sr < sn) return 'Some sure answers were wrong: those come back first.';
+  if (gn && gr === gn) return 'Every unsure one was right. Trust yourself a bit more.';
+  if (sn && sr === sn) return 'When you were sure, you were right.';
+  return '';
 }
 
 /** Times `a` and `b` were confused either way in one track, from saved attempts. */

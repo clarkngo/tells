@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'preact/hooks';
-import { CHANGED, loadAttempts, type Attempt } from '../lib/storage';
+import { CHANGED, loadAttempts, needsRetry, type Attempt } from '../lib/storage';
 import { mastery } from './Stars';
 import { waitingCount } from './MapLink';
 
@@ -22,7 +22,7 @@ function summarize(tracks: CardTrack[], all: Attempt[]): Sum {
   }
   const last = new Map<string, Attempt>();
   for (const a of all) last.set(`${a.track}:${a.id}`, a);
-  for (const a of last.values()) if (a.picked !== a.answer || a.peeked) missing.add(a.track);
+  for (const a of last.values()) if (needsRetry(a)) missing.add(a.track);
   return { stars, max, frac, missing, waiting: waitingCount(all), answered: all.length };
 }
 
