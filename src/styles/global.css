@@ -550,12 +550,53 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .lg-retry { border: 2px solid var(--bad); }
 .lg-due { background: var(--map-due); width: 7px; height: 7px; }
 .lg-mix { width: 16px; height: 0; border-radius: 0; border-top: 2px solid var(--bad); opacity: 0.7; }
+.map-stage { position: relative; }
+/* Orbit look: a slow-drifting nebula behind a rotating starfield. */
 .map-sky {
   width: 100%; height: auto; max-height: 80vh; display: block; overflow: visible; margin: 0 auto;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--accent) 8%, var(--surface)), var(--bg));
-  border: 1px solid var(--border); border-radius: var(--radius);
+  background:
+    radial-gradient(40% 35% at 22% 28%, color-mix(in srgb, #8f6bff 26%, transparent), transparent 70%),
+    radial-gradient(38% 32% at 78% 70%, color-mix(in srgb, #2fd3c6 18%, transparent), transparent 70%),
+    radial-gradient(30% 26% at 70% 18%, color-mix(in srgb, #ff7aa8 14%, transparent), transparent 70%),
+    radial-gradient(closest-side, color-mix(in srgb, var(--map-sun) 10%, #0a0d18), #05070d);
+  background-size: 160% 160%, 160% 160%, 160% 160%, 100% 100%;
+  animation: map-nebula 60s ease-in-out infinite alternate;
+  border: 1px solid color-mix(in srgb, #8f6bff 25%, var(--border)); border-radius: var(--radius);
   user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
 }
+@keyframes map-nebula {
+  from { background-position: 0% 0%, 100% 100%, 80% 0%, center; }
+  to { background-position: 40% 30%, 60% 70%, 40% 40%, center; }
+}
+.map-stars { transform-box: view-box; transform-origin: center; animation: map-drift 240s linear infinite; }
+@keyframes map-drift { to { transform: rotate(360deg); } }
+.map-stars circle.warm { fill: #ffd9a0; opacity: 0.55; }
+.map-stars circle.cool { fill: #a9c8ff; opacity: 0.5; }
+.map-stars circle.bright { fill: #fff; opacity: 0.9; filter: drop-shadow(0 0 4px #fff); }
+/* The sky stays dark in light mode too, so its text stays light. */
+.map-sky { --text: #e9edf5; --muted: #8b93a7; --bg: #05070d; --surface-2: #161b2b; --border: #2a3147; }
+/* Wide screens: the detail panel floats over the sky as a glass card. */
+@media (min-width: 980px) {
+  /* Break out of the text column: sky on the left, card overlapping its right edge. */
+  .map-stage {
+    display: grid; grid-template-columns: minmax(0, 1fr) 360px; align-items: start;
+    width: min(1240px, calc(100vw - 48px)); margin-left: calc(50% - min(620px, 50vw - 24px));
+  }
+  .map-stage .map-sky { max-height: 84vh; }
+  .map-stage > .map-detail {
+    position: relative; z-index: 1; margin: 24px 0 0 -72px; max-height: calc(84vh - 48px); overflow-y: auto;
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2);
+    border-color: color-mix(in srgb, #8f6bff 30%, var(--border));
+    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+    animation: map-card 0.35s cubic-bezier(.2,.8,.2,1);
+  }
+  .map-stage > .map-detail .map-detail-head { grid-template-columns: 1fr; }
+  .map-stage > .map-detail .map-detail-head .glyph { width: 100%; max-width: 220px; }
+  .map-stage > .map-detail .apart-cols { grid-template-columns: 1fr; }
+  .map-stage > .map-detail .wr-stats { grid-template-columns: repeat(2, 1fr); row-gap: 10px; }
+}
+@keyframes map-card { from { opacity: 0; transform: translateY(8px); } }
 .map-stars circle { fill: var(--muted); opacity: 0.35; animation: map-twinkle 4s ease-in-out infinite alternate; }
 @keyframes map-twinkle { to { opacity: 0.08; } }
 .map-scene { animation: map-zoom 0.45s cubic-bezier(.2,.8,.2,1); transform-origin: center; transform-box: view-box; }
@@ -618,7 +659,7 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
   .map-detail-head { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .map-scene, .map-stars circle, .map-node.retry .map-body { animation: none; }
+  .map-scene, .map-stars, .map-stars circle, .map-node.retry .map-body, .map-sky, .map-stage > .map-detail { animation: none; }
 }
 .map-center .map-small, .map-center .map-label.center, .map-core .map-small { fill: var(--text); paint-order: stroke; stroke: var(--bg); stroke-width: 5px; }
 
@@ -690,6 +731,32 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .apart-note { font-size: 0.85rem; margin: 8px 0 0; }
 .map-detail .apart { margin: 6px 0 14px; }
 @media (max-width: 420px) { .apart-cols { grid-template-columns: 1fr; } }
+.week-recap { margin: 4px 0 16px; padding: 14px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface-2); }
+.week-recap h3 { margin: 0 0 10px; font-size: 1rem; }
+.wr-days { display: flex; gap: 6px; margin-bottom: 12px; }
+.wr-days span { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+.wr-days i { width: 100%; max-width: 34px; height: 8px; border-radius: 4px; background: var(--surface); border: 1px solid var(--border); }
+.wr-days .on i { background: #ffd27a; border-color: #ffd27a; }
+.wr-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.wr-stats div { display: flex; flex-direction: column; min-width: 0; }
+.wr-stats strong { font-size: 1.35rem; font-variant-numeric: tabular-nums; }
+.wr-stats span { color: var(--muted); font-size: 0.8rem; }
+.wr-stats .wr-delta { font-family: var(--mono); font-size: 0.72rem; }
+.wr-delta.up { color: var(--good); }
+.wr-delta.down { color: var(--bad); }
+.wr-pair { margin: 10px 0 0; font-size: 0.9rem; }
+@media (max-width: 420px) { .wr-stats { grid-template-columns: repeat(2, 1fr); row-gap: 12px; } }
+.potd {
+  display: grid; grid-template-columns: 150px 1fr; gap: 16px; align-items: center; margin-top: 14px;
+  padding: 16px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--pc) 40%, var(--border));
+  background: color-mix(in srgb, var(--pc) 6%, var(--surface));
+}
+.potd-text { min-width: 0; }
+.potd .eyebrow { margin: 0 0 4px; }
+.potd .pname { font-size: 1.2rem; }
+.potd-blurb { margin: 0 0 8px; }
+.potd .row { margin-top: 12px; }
+@media (max-width: 560px) { .potd { grid-template-columns: 1fr; } .potd .glyph { max-width: 200px; } }
 .fix-card {
   display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-top: 10px;
   padding: 12px 18px; min-height: 52px; text-decoration: none; color: var(--text);

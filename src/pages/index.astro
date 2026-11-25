@@ -4,8 +4,12 @@ import Drill from '../components/Drill';
 import Progress from '../components/Progress';
 import Today from '../components/Today';
 import SkyCard from '../components/SkyCard';
+import PatternOfDay from '../components/PatternOfDay';
 import { dsa, tracks } from '../lib/tracks';
 const base = import.meta.env.BASE_URL;
+const dayPatterns = tracks.flatMap((t) => t.patterns.filter((p) => p.live).map((p) => ({
+  track: t.slug, short: t.short, slug: p.slug, name: p.name, hue: p.hue, blurb: p.blurb, signals: p.signals,
+})));
 ---
 <Base>
   <section class="hero">
@@ -28,6 +32,7 @@ const base = import.meta.env.BASE_URL;
     <Today client:only="preact" />
     <SkyCard client:only="preact" href={`${base}map/`}
       tracks={tracks.map((t) => ({ slug: t.slug, short: t.short, patterns: t.patterns.filter((p) => p.live).map((p) => p.slug) }))} />
+    <PatternOfDay client:only="preact" patterns={dayPatterns} base={base} />
     <p class="gallery-link"><a href={`${base}sync/`}>Practice on another device? Sync your progress →</a></p>
   </section>
 
