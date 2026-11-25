@@ -37,6 +37,24 @@ import { patterns as dwbPatterns } from '../data/tracks/dev-workflow-basics/patt
 import { glossary as dwbGlossary } from '../data/tracks/dev-workflow-basics/glossary';
 import { patterns as tobPatterns } from '../data/tracks/tech-org-basics/patterns';
 import { glossary as tobGlossary } from '../data/tracks/tech-org-basics/glossary';
+import { patterns as llmbPatterns } from '../data/tracks/llm-basics/patterns';
+import { glossary as llmbGlossary } from '../data/tracks/llm-basics/glossary';
+import { patterns as webbPatterns } from '../data/tracks/web-basics/patterns';
+import { glossary as webbGlossary } from '../data/tracks/web-basics/glossary';
+import { patterns as wpbPatterns } from '../data/tracks/web-page-basics/patterns';
+import { glossary as wpbGlossary } from '../data/tracks/web-page-basics/glossary';
+import { patterns as dbbPatterns } from '../data/tracks/debugging-basics/patterns';
+import { glossary as dbbGlossary } from '../data/tracks/debugging-basics/glossary';
+import { patterns as thbPatterns } from '../data/tracks/thinking-basics/patterns';
+import { glossary as thbGlossary } from '../data/tracks/thinking-basics/glossary';
+import { patterns as rqbPatterns } from '../data/tracks/requirements-basics/patterns';
+import { glossary as rqbGlossary } from '../data/tracks/requirements-basics/glossary';
+import { patterns as tsbPatterns } from '../data/tracks/time-series-basics/patterns';
+import { glossary as tsbGlossary } from '../data/tracks/time-series-basics/glossary';
+import { patterns as lsbPatterns } from '../data/tracks/listening-basics/patterns';
+import { glossary as lsbGlossary } from '../data/tracks/listening-basics/glossary';
+import { patterns as plbPatterns } from '../data/tracks/play-basics/patterns';
+import { glossary as plbGlossary } from '../data/tracks/play-basics/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -273,8 +291,81 @@ export const techOrgBasics = makeTrack(
   tobGlossary,
 );
 
+export const llmBasics = makeTrack(
+  { slug: 'llm-basics', name: 'How LLMs work', short: 'LLM basics',
+    tagline: 'Easier warm-up for AI engineering, context and agents: tokens, context windows, temperature, embeddings and why models make things up.' },
+  llmbPatterns,
+  import.meta.glob('../data/tracks/llm-basics/problems/*.json', { eager: true, import: 'default' }),
+  llmbGlossary,
+);
+
+export const webBasics = makeTrack(
+  { slug: 'web-basics', name: 'How the web works', short: 'Web basics',
+    tagline: 'Easier warm-up for system design and backend: clients, servers, DNS, HTTP, caches and databases.' },
+  webbPatterns,
+  import.meta.glob('../data/tracks/web-basics/problems/*.json', { eager: true, import: 'default' }),
+  webbGlossary,
+);
+
+export const webPageBasics = makeTrack(
+  { slug: 'web-page-basics', name: 'HTML, CSS and JavaScript basics', short: 'Page basics',
+    tagline: 'Easier warm-up for frontend: tags, the DOM, the box model, layout, events and fetching data.' },
+  wpbPatterns,
+  import.meta.glob('../data/tracks/web-page-basics/problems/*.json', { eager: true, import: 'default' }),
+  wpbGlossary,
+);
+
+export const debuggingBasics = makeTrack(
+  { slug: 'debugging-basics', name: 'Debugging basics', short: 'Bug basics',
+    tagline: 'Easier warm-up for debugging: read the error, reproduce it, narrow it down and fix the cause.' },
+  dbbPatterns,
+  import.meta.glob('../data/tracks/debugging-basics/problems/*.json', { eager: true, import: 'default' }),
+  dbbGlossary,
+);
+
+export const thinkingBasics = makeTrack(
+  { slug: 'thinking-basics', name: 'Clear thinking basics', short: 'Think basics',
+    tagline: 'Easier warm-up for first principles: assumptions, cause and effect, base rates and breaking problems into parts.' },
+  thbPatterns,
+  import.meta.glob('../data/tracks/thinking-basics/problems/*.json', { eager: true, import: 'default' }),
+  thbGlossary,
+);
+
+export const requirementsBasics = makeTrack(
+  { slug: 'requirements-basics', name: 'Requirements basics', short: 'Spec basics',
+    tagline: 'Easier warm-up for spec-driven development: needs, acceptance criteria, scope, edge cases and vague words.' },
+  rqbPatterns,
+  import.meta.glob('../data/tracks/requirements-basics/problems/*.json', { eager: true, import: 'default' }),
+  rqbGlossary,
+);
+
+export const timeSeriesBasics = makeTrack(
+  { slug: 'time-series-basics', name: 'Time series basics', short: 'Series basics',
+    tagline: 'Easier warm-up for GARCH: trend, seasonality, noise, moving averages, volatility and percent change.' },
+  tsbPatterns,
+  import.meta.glob('../data/tracks/time-series-basics/problems/*.json', { eager: true, import: 'default' }),
+  tsbGlossary,
+);
+
+export const listeningBasics = makeTrack(
+  { slug: 'listening-basics', name: 'Listening basics', short: 'Listen basics',
+    tagline: 'Easier warm-up for DISC and hard conversations: reflect back, ask open questions, let people finish.' },
+  lsbPatterns,
+  import.meta.glob('../data/tracks/listening-basics/problems/*.json', { eager: true, import: 'default' }),
+  lsbGlossary,
+);
+
+export const playBasics = makeTrack(
+  { slug: 'play-basics', name: 'Game design basics', short: 'Play basics',
+    tagline: 'Easier warm-up for game design: core loops, clear goals, feedback, difficulty, choices and rewards.' },
+  plbPatterns,
+  import.meta.glob('../data/tracks/play-basics/problems/*.json', { eager: true, import: 'default' }),
+  plbGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
   dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, sociomateriality, debugging, firstPrinciples,
   dsaBasics, statsBasics, mlBasics, devWorkflowBasics, techOrgBasics,
+  llmBasics, webBasics, webPageBasics, debuggingBasics, thinkingBasics, requirementsBasics, timeSeriesBasics, listeningBasics, playBasics,
 ];

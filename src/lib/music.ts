@@ -1,4 +1,4 @@
-// Background music: on by default; the visitor's on/off choice and chosen track
+// Background music: off by default; the visitor's on/off choice and chosen track
 // are saved in localStorage. Pages are full reloads, so each track's playback
 // position is carried across them in sessionStorage.
 const ON_KEY = 'tells:v1:music';
@@ -17,9 +17,9 @@ let elTrack = -1;
 
 export function isMusicOn(): boolean {
   try {
-    return localStorage.getItem(ON_KEY) !== '0'; // unset means on
+    return localStorage.getItem(ON_KEY) === '1'; // unset means off
   } catch {
-    return true;
+    return false;
   }
 }
 
