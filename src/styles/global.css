@@ -671,6 +671,20 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .wish { margin-top: 14px; }
 .wish p { margin: 0 0 8px; }
 .wish-text { font-size: 0.82rem; background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; user-select: all; -webkit-user-select: all; overflow-wrap: anywhere; }
+.map-area-ring { fill: none; stroke: var(--border); stroke-width: 1.5; stroke-dasharray: 3 7; }
+.map-area.started .map-area-ring { stroke: color-mix(in srgb, var(--map-sun) 45%, transparent); }
+.map-area:hover .map-area-ring, .map-area:focus-visible .map-area-ring { stroke: var(--text); }
+.map-mini.started .map-body { stroke: var(--map-sun); }
+.map-mini.retry .map-body { stroke: var(--bad); animation: map-pulse 1.6s ease-in-out infinite; }
+.map-label.area { font-size: 24px; font-weight: 700; letter-spacing: 0.5px; }
+.map-area .map-small { fill: var(--muted); paint-order: stroke; stroke: var(--bg); stroke-width: 5px; }
+.map-warm { fill: none; stroke: color-mix(in srgb, var(--map-sun) 50%, transparent); stroke-width: 2; stroke-dasharray: 5 7; pointer-events: none; }
+.area-list { list-style: none; padding: 0; margin: 12px 0 0; display: grid; gap: 8px; }
+.area-list li { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; }
+.area-list .area-drill { margin-left: auto; color: var(--accent); text-decoration: none; font-size: 0.9em; }
+.area-list .area-drill:hover { text-decoration: underline; }
+@media (max-width: 640px) { .map-label.area { font-size: 34px; } .map-area .map-small { font-size: 24px; } }
+@media (prefers-reduced-motion: reduce) { .map-mini.retry .map-body { animation: none; } }
 .map-wish-line { stroke: var(--muted); stroke-width: 1.5; stroke-dasharray: 3 6; opacity: 0.6; }
 .map-wish .map-body { fill: transparent; stroke: var(--muted); stroke-dasharray: 4 5; stroke-width: 2; animation: map-spin 18s linear infinite; transform-box: fill-box; transform-origin: center; }
 .map-wish .map-num { fill: var(--muted); font-size: 18px; }
