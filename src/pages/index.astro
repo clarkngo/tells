@@ -6,6 +6,7 @@ import Today from '../components/Today';
 import SkyCard from '../components/SkyCard';
 import PatternOfDay from '../components/PatternOfDay';
 import { dsa, tracks } from '../lib/tracks';
+import { cousinsFor } from '../lib/cousins';
 const base = import.meta.env.BASE_URL;
 const dayPatterns = tracks.flatMap((t) => t.patterns.filter((p) => p.live).map((p) => ({
   track: t.slug, short: t.short, slug: p.slug, name: p.name, hue: p.hue, blurb: p.blurb, signals: p.signals,
@@ -38,7 +39,7 @@ const dayPatterns = tracks.flatMap((t) => t.patterns.filter((p) => p.live).map((
 
   <section class="demo">
     <h2 class="section-title">Try three <span class="muted">· DSA<span class="kb-hint"> · keys 1–4 answer, Enter continues</span></span></h2>
-    <Drill client:only="preact" track={dsa.slug} patterns={dsa.patterns} problems={dsa.problems}
+    <Drill client:only="preact" track={dsa.slug} patterns={dsa.patterns} problems={dsa.problems} cousins={cousinsFor(dsa.slug)}
       count={3} seconds={20} setup={false} drillHref={`${base}dsa/drill/`}>
       <div slot="fallback" class="drill skeleton">Loading drill…</div>
     </Drill>

@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Glyph from '../../components/Glyph';
 import Stars from '../../components/Stars';
 import { tracks } from '../../lib/tracks';
+import { cousinsFor } from '../../lib/cousins';
 import type { Track } from '../../lib/types';
 
 export function getStaticPaths() {
@@ -11,6 +12,7 @@ export function getStaticPaths() {
 const { t } = Astro.props as { t: Track };
 const base = import.meta.env.BASE_URL;
 const count = (slug: string) => t.problems.filter((p) => p.answer === slug).length;
+const cousins = cousinsFor(t.slug);
 const noun = t.slug === 'dsa' ? 'problems' : 'scenarios';
 ---
 <Base title={`${t.short} patterns`}>
@@ -21,7 +23,7 @@ const noun = t.slug === 'dsa' ? 'problems' : 'scenarios';
   </section>
   <div class="grid">
     {t.patterns.map((p) => (
-      <article class={`card ${p.live ? '' : 'soon'}`} style={`--h:${p.hue}`}>
+      <article id={p.slug} class={`card ${p.live ? '' : 'soon'}`} style={`--h:${p.hue}`}>
         <div class="card-top">
           <h2 class="pname">{p.name}</h2>
           {p.live ? <span class="mono muted">{count(p.slug)} {noun}</span> : <span class="badge">Soon</span>}
@@ -30,6 +32,16 @@ const noun = t.slug === 'dsa' ? 'problems' : 'scenarios';
         {p.live && <Glyph slug={p.slug} hue={p.hue} />}
         <p>{p.blurb}</p>
         <ul class="signals">{p.signals.map((s) => <li>{s}</li>)}</ul>
+        {cousins[p.slug] && (
+          <div class="cousins">
+            <p><span class="label same">Same idea</span>{cousins[p.slug].idea}</p>
+            <div class="pill-row">
+              {cousins[p.slug].others.map((o) => (
+                <a class="pill" style={`--h:${o.hue}`} href={`${base}${o.track}/patterns/#${o.slug}`}><span class="dot" />{o.name}<span class="muted"> · {o.short}</span></a>
+              ))}
+            </div>
+          </div>
+        )}
         {p.live && <a class="card-link" href={`${base}${t.slug}/drill/?focus=${p.slug}`}>Drill this →</a>}
       </article>
     ))}

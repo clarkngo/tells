@@ -4,6 +4,7 @@ import Drill from '../../components/Drill';
 import { tracks } from '../../lib/tracks';
 import type { Track } from '../../lib/types';
 import { related } from '../../lib/related';
+import { cousinsFor } from '../../lib/cousins';
 import type { Suggest } from '../../components/Drill';
 
 export function getStaticPaths() {
@@ -31,7 +32,7 @@ const suggest: Suggest = {
       <a href={`${base}${t.slug}/patterns/`}>see all patterns</a>
     </p>
   </section>
-  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} glossary={t.glossary} suggest={suggest} setup>
+  <Drill client:only="preact" track={t.slug} patterns={t.patterns} problems={t.problems} glossary={t.glossary} suggest={suggest} cousins={cousinsFor(t.slug)} setup>
     <div slot="fallback" class="drill skeleton">Loading drill…</div>
   </Drill>
 </Base>

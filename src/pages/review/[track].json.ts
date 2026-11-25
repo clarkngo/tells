@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { tracks } from '../../lib/tracks';
 import type { Track } from '../../lib/types';
+import { cousinsFor } from '../../lib/cousins';
 
 // One track's questions, fetched by the Fix my misses page only for the tracks
 // that have misses waiting, so no page has to ship every track's questions.
@@ -17,5 +18,6 @@ export const GET: APIRoute = ({ props }) => {
     patterns: t.patterns,
     problems: t.problems,
     glossary: t.glossary,
+    cousins: cousinsFor(t.slug),
   }));
 };

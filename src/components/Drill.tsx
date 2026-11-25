@@ -11,6 +11,7 @@ import TellApart from './TellApart';
 import { SIZES, applySize, loadSize } from '../lib/textsize';
 import { LOW_SCORE, type Basics } from '../lib/related';
 import { markMixDone } from '../lib/mix';
+import type { Cousins } from '../lib/cousins';
 import { addWish, copyText, wishText, type Wish } from '../lib/wishes';
 
 /** What to offer after a low score (worked out at build time from lib/related). */
@@ -47,6 +48,8 @@ interface Props {
   slots?: Record<string, Slot>;
   /** Daily mix: the track stays hidden until the question is answered. */
   mix?: boolean;
+  /** Pattern slug → the same idea in other tracks (lib/cousins). */
+  cousins?: Record<string, Cousins>;
 }
 
 /** `track::slug` → [track, slug]; a plain slug belongs to `fallback`. */
@@ -198,7 +201,7 @@ function CountUp({ to }: { to: number }) {
   return <>{v.toLocaleString()}</>;
 }
 
-export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest, review, slots, mix }: Props) {
+export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest, review, slots, mix, cousins }: Props) {
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
@@ -894,6 +897,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
             </div>
           </div>
           <p class="trap"><span class="label">Trap</span>{p.trap}</p>
+          {cousins?.[p.answer] && <CousinRow c={cousins[p.answer]} />}
           {mixed && (
             <details class="apart-wrap" open={mixTimes > 1 || sureMiss}>
               <summary>How to tell <strong>{ans.name}</strong> from <strong>{mixed.name}</strong></summary>
@@ -927,6 +931,22 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
           {full && <span class="swipe-hint" aria-hidden="true">or swipe ←</span>}
         </div>
       )}
+    </div>
+  );
+}
+
+// The same idea in other tracks, after the reveal.
+function CousinRow({ c }: { c: Cousins }) {
+  return (
+    <div class="cousins">
+      <p><span class="label same">Same idea elsewhere</span>{c.idea}</p>
+      <div class="pill-row">
+        {c.others.map((o) => (
+          <a class="pill" style={{ '--h': o.hue }} href={`${BASE}${o.track}/${o.live ? `drill/?focus=${o.slug}` : 'patterns/'}`}>
+            <span class="dot" />{o.name}<span class="muted"> · {o.short}</span>
+          </a>
+        ))}
+      </div>
     </div>
   );
 }

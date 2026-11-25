@@ -4,9 +4,10 @@ import type { Slot } from '../lib/schedule';
 import { loadAttempts } from '../lib/storage';
 import { MIX_SIZE, MIX_TRACKS, pickMix, startedTracks } from '../lib/mix';
 import Drill from './Drill';
+import type { Cousins } from '../lib/cousins';
 
-interface TrackData { slug: string; short: string; patterns: Pattern[]; problems: Problem[]; glossary: Term[] }
-interface Ready { patterns: Pattern[]; problems: Problem[]; glossary: Term[]; names: Record<string, string>; slots: Record<string, Slot> }
+interface TrackData { slug: string; short: string; patterns: Pattern[]; problems: Problem[]; glossary: Term[]; cousins?: Record<string, Cousins> }
+interface Ready { patterns: Pattern[]; problems: Problem[]; glossary: Term[]; cousins: Record<string, Cousins>; names: Record<string, string>; slots: Record<string, Slot> }
 
 const ns = (t: string, s: string) => `${t}::${s}`;
 
@@ -42,7 +43,7 @@ export default function Mix({ base }: { base: string }) {
           }),
           all, MIX_SIZE, shuffle,
         );
-        const out: Ready = { patterns: [], problems: [], glossary: [], names: {}, slots: {} };
+        const out: Ready = { patterns: [], problems: [], glossary: [], cousins: {}, names: {}, slots: {} };
         const used = new Set<string>();
         for (const { track, plan } of picks) {
           const t = byTrack.get(track)!;
@@ -55,6 +56,7 @@ export default function Mix({ base }: { base: string }) {
             out.names[t.slug] = t.short;
             out.patterns.push(...t.patterns.map((x) => ({ ...x, slug: ns(t.slug, x.slug) })));
             out.glossary.push(...t.glossary);
+            for (const [k, v] of Object.entries(t.cousins ?? {})) out.cousins[ns(t.slug, k)] = v;
           }
         }
         setReady(out);
@@ -85,6 +87,6 @@ export default function Mix({ base }: { base: string }) {
       </div></div>
     );
   }
-  return <Drill track="mix" patterns={ready.patterns} problems={ready.problems} glossary={ready.glossary}
+  return <Drill track="mix" patterns={ready.patterns} problems={ready.problems} glossary={ready.glossary} cousins={ready.cousins}
     review={ready.names} slots={ready.slots} mix count={MIX_SIZE} />;
 }
