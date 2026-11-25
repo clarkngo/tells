@@ -7,6 +7,7 @@ import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
 import Glyph from './Glyph';
+import TellApart from './TellApart';
 import { LOW_SCORE, type Basics } from '../lib/related';
 import { addWish, copyText, wishText, type Wish } from '../lib/wishes';
 
@@ -665,6 +666,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const correct = picked === p.answer;
   const left = limit ? Math.max(0, 1 - elapsed / (limit * 1000)) : 1;
   const mult = multOf(combo);
+  // Wrong pick: offer a side-by-side of the two patterns. Opens by itself once
+  // the same pair has been mixed up before.
+  const mixed = revealed && picked && !correct ? bySlug.get(picked) ?? null : null;
+  const mixTimes = mixed ? mixCount(unpack(p.id, track)[0], unpack(p.answer, track)[1], unpack(mixed.slug, track)[1]) : 0;
 
   return (
     <div class={`drill ${full ? 'drill-live' : ''}`} ref={cardRef}
@@ -814,6 +819,12 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
             </div>
           </div>
           <p class="trap"><span class="label">Trap</span>{p.trap}</p>
+          {mixed && (
+            <details class="apart-wrap" open={mixTimes > 1}>
+              <summary>How to tell <strong>{ans.name}</strong> from <strong>{mixed.name}</strong></summary>
+              <TellApart a={ans} b={mixed} times={mixTimes} tags={['right answer', 'you picked']} />
+            </details>
+          )}
           {hits.length > 0 && (
             <details class="terms">
               <summary>Terms in this question <span class="muted">({hits.length})</span></summary>
@@ -860,4 +871,9 @@ function ReviewNext() {
       </div>
     </>
   );
+}
+
+/** Times `a` and `b` were confused either way in one track, from saved attempts. */
+function mixCount(track: string, a: string, b: string) {
+  return loadAttempts().filter((x) => x.track === track && ((x.answer === a && x.picked === b) || (x.answer === b && x.picked === a))).length;
 }
