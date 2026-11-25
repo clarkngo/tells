@@ -404,6 +404,9 @@ function UniverseDetail({ tracks, stats, go, wishes, selWish, setSelWish }: {
               ))}
             </p>
           )}
+          {waiting.length > 0 && (
+            <p><a class="btn primary fix-btn" href={`${import.meta.env.BASE_URL}review/`}>Fix my misses →</a></p>
+          )}
         </>
       ) : (
         <>

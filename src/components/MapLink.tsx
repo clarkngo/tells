@@ -1,14 +1,8 @@
 import { useEffect, useState } from 'preact/hooks';
-import { CHANGED, loadAttempts, type Attempt } from '../lib/storage';
+import { CHANGED, loadAttempts, waitingMisses, type Attempt } from '../lib/storage';
 
 /** Questions whose latest answer was wrong, timed out or peeked: the ones waiting for a retry. */
-export function waitingCount(attempts: Attempt[]) {
-  const last = new Map<string, Attempt>();
-  for (const a of attempts) last.set(`${a.track}:${a.id}`, a);
-  let n = 0;
-  for (const a of last.values()) if (a.picked !== a.answer || a.peeked) n++;
-  return n;
-}
+export const waitingCount = (attempts: Attempt[]) => waitingMisses(attempts).length;
 
 // Header button to the progress map, on every page. A dot shows when misses are
 // waiting for a retry.

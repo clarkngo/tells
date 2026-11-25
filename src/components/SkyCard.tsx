@@ -42,6 +42,7 @@ export default function SkyCard({ tracks, href }: { tracks: CardTrack[]; href: s
     ? `${sum.stars} of ${sum.max} ★${sum.waiting ? ` · ${sum.waiting} misses waiting` : ''}`
     : 'Every track as a sun. Answer a few questions and it lights up.';
   return (
+    <>
     <a class="sky-card" href={href}>
       <svg viewBox="-60 -60 120 120" aria-hidden="true">
         <circle r="44" class="sc-orbit" />
@@ -62,5 +63,13 @@ export default function SkyCard({ tracks, href }: { tracks: CardTrack[]; href: s
       </span>
       <span class="sky-card-go" aria-hidden="true">→</span>
     </a>
+    {sum.waiting > 0 && (
+      <a class="fix-card" href={`${href.replace(/map\/$/, '')}review/`}>
+        <span class="fix-dot" aria-hidden="true" />
+        <span class="fix-text"><strong>Fix my misses</strong><span class="muted">{Math.min(sum.waiting, 10)} {sum.waiting === 1 ? 'question' : 'questions'}, no timer</span></span>
+        <span class="sky-card-go" aria-hidden="true">→</span>
+      </a>
+    )}
+    </>
   );
 }

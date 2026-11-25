@@ -663,6 +663,20 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .sky-card-text strong { font-size: 1.1rem; }
 .sky-card-text span { color: var(--muted); font-size: 0.9rem; }
 .sky-card-go { font-size: 1.3rem; color: var(--muted); }
+.fix-card {
+  display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; margin-top: 10px;
+  padding: 12px 18px; min-height: 52px; text-decoration: none; color: var(--text);
+  background: var(--surface); border: 1px solid color-mix(in srgb, var(--bad) 40%, var(--border)); border-radius: var(--radius);
+  transition: border-color 0.2s, transform 0.1s;
+}
+.fix-card:hover { border-color: var(--bad); }
+.fix-card:active { transform: scale(0.99); }
+.fix-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bad); }
+.fix-text { display: flex; flex-direction: column; gap: 2px; }
+.fix-text .muted { font-size: 0.9rem; }
+.fix-btn { text-decoration: none; }
+.track-chip { color: var(--text); }
+.review-left { margin: 18px 0 4px; }
 .sc-orbit { fill: none; stroke: var(--border); stroke-dasharray: 2 5; }
 .sc-core { fill: #ffd27a; }
 .sc-sun { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; }
