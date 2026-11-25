@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { Pattern, Problem, Term } from '../lib/types';
 import { findTerms, makeMatcher, type TermHit } from '../lib/glossary';
 import { chooseRound, type Slot } from '../lib/schedule';
-import { loadAttempts, repeatWeight, saveAttempt } from '../lib/storage';
+import { loadAttempts, repeatWeight, saveAttempt, waitingMisses } from '../lib/storage';
 import { sfx, buzz } from '../lib/sfx';
 import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
@@ -36,6 +36,15 @@ interface Props {
   setup?: boolean;
   drillHref?: string;
   suggest?: Suggest;
+  /** Fix-my-misses round across tracks: pattern slugs and problem ids are
+   *  namespaced `track::slug`; maps each track slug to its short name. */
+  review?: Record<string, string>;
+}
+
+/** `track::slug` → [track, slug]; a plain slug belongs to `fallback`. */
+function unpack(s: string, fallback: string): [string, string] {
+  const i = s.indexOf('::');
+  return i < 0 ? [fallback, s] : [s.slice(0, i), s.slice(i + 2)];
 }
 
 const MODES: Record<Mode, { label: string; desc: string; timed: boolean }> = {
@@ -170,13 +179,13 @@ function CountUp({ to }: { to: number }) {
   return <>{v.toLocaleString()}</>;
 }
 
-export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest }: Props) {
+export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest, review }: Props) {
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
   const [mode, setMode] = useState<Mode>('zen');
   const [focus, setFocus] = useState(live[0]?.slug ?? '');
-  const [phase, setPhase] = useState<Phase>(setup ? 'setup' : 'ask');
+  const [phase, setPhase] = useState<Phase>(setup && !review ? 'setup' : 'ask');
   const [rounds, setRounds] = useState<Round[]>([]);
   const [idx, setIdx] = useState(0);
   const [picked, setPicked] = useState<string | null>(null);
@@ -207,8 +216,10 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const cardRef = useRef<HTMLDivElement>(null);
   const btnRefs = useRef(new Map<string, HTMLButtonElement>());
 
-  const limit = setup ? (MODES[mode].timed ? 20 : 0) : seconds;
-  const marking = setup && mode === 'focus';
+  // The immersive phone layout: the drill page and the fix-my-misses page.
+  const full = setup || !!review;
+  const limit = review ? 0 : setup ? (MODES[mode].timed ? 20 : 0) : seconds;
+  const marking = setup && !review && mode === 'focus';
 
   /** The easiest questions whose answer is one of `pats`: difficulty 1, topped up with 2s. */
   function easyPool(pats: Set<string>) {
@@ -219,6 +230,15 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   }
 
   function build(m: Mode, f: string, easy?: Set<string>): Round[] {
+    if (review) {
+      // Every miss given, untimed, in a fresh order. They're all retries.
+      const all = loadAttempts();
+      return shuffle(problems).slice(0, count).map((problem) => {
+        const [t, id] = unpack(problem.id, track);
+        const seen = all.filter((a) => a.track === t && a.id === id).length;
+        return { problem, choices: shuffle([problem.answer, ...problem.decoys]), seen, slot: 'retry' as Slot };
+      });
+    }
     const pool = easy
       ? easyPool(easy)
       : m === 'focus'
@@ -268,8 +288,8 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
 
   // Pick up ?focus=<slug> from pattern cards, and auto-start embedded drills.
   useEffect(() => {
-    if (!setup) {
-      start('sprint');
+    if (!setup || review) {
+      start(review ? 'zen' : 'sprint');
       return;
     }
     const f = new URLSearchParams(location.search).get('focus');
@@ -305,7 +325,11 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     clearTimeout(holdRef.current.timer);
     setPeek(null);
     setResults((r) => [...r, { problem: round.problem, picked: choice, ms, peeked }]);
-    saveAttempt({ track, id: round.problem.id, answer: round.problem.answer, picked: choice, ms, at: Date.now(), ...(peeked ? { peeked: true as const } : {}) });
+    const [realTrack, id] = unpack(round.problem.id, track);
+    saveAttempt({
+      track: realTrack, id, answer: unpack(round.problem.answer, track)[1], picked: choice && unpack(choice, track)[1],
+      ms, at: Date.now(), ...(peeked ? { peeked: true as const } : {}),
+    });
 
     if (right && peeked) {
       // Right, but after looking: no points, and the run neither grows nor breaks.
@@ -374,11 +398,11 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
 
   function finish() {
     const perfect = results.length > 0 && results.every((r) => r.picked === r.problem.answer);
-    const best = setup && pointsRef.current > 0 && submitBest(`${track}:${mode}`, pointsRef.current);
+    const best = setup && !review && pointsRef.current > 0 && submitBest(`${track}:${mode}`, pointsRef.current);
     setNewBest(best);
     // Low score with no easier track to point to: put a basics track on the wishlist.
     const clean = results.filter((r) => r.picked === r.problem.answer && !r.peeked).length;
-    if (setup && suggest?.basics && !suggest.easier.length && results.length >= 5 && clean / results.length < LOW_SCORE) {
+    if (setup && !review && suggest?.basics && !suggest.easier.length && results.length >= 5 && clean / results.length < LOW_SCORE) {
       const missed = [...new Set(results.filter((r) => r.picked !== r.problem.answer || r.peeked).map((r) => r.problem.answer))];
       setWish(addWish({
         ...suggest.basics,
@@ -424,7 +448,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   // screen (see .drilling in global.css), the answer area scrolls inside it, and
   // the action button stays pinned at the bottom.
   const bodyRef = useRef<HTMLDivElement>(null);
-  const inQuestion = setup && (phase === 'ask' || phase === 'mark' || phase === 'reveal');
+  const inQuestion = full && (phase === 'ask' || phase === 'mark' || phase === 'reveal');
   useEffect(() => {
     document.documentElement.classList.toggle('drilling', inQuestion);
     return () => document.documentElement.classList.remove('drilling');
@@ -547,7 +571,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
     const pct = results.length ? right.length / results.length : 0;
     const ms = results.flatMap((r) => (r.marks ? [r.marks] : []));
     const clean = results.filter((r) => r.picked === r.problem.answer && !r.peeked).length;
-    const low = setup && !!suggest && results.length >= 5 && clean / results.length < LOW_SCORE;
+    const low = setup && !review && !!suggest && results.length >= 5 && clean / results.length < LOW_SCORE;
     const missedPats = new Set(misses.map((r) => r.problem.answer));
     const easyN = low && !easyRound ? Math.min(count, easyPool(missedPats).length) : 0;
     return (
@@ -621,12 +645,12 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               )}
             </div>
           )}
-          <div class="row">
+          {review ? <ReviewNext /> : <div class="row">
             <button type="button" class="btn primary big" onClick={() => start()} autoFocus>One more round</button>
             {setup
               ? <button type="button" class="btn" onClick={() => setPhase('setup')}>Change mode</button>
               : drillHref && <a class="btn" href={drillHref}>Full drill →</a>}
-          </div>
+          </div>}
         </div>
       </div>
     );
@@ -643,9 +667,9 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
   const mult = multOf(combo);
 
   return (
-    <div class={`drill ${setup ? 'drill-live' : ''}`} ref={cardRef}
+    <div class={`drill ${full ? 'drill-live' : ''}`} ref={cardRef}
       onTouchStart={touch.onTouchStart} onTouchMove={touch.onTouchMove} onTouchEnd={touch.onTouchEnd} onTouchCancel={touch.onTouchEnd}>
-      {setup && (
+      {full && (
         <div class="drill-top">
           <a class="dt-btn" href={BASE} aria-label="Home">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5M6.5 10v9h11v-9" /></svg>
@@ -668,6 +692,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
       <div class="drill-head">
         <span class="qhead">
           <span class="mono">Q{idx + 1}<span class="muted">/{rounds.length}</span></span>
+          {review && <span class="fresh track-chip">{review[unpack(p.id, track)[0]] ?? unpack(p.id, track)[0]}</span>}
           {round.slot === 'retry'
             ? <span class="fresh retry" title="You missed or peeked at this one last time. It comes back until you get it right.">Missed last time</span>
             : round.seen === 0
@@ -782,7 +807,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               : picked ? `Not quite. It's ${ans.name}.` : `Time's up. It's ${ans.name}.`}
           </p>
           <div class="reveal-card" style={{ '--h': ans.hue }}>
-            <Glyph slug={ans.slug} hue={ans.hue} />
+            <Glyph slug={unpack(ans.slug, track)[1]} hue={ans.hue} />
             <div>
               <p class="pname">{ans.name}</p>
               <p>{p.why}</p>
@@ -810,12 +835,29 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
       )}
       {revealed && (
         <div class="drill-foot">
-          <button type="button" class="btn primary" onClick={() => (setup ? goNext() : next())} autoFocus>
+          <button type="button" class="btn primary" onClick={() => (full ? goNext() : next())} autoFocus>
             {idx + 1 >= rounds.length ? 'See results' : 'Next'} <kbd>↵</kbd>
           </button>
-          {setup && <span class="swipe-hint" aria-hidden="true">or swipe ←</span>}
+          {full && <span class="swipe-hint" aria-hidden="true">or swipe ←</span>}
         </div>
       )}
     </div>
+  );
+}
+
+// End of a fix-my-misses round: what's still waiting, worked out fresh from storage.
+function ReviewNext() {
+  const left = waitingMisses(loadAttempts()).length;
+  return (
+    <>
+      <p class="muted review-left">
+        {left ? `${left} ${left === 1 ? 'miss is' : 'misses are'} still waiting.` : 'Nothing left to fix. Every miss is cleared.'}
+      </p>
+      <div class="row">
+        {left > 0 && <button type="button" class="btn primary big" onClick={() => location.reload()} autoFocus>Fix the next {Math.min(left, 10)}</button>}
+        <a class={`btn ${left ? '' : 'primary big'}`} href={`${BASE}map/`}>See your map →</a>
+        <a class="btn" href={BASE}>Home</a>
+      </div>
+    </>
   );
 }

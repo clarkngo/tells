@@ -35,6 +35,13 @@ export function saveAttempt(a: Attempt) {
   }
 }
 
+/** The latest attempt at each question that was wrong, timed out or peeked, newest first: the misses waiting for a retry. */
+export function waitingMisses(attempts: Attempt[]): Attempt[] {
+  const last = new Map<string, Attempt>();
+  for (const a of attempts) last.set(`${a.track}:${a.id}`, a);
+  return [...last.values()].filter((a) => a.picked !== a.answer || a.peeked).sort((a, b) => b.at - a.at);
+}
+
 // Repeats still count toward mastery, but less each time: a question's first
 // attempt is worth 1, the second 0.5, then 0.25, never below 0.1.
 const REPEAT_DECAY = 0.5;
