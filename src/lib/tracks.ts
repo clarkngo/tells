@@ -27,6 +27,14 @@ import { patterns as talkPatterns } from '../data/tracks/hard-conversations/patt
 import { glossary as talkGlossary } from '../data/tracks/hard-conversations/glossary';
 import { patterns as socioPatterns } from '../data/tracks/sociomateriality/patterns';
 import { glossary as socioGlossary } from '../data/tracks/sociomateriality/glossary';
+import { patterns as dsbPatterns } from '../data/tracks/dsa-basics/patterns';
+import { glossary as dsbGlossary } from '../data/tracks/dsa-basics/glossary';
+import { patterns as stbPatterns } from '../data/tracks/stats-basics/patterns';
+import { glossary as stbGlossary } from '../data/tracks/stats-basics/glossary';
+import { patterns as mlbPatterns } from '../data/tracks/ml-basics/patterns';
+import { glossary as mlbGlossary } from '../data/tracks/ml-basics/glossary';
+import { patterns as dwbPatterns } from '../data/tracks/dev-workflow-basics/patterns';
+import { glossary as dwbGlossary } from '../data/tracks/dev-workflow-basics/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -222,7 +230,41 @@ export const sociomateriality = makeTrack(
   socioGlossary,
 );
 
+// Basics tracks: easier warm-ups, suggested after a low score on their harder track.
+export const dsaBasics = makeTrack(
+  { slug: 'dsa-basics', name: 'Data structures basics', short: 'DS basics',
+    tagline: 'Easier warm-up for DSA: name the data structure an everyday situation needs, or how its work grows (Big-O).' },
+  dsbPatterns,
+  import.meta.glob('../data/tracks/dsa-basics/problems/*.json', { eager: true, import: 'default' }),
+  dsbGlossary,
+);
+
+export const statsBasics = makeTrack(
+  { slug: 'stats-basics', name: 'Statistics basics', short: 'Stats basics',
+    tagline: 'Easier warm-up for data science: name the average, the shape of the data or the reasoning trap.' },
+  stbPatterns,
+  import.meta.glob('../data/tracks/stats-basics/problems/*.json', { eager: true, import: 'default' }),
+  stbGlossary,
+);
+
+export const mlBasics = makeTrack(
+  { slug: 'ml-basics', name: 'Machine learning basics', short: 'ML basics',
+    tagline: 'Easier warm-up for AI-901: name the kind of ML task, the training step or the data problem.' },
+  mlbPatterns,
+  import.meta.glob('../data/tracks/ml-basics/problems/*.json', { eager: true, import: 'default' }),
+  mlbGlossary,
+);
+
+export const devWorkflowBasics = makeTrack(
+  { slug: 'dev-workflow-basics', name: 'Developer workflow basics', short: 'Dev basics',
+    tagline: 'Easier warm-up for engineering judgment: git, pull requests, review, tests, CI, flags and asking for help well.' },
+  dwbPatterns,
+  import.meta.glob('../data/tracks/dev-workflow-basics/problems/*.json', { eager: true, import: 'default' }),
+  dwbGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
   dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, sociomateriality, debugging, firstPrinciples,
+  dsaBasics, statsBasics, mlBasics, devWorkflowBasics,
 ];
