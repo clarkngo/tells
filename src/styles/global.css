@@ -654,6 +654,7 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 @media (max-width: 640px) {
   .map-label { font-size: 30px; stroke-width: 8px; }
   .map-label.planet { font-size: 26px; }
+  .map-label.radial { font-size: 25px; stroke-width: 7px; }
   .map-label.center { font-size: 30px; }
   .map-small { font-size: 22px; }
   .map-detail-head { grid-template-columns: 1fr; }

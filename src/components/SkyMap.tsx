@@ -288,7 +288,13 @@ function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish, narro
             <circle r={32} class="map-body" />
             <circle r={32} class="map-fill" style={{ opacity: frac ? 0.2 + 0.8 * frac : 0 }} />
             <text class="map-num" y={7} text-anchor="middle">{st.stars}</text>
-            {narrow && Math.abs(x) > 270 ? (
+            {tracks.length > 24 ? (
+              // Many suns: neighbours are too close for flat labels, so every
+              // label runs along its spoke toward the empty middle of the sky.
+              <g transform={`rotate(${(Math.atan2(y, x) * 180) / Math.PI + (x >= 0 ? 0 : 180)})`}>
+                <Label text={t.short} x={x >= 0 ? -46 : 46} y={8} anchor={x >= 0 ? 'end' : 'start'} cls="sun inward radial" max={20} />
+              </g>
+            ) : narrow && Math.abs(x) > 270 ? (
               // Phones: side labels point inward, where the sky is empty, so they don't run off the screen.
               <Label text={t.short} x={x > 0 ? -46 : 46} y={8} anchor={x > 0 ? 'end' : 'start'} cls="sun inward" max={18} />
             ) : (
