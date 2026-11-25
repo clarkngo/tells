@@ -266,7 +266,7 @@ export const devWorkflowBasics = makeTrack(
 );
 
 export const techOrgBasics = makeTrack(
-  { slug: 'tech-org-basics', name: 'Technology and organizations basics', short: 'Tech & org basics',
+  { slug: 'tech-org-basics', name: 'Technology and organizations basics', short: 'Org basics',
     tagline: 'Easier warm-up for sociomateriality: name, in plain words, how tools, routines and people shape each other at work.' },
   tobPatterns,
   import.meta.glob('../data/tracks/tech-org-basics/problems/*.json', { eager: true, import: 'default' }),

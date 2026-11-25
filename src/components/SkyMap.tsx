@@ -175,6 +175,16 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
     document.querySelector('.map-detail')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, [sel, selWish]);
 
+  // Phones place side labels differently (see Universe), so follow the width.
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const mq = matchMedia('(max-width: 640px)');
+    const r = () => setNarrow(mq.matches);
+    r();
+    mq.addEventListener('change', r);
+    return () => mq.removeEventListener('change', r);
+  }, []);
+
   const track = tracks.find((t) => t.slug === view);
   const key = (fn: () => void) => (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
@@ -211,7 +221,7 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
           {track ? (
             <TrackSky track={track} st={stats.get(track.slug)!} sel={sel} setSel={setSel} keyOf={key} />
           ) : (
-            <Universe tracks={tracks} stats={stats} go={go} keyOf={key} wishes={wishes} selWish={selWish} setSelWish={setSelWish} />
+            <Universe tracks={tracks} stats={stats} go={go} keyOf={key} wishes={wishes} selWish={selWish} setSelWish={setSelWish} narrow={narrow} />
           )}
         </g>
       </svg>
@@ -227,9 +237,9 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
 
 type KeyOf = (fn: () => void) => (e: KeyboardEvent) => void;
 
-function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish }: {
+function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish, narrow }: {
   tracks: MapTrack[]; stats: Map<string, TStat>; go: (s: string) => void; keyOf: KeyOf;
-  wishes: Wish[]; selWish: string; setSelWish: (k: string) => void;
+  wishes: Wish[]; selWish: string; setSelWish: (k: string) => void; narrow: boolean;
 }) {
   // Wished-for tracks that don't exist yet: faint dashed suns between the core
   // and the track they would help, joined to it by a dashed line.
@@ -278,8 +288,13 @@ function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish }: {
             <circle r={32} class="map-body" />
             <circle r={32} class="map-fill" style={{ opacity: frac ? 0.2 + 0.8 * frac : 0 }} />
             <text class="map-num" y={7} text-anchor="middle">{st.stars}</text>
-            <Label text={t.short} x={(x / 360) * 64} y={(y / 360) * 64 + (y > 120 ? 20 : y < -120 ? -8 : 6)}
-              anchor={x > 60 ? 'start' : x < -60 ? 'end' : 'middle'} cls="sun" />
+            {narrow && Math.abs(x) > 270 ? (
+              // Phones: side labels point inward, where the sky is empty, so they don't run off the screen.
+              <Label text={t.short} x={x > 0 ? -46 : 46} y={8} anchor={x > 0 ? 'end' : 'start'} cls="sun inward" max={18} />
+            ) : (
+              <Label text={t.short} x={(x / 360) * 64} y={(y / 360) * 64 + (y > 120 ? 20 : y < -120 ? -8 : 6)}
+                anchor={x > 60 ? 'start' : x < -60 ? 'end' : 'middle'} cls="sun" />
+            )}
           </g>
         );
       })}
