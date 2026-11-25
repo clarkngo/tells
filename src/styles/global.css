@@ -188,6 +188,12 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 6px; border-rad
 .reveal-card p { margin: 0; }
 .pname { color: var(--pc); font-weight: 700; margin: 0 0 4px; }
 .trap { margin: 14px 0 20px; color: var(--muted); }
+.cousins { margin: -6px 0 20px; }
+.cousins p { margin: 0 0 8px; color: var(--muted); }
+.label.same { color: var(--accent); }
+.cousins .pill-row { margin: 0; }
+.card .cousins { margin: 12px 0 0; font-size: 0.92rem; }
+.card { scroll-margin-top: 80px; }
 /* recall first: the choices wait until you've named the pattern */
 .recall {
   margin: 18px 0 0; padding: 18px; border-radius: 12px; text-align: center;
