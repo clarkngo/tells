@@ -6,10 +6,13 @@ import Glyph from './Glyph';
 import TellApart from './TellApart';
 import WeekRecap from './WeekRecap';
 import { copyText, loadWishes, removeWish, wishText, WISHES_CHANGED, type Wish } from '../lib/wishes';
+import { groupByArea } from '../lib/areas';
+import { related } from '../lib/related';
 
 const wishKey = (w: Wish) => `${w.forTrack}>${w.slug}`;
 
-// A night-sky view of progress. All tracks are suns; open one and its patterns
+// A night-sky view of progress. Tracks are suns, grouped into areas that show
+// as clusters; open an area to see its suns, and open a sun to see its patterns
 // orbit it as planets. Stars make things brighter, a pulse means questions
 // missed last time are waiting, moons are single questions, and red arcs join
 // patterns you've mixed up.
@@ -123,6 +126,8 @@ function StarArc({ r, stars }: { r: number; stars: number }) {
 const plural = (n: number, w: string) => `${n} ${w}${n === 1 ? '' : 's'}`;
 
 export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: string }) {
+  const areas = useMemo(() => groupByArea(tracks), [tracks]);
+  const areaOfTrack = (slug: string) => areas.find((a) => a.tracks.some((t) => t.slug === slug));
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [view, setView] = useState('');
   const [sel, setSel] = useState('');
@@ -136,7 +141,7 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
     addEventListener(WISHES_CHANGED, refreshWishes);
     const fromHash = () => {
       const h = decodeURIComponent(location.hash.slice(1));
-      setView(tracks.some((t) => t.slug === h) ? h : '');
+      setView(tracks.some((t) => t.slug === h) || areas.some((a) => a.id === h) ? h : '');
       setSel('');
     };
     refresh();
@@ -155,7 +160,7 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
       if (e.key !== 'Escape') return;
       if (sel) setSel('');
       else if (selWish) setSelWish('');
-      else if (view) go('');
+      else if (view) go(track ? areaOfTrack(track.slug)?.id ?? '' : '');
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
@@ -186,6 +191,9 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
   }, []);
 
   const track = tracks.find((t) => t.slug === view);
+  const area = track ? undefined : areas.find((a) => a.id === view);
+  const home = track ? areaOfTrack(track.slug) : undefined;
+  const areaStats = area && new Map(area.tracks.map((t) => [t.slug, stats.get(t.slug)!]));
   const key = (fn: () => void) => (e: KeyboardEvent) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -197,15 +205,17 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
     <div class="map">
       <div class="map-bar">
         {track ? (
-          <button class="btn" onClick={() => go('')}>← All tracks</button>
+          <button class="btn" onClick={() => go(home?.id ?? '')}>← {home ? home.name : 'All areas'}</button>
+        ) : area ? (
+          <button class="btn" onClick={() => go('')}>← All areas</button>
         ) : (
-          <span class="muted">Tap a sun to open its track.</span>
+          <span class="muted">Tap an area to see its tracks.</span>
         )}
         <Legend />
       </div>
       <div class="map-stage">
       <svg class="map-sky" viewBox="-500 -500 1000 1000" role="group"
-        aria-label={track ? `${track.name}: its patterns as planets` : 'Every track as a sun'}
+        aria-label={track ? `${track.name}: its patterns as planets` : area ? `${area.name}: its tracks as suns` : 'Every area as a cluster of suns'}
         onClick={(e) => { if (e.target === e.currentTarget) setSel(''); }}>
         <defs>
           <radialGradient id="mapHalo"><stop offset="0" stop-color="var(--map-sun)" stop-opacity=".6" /><stop offset="1" stop-color="var(--map-sun)" stop-opacity="0" /></radialGradient>
@@ -220,13 +230,17 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
         <g key={view} class="map-scene">
           {track ? (
             <TrackSky track={track} st={stats.get(track.slug)!} sel={sel} setSel={setSel} keyOf={key} />
+          ) : area ? (
+            <Universe tracks={area.tracks} stats={areaStats!} go={go} keyOf={key} wishes={wishes} selWish={selWish} setSelWish={setSelWish} narrow={narrow} name={area.name} />
           ) : (
-            <Universe tracks={tracks} stats={stats} go={go} keyOf={key} wishes={wishes} selWish={selWish} setSelWish={setSelWish} narrow={narrow} />
+            <Galaxy areas={areas} stats={stats} go={go} keyOf={key} />
           )}
         </g>
       </svg>
       {track ? (
         <TrackDetail track={track} st={stats.get(track.slug)!} sel={sel} setSel={setSel} base={base} />
+      ) : area ? (
+        <AreaDetail area={area} stats={stats} go={go} base={base} />
       ) : (
         <UniverseDetail tracks={tracks} stats={stats} go={go} wishes={wishes} selWish={selWish} setSelWish={setSelWish} attempts={attempts} />
       )}
@@ -237,9 +251,9 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
 
 type KeyOf = (fn: () => void) => (e: KeyboardEvent) => void;
 
-function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish, narrow }: {
+function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish, narrow, name }: {
   tracks: MapTrack[]; stats: Map<string, TStat>; go: (s: string) => void; keyOf: KeyOf;
-  wishes: Wish[]; selWish: string; setSelWish: (k: string) => void; narrow: boolean;
+  wishes: Wish[]; selWish: string; setSelWish: (k: string) => void; narrow: boolean; name?: string;
 }) {
   // Wished-for tracks that don't exist yet: faint dashed suns between the core
   // and the track they would help, joined to it by a dashed line.
@@ -263,11 +277,28 @@ function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish, narro
         return <line class={`map-path ${st.answered ? 'lit' : ''}`} x1={0} y1={0} x2={x} y2={y} />;
       })}
       {ghosts.map(({ w, x, y, p }) => <line class="map-wish-line" x1={x} y1={y} x2={p[0]} y2={p[1]} />)}
+      {/* A basics track and the track it warms up for, joined by a dashed arc. */}
+      {tracks.flatMap((t, i) => {
+        const j = tracks.findIndex((b) => b.slug === related[t.slug]?.basics.slug);
+        if (j < 0) return [];
+        const [x1, y1] = at(i, tracks.length, 360);
+        const [x2, y2] = at(j, tracks.length, 360);
+        return [<path class="map-warm" d={`M${x1} ${y1} Q${(x1 + x2) * 0.35} ${(y1 + y2) * 0.35} ${x2} ${y2}`} />];
+      })}
       <g class="map-core">
         <circle r={110} fill="url(#mapHalo)" style={{ opacity: 0.25 + (0.75 * total) / (max || 1) }} />
-        <circle r={54} class="map-core-body" />
-        <text class="map-big" y={4} text-anchor="middle">{total}</text>
-        <text class="map-small" y={26} text-anchor="middle">of {max} ★</text>
+        <circle r={name ? 70 : 54} class="map-core-body" />
+        {name ? (
+          <>
+            <Label text={name} y={-2} cls="center" max={12} />
+            <text class="map-small" y={28} text-anchor="middle">{total}/{max} ★</text>
+          </>
+        ) : (
+          <>
+            <text class="map-big" y={4} text-anchor="middle">{total}</text>
+            <text class="map-small" y={26} text-anchor="middle">of {max} ★</text>
+          </>
+        )}
       </g>
       {tracks.map((t, i) => {
         const [x, y] = at(i, tracks.length, 360);
@@ -319,6 +350,91 @@ function Universe({ tracks, stats, go, keyOf, wishes, selWish, setSelWish, narro
         );
       })}
     </>
+  );
+}
+
+type AreaGroup = { id: string; name: string; tracks: MapTrack[] };
+
+/** Top view: one cluster per area. Basics tracks are the smaller suns. */
+function Galaxy({ areas, stats, go, keyOf }: {
+  areas: AreaGroup[]; stats: Map<string, TStat>; go: (s: string) => void; keyOf: KeyOf;
+}) {
+  const all = [...stats.values()];
+  const total = all.reduce((s, t) => s + t.stars, 0);
+  const max = all.reduce((s, t) => s + t.max, 0);
+  return (
+    <>
+      {areas.map((a, i) => {
+        const [x, y] = at(i, areas.length, 320);
+        const lit = a.tracks.some((t) => stats.get(t.slug)!.answered);
+        return <line class={`map-path ${lit ? 'lit' : ''}`} x1={0} y1={0} x2={x} y2={y} />;
+      })}
+      <g class="map-core">
+        <circle r={110} fill="url(#mapHalo)" style={{ opacity: 0.25 + (0.75 * total) / (max || 1) }} />
+        <circle r={54} class="map-core-body" />
+        <text class="map-big" y={4} text-anchor="middle">{total}</text>
+        <text class="map-small" y={26} text-anchor="middle">of {max} ★</text>
+      </g>
+      {areas.map((a, i) => {
+        const [x, y] = at(i, areas.length, 320);
+        const sts = a.tracks.map((t) => stats.get(t.slug)!);
+        const stars = sts.reduce((s, t) => s + t.stars, 0);
+        const mx = sts.reduce((s, t) => s + t.max, 0);
+        const retry = sts.reduce((s, t) => s + t.slots.retry, 0);
+        const n = a.tracks.length;
+        const above = y < -150;
+        return (
+          <g class={`map-node map-area ${sts.some((t) => t.answered) ? 'started' : ''}`}
+            transform={`translate(${x} ${y})`} role="button" tabIndex={0}
+            aria-label={`${a.name}: ${plural(n, 'track')}, ${stars} of ${mx} stars${retry ? `, ${retry} to retry` : ''}. Open.`}
+            onClick={() => go(a.id)} onKeyDown={keyOf(() => go(a.id))}>
+            <circle r={100} class="map-hit" />
+            <circle r={96} fill="url(#mapHalo)" class="map-halo" style={{ opacity: stars / (mx || 1) }} />
+            <circle r={84} class="map-area-ring" />
+            {a.tracks.map((t, j) => {
+              const st = sts[j];
+              const [sx, sy] = n === 1 ? [0, 0] : at(j, n, n === 2 ? 30 : 48);
+              const r = t.slug.endsWith('-basics') ? 12 : 19;
+              const frac = st.stars / (st.max || 1);
+              return (
+                <g class={`map-mini ${st.slots.retry ? 'retry' : ''} ${st.answered ? 'started' : ''}`} transform={`translate(${sx} ${sy})`}>
+                  <circle r={r} class="map-body" />
+                  <circle r={r} class="map-fill" style={{ opacity: frac ? 0.2 + 0.8 * frac : 0 }} />
+                </g>
+              );
+            })}
+            <Label text={a.name} y={above ? -104 : 122} cls="sun area" />
+            <text class="map-small" y={above ? -146 : 160} text-anchor="middle">{stars}/{mx} ★</text>
+          </g>
+        );
+      })}
+    </>
+  );
+}
+
+function AreaDetail({ area, stats, go, base }: {
+  area: AreaGroup; stats: Map<string, TStat>; go: (s: string) => void; base: string;
+}) {
+  const sts = area.tracks.map((t) => stats.get(t.slug)!);
+  const stars = sts.reduce((s, t) => s + t.stars, 0);
+  const max = sts.reduce((s, t) => s + t.max, 0);
+  return (
+    <section class="map-detail">
+      <h2>{area.name} <span class="muted mono">{stars}/{max} ★</span></h2>
+      <p class="muted">Tap a sun to see its patterns. Dashed arcs join a basics track to the track it warms up for.</p>
+      <ul class="area-list">
+        {area.tracks.map((t, i) => {
+          const st = sts[i];
+          return (
+            <li>
+              <button class="linkish" onClick={() => go(t.slug)}>{t.name}</button>
+              <span class="muted mono"> {st.stars}/{st.max} ★{st.slots.retry ? ` · ${st.slots.retry} to retry` : ''}</span>
+              <a class="area-drill" href={`${base}${t.slug}/drill/`}>Drill →</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }
 
@@ -443,7 +559,7 @@ function UniverseDetail({ tracks, stats, go, wishes, selWish, setSelWish, attemp
       ) : (
         <>
           <h2>The sky is dark for now</h2>
-          <p class="muted">Every sun is a track and every dot around it is a pattern. Answer a few questions and they start to glow.</p>
+          <p class="muted">Each cluster is an area and each sun in it is a track. Answer a few questions and they start to glow.</p>
         </>
       )}
       <Wishlist tracks={tracks} wishes={wishes} selWish={selWish} setSelWish={setSelWish} />
