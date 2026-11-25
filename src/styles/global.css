@@ -138,6 +138,18 @@ kbd { font-family: var(--mono); font-size: 0.72rem; padding: 1px 6px; border-rad
 .timer-fill { height: 100%; background: var(--accent); transform-origin: left; transition: transform 0.1s linear; }
 .timer-fill.low { background: var(--bad); }
 .prompt { font-size: 1.2rem; line-height: 1.55; margin: 0 0 12px; }
+/* The reader's text size (see lib/textsize.ts) scales the question, choices and explanation. */
+.drill-body { font-size: calc(1em * var(--ts, 1)); }
+.drill-body .prompt { font-size: 1.2em; }
+.ts-btn {
+  font: inherit; cursor: pointer; background: none; border: 1px solid var(--border); color: var(--muted);
+  border-radius: 6px; padding: 0 7px; height: 24px; display: inline-flex; align-items: baseline; gap: 1px; line-height: 24px;
+}
+.ts-btn:hover { color: var(--text); border-color: var(--muted); }
+.ts-a1 { font-size: 0.7rem; }
+.ts-a2 { font-size: 1rem; font-weight: 700; }
+.ts-btn[data-size='0'] .ts-a2 { font-size: 0.85rem; }
+.ts-btn[data-size='2'] .ts-a2, .ts-btn[data-size='3'] .ts-a2 { color: var(--accent); }
 .chip { display: inline-block; margin: 0 0 20px; padding: 2px 10px; border-radius: 6px; background: var(--surface-2); color: var(--muted); }
 .tell {
   background: color-mix(in srgb, var(--accent) 22%, transparent);
@@ -720,6 +732,9 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
     display: flex; align-items: center; gap: 10px; padding: 6px 10px; flex: none;
     border-bottom: 1px solid var(--border);
   }
+  html.drilling .ts-head { display: none; }
+  .dt-btn.ts-btn { border: 0; height: 40px; padding: 0; align-items: center; justify-content: center; display: flex; }
+  .dt-btn.ts-btn .ts-a2 { font-size: 1.15rem; }
   .dt-btn { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; color: var(--muted); flex: none; }
   .dt-btn:active { background: var(--surface-2); }
   .dt-btn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }

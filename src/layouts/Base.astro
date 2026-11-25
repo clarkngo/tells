@@ -25,6 +25,10 @@ const nav = tracks.map((t) => ({ prefix: `${base}${t.slug}/`, label: t.short }))
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+    <script is:inline>
+      // Saved drill text size, applied before paint (see lib/textsize.ts).
+      try { var i = localStorage.getItem('tells:v1:textsize'); var z = [0.92, 1, 1.12, 1.26][+i]; if (i !== null && z) document.documentElement.style.setProperty('--ts', z); } catch (e) {}
+    </script>
     <title>{title ? `${title} · Tells` : 'Tells: every problem has a tell'}</title>
   </head>
   <body>
