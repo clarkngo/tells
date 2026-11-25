@@ -8,6 +8,7 @@ import { addXp, submitBest, titleOf } from '../lib/profile';
 import { burst, centerOf, confetti, floatText, shake, toast } from '../lib/fx';
 import Glyph from './Glyph';
 import TellApart from './TellApart';
+import { SIZES, applySize, loadSize } from '../lib/textsize';
 import { LOW_SCORE, type Basics } from '../lib/related';
 import { addWish, copyText, wishText, type Wish } from '../lib/wishes';
 
@@ -686,6 +687,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               return <i class={cls} />;
             })}
           </div>
+          <TextSizeButton cls="dt-btn" />
           <a class="dt-btn" href={`${BASE}map/`} aria-label="Progress map">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <circle cx="12" cy="12" r="3.2" /><ellipse cx="12" cy="12" rx="9.5" ry="4.2" transform="rotate(-25 12 12)" />
@@ -713,6 +715,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
             </span>
           )}
           <span class="mono pts" key={points}>{points.toLocaleString()} pts</span>
+          <TextSizeButton cls="ts-head" />
           {limit > 0 && !answered && <span class="mono muted">{Math.ceil(limit - elapsed / 1000)}s</span>}
         </span>
       </div>
@@ -876,4 +879,17 @@ function ReviewNext() {
 /** Times `a` and `b` were confused either way in one track, from saved attempts. */
 function mixCount(track: string, a: string, b: string) {
   return loadAttempts().filter((x) => x.track === track && ((x.answer === a && x.picked === b) || (x.answer === b && x.picked === a))).length;
+}
+
+// One tap steps the drill text through four sizes, then back to the smallest.
+function TextSizeButton({ cls }: { cls: string }) {
+  const [i, setI] = useState(loadSize);
+  const nextI = (i + 1) % SIZES.length;
+  return (
+    <button type="button" class={`ts-btn ${cls}`} data-size={i}
+      aria-label={`Text size: ${SIZES[i].label}. Tap for ${SIZES[nextI].label}.`} title={`Text size: ${SIZES[i].label}`}
+      onClick={() => { applySize(nextI); setI(nextI); }}>
+      <span class="ts-a1">A</span><span class="ts-a2">A</span>
+    </button>
+  );
 }
