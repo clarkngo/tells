@@ -798,6 +798,10 @@ body { padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(saf
 .fix-card:active { transform: scale(0.99); }
 .fix-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--bad); }
 .fix-text { display: flex; flex-direction: column; gap: 2px; }
+.mix-card { border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); }
+.mix-card:hover { border-color: var(--accent); }
+.mix-card .fix-dot { background: var(--accent); }
+.mix-card.done .fix-dot { background: transparent; box-shadow: inset 0 0 0 2px var(--accent); }
 .fix-text .muted { font-size: 0.9rem; }
 .fix-btn { text-decoration: none; }
 .track-chip { color: var(--text); }

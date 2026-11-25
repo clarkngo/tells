@@ -10,6 +10,7 @@ import Glyph from './Glyph';
 import TellApart from './TellApart';
 import { SIZES, applySize, loadSize } from '../lib/textsize';
 import { LOW_SCORE, type Basics } from '../lib/related';
+import { markMixDone } from '../lib/mix';
 import { addWish, copyText, wishText, type Wish } from '../lib/wishes';
 
 /** What to offer after a low score (worked out at build time from lib/related). */
@@ -42,6 +43,10 @@ interface Props {
   /** Fix-my-misses round across tracks: pattern slugs and problem ids are
    *  namespaced `track::slug`; maps each track slug to its short name. */
   review?: Record<string, string>;
+  /** Review rounds: each question's schedule slot (defaults to retry). */
+  slots?: Record<string, Slot>;
+  /** Daily mix: the track stays hidden until the question is answered. */
+  mix?: boolean;
 }
 
 /** `track::slug` → [track, slug]; a plain slug belongs to `fallback`. */
@@ -193,7 +198,7 @@ function CountUp({ to }: { to: number }) {
   return <>{v.toLocaleString()}</>;
 }
 
-export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest, review }: Props) {
+export default function Drill({ track, patterns, problems, glossary = [], count = 10, seconds = 20, setup = true, drillHref, suggest, review, slots, mix }: Props) {
   const bySlug = useMemo(() => new Map(patterns.map((p) => [p.slug, p])), [patterns]);
   const live = patterns.filter((p) => p.live);
 
@@ -249,12 +254,13 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
 
   function build(m: Mode, f: string, easy?: Set<string>): Round[] {
     if (review) {
-      // Every miss given, untimed, in a fresh order. They're all retries.
+      // Every question given, untimed, in a fresh order. Misses are all retries;
+      // the daily mix passes each question's slot.
       const all = loadAttempts();
       return shuffle(problems).slice(0, count).map((problem) => {
         const [t, id] = unpack(problem.id, track);
         const seen = all.filter((a) => a.track === t && a.id === id).length;
-        return { problem, choices: shuffle([problem.answer, ...problem.decoys]), seen, slot: 'retry' as Slot };
+        return { problem, choices: shuffle([problem.answer, ...problem.decoys]), seen, slot: slots?.[problem.id] ?? ('retry' as Slot) };
       });
     }
     const pool = easy
@@ -695,7 +701,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               )}
             </div>
           )}
-          {review ? <ReviewNext /> : <div class="row">
+          {mix ? <MixNext /> : review ? <ReviewNext /> : <div class="row">
             <button type="button" class="btn primary big" onClick={() => start()} autoFocus>One more round</button>
             {setup
               ? <button type="button" class="btn" onClick={() => setPhase('setup')}>Change mode</button>
@@ -753,7 +759,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
       <div class="drill-head">
         <span class="qhead">
           <span class="mono">Q{idx + 1}<span class="muted">/{rounds.length}</span></span>
-          {review && <span class="fresh track-chip">{review[unpack(p.id, track)[0]] ?? unpack(p.id, track)[0]}</span>}
+          {review && (!mix || answered) && <span class="fresh track-chip">{review[unpack(p.id, track)[0]] ?? unpack(p.id, track)[0]}</span>}
           {round.slot === 'retry'
             ? <span class="fresh retry" title="You missed or peeked at this one last time. It comes back until you get it right.">Missed last time</span>
             : round.seen === 0
@@ -922,6 +928,21 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
         </div>
       )}
     </div>
+  );
+}
+
+// End of a daily mix: today's mix is done; another one draws fresh questions.
+function MixNext() {
+  useEffect(markMixDone, []);
+  return (
+    <>
+      <p class="muted review-left">Today's mix is done. Another one draws the next questions each track needs.</p>
+      <div class="row">
+        <button type="button" class="btn primary big" onClick={() => location.reload()} autoFocus>Another mix</button>
+        <a class="btn" href={`${BASE}map/`}>See your map →</a>
+        <a class="btn" href={BASE}>Home</a>
+      </div>
+    </>
   );
 }
 

@@ -7,6 +7,7 @@ import TellApart from './TellApart';
 import WeekRecap from './WeekRecap';
 import { copyText, loadWishes, removeWish, wishText, WISHES_CHANGED, type Wish } from '../lib/wishes';
 import { groupByArea } from '../lib/areas';
+import { startedTracks } from '../lib/mix';
 import { related } from '../lib/related';
 
 const wishKey = (w: Wish) => `${w.forTrack}>${w.slug}`;
@@ -554,9 +555,10 @@ function UniverseDetail({ tracks, stats, go, wishes, selWish, setSelWish, attemp
               ))}
             </p>
           )}
-          {waiting.length > 0 && (
-            <p><a class="btn primary fix-btn" href={`${import.meta.env.BASE_URL}review/`}>Fix my misses →</a></p>
-          )}
+          <p class="row">
+            {waiting.length > 0 && <a class="btn primary fix-btn" href={`${import.meta.env.BASE_URL}review/`}>Fix my misses →</a>}
+            {startedTracks(attempts).length >= 2 && <a class="btn" href={`${import.meta.env.BASE_URL}mix/`}>Daily mix →</a>}
+          </p>
         </>
       ) : (
         <>
