@@ -25,6 +25,8 @@ import { patterns as engPatterns } from '../data/tracks/engineering-judgment/pat
 import { glossary as engGlossary } from '../data/tracks/engineering-judgment/glossary';
 import { patterns as talkPatterns } from '../data/tracks/hard-conversations/patterns';
 import { glossary as talkGlossary } from '../data/tracks/hard-conversations/glossary';
+import { patterns as socioPatterns } from '../data/tracks/sociomateriality/patterns';
+import { glossary as socioGlossary } from '../data/tracks/sociomateriality/glossary';
 import { patterns as dsbPatterns } from '../data/tracks/dsa-basics/patterns';
 import { glossary as dsbGlossary } from '../data/tracks/dsa-basics/glossary';
 import { patterns as stbPatterns } from '../data/tracks/stats-basics/patterns';
@@ -220,6 +222,14 @@ export const hardConversations = makeTrack(
   talkGlossary,
 );
 
+export const sociomateriality = makeTrack(
+  { slug: 'sociomateriality', name: 'Sociomateriality', short: 'Sociomateriality',
+    tagline: 'Read a workplace, technology or research case, name the lens: entanglement, affordance, actor-network ideas and their neighbours.' },
+  socioPatterns,
+  import.meta.glob('../data/tracks/sociomateriality/problems/*.json', { eager: true, import: 'default' }),
+  socioGlossary,
+);
+
 // Basics tracks: easier warm-ups, suggested after a low score on their harder track.
 export const dsaBasics = makeTrack(
   { slug: 'dsa-basics', name: 'Data structures basics', short: 'DS basics',
@@ -255,6 +265,6 @@ export const devWorkflowBasics = makeTrack(
 
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
-  dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, debugging, firstPrinciples,
+  dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, sociomateriality, debugging, firstPrinciples,
   dsaBasics, statsBasics, mlBasics, devWorkflowBasics,
 ];
