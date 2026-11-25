@@ -2,10 +2,11 @@ import { useEffect, useState } from 'preact/hooks';
 import { CHANGED, loadAttempts, needsRetry, type Attempt } from '../lib/storage';
 import { mastery } from './Stars';
 import { waitingCount } from './MapLink';
+import { MIX_TRACKS, mixDoneToday, startedTracks } from '../lib/mix';
 
 export interface CardTrack { slug: string; short: string; patterns: string[] }
 
-interface Sum { stars: number; max: number; frac: Map<string, number>; missing: Set<string>; waiting: number; answered: number }
+interface Sum { stars: number; max: number; frac: Map<string, number>; missing: Set<string>; waiting: number; answered: number; started: number }
 
 function summarize(tracks: CardTrack[], all: Attempt[]): Sum {
   const frac = new Map<string, number>();
@@ -23,7 +24,7 @@ function summarize(tracks: CardTrack[], all: Attempt[]): Sum {
   const last = new Map<string, Attempt>();
   for (const a of all) last.set(`${a.track}:${a.id}`, a);
   for (const a of last.values()) if (needsRetry(a)) missing.add(a.track);
-  return { stars, max, frac, missing, waiting: waitingCount(all), answered: all.length };
+  return { stars, max, frac, missing, waiting: waitingCount(all), answered: all.length, started: startedTracks(all).length };
 }
 
 // Home-page card with a tiny live preview of the progress map. The whole card is
@@ -63,6 +64,16 @@ export default function SkyCard({ tracks, href }: { tracks: CardTrack[]; href: s
       </span>
       <span class="sky-card-go" aria-hidden="true">→</span>
     </a>
+    {sum.started >= 2 && (
+      <a class={`fix-card mix-card ${mixDoneToday() ? 'done' : ''}`} href={`${href.replace(/map\/$/, '')}mix/`}>
+        <span class="fix-dot" aria-hidden="true" />
+        <span class="fix-text">
+          <strong>Daily mix{mixDoneToday() ? ' · done today' : ''}</strong>
+          <span class="muted">10 questions from {Math.min(sum.started, MIX_TRACKS)} tracks, track hidden</span>
+        </span>
+        <span class="sky-card-go" aria-hidden="true">→</span>
+      </a>
+    )}
     {sum.waiting > 0 && (
       <a class="fix-card" href={`${href.replace(/map\/$/, '')}review/`}>
         <span class="fix-dot" aria-hidden="true" />

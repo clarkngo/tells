@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import Mix from '../components/Mix';
+const base = import.meta.env.BASE_URL;
+---
+<Base title="Daily mix" description="Ten questions from every track you've started, with the track hidden until you answer.">
+  <section class="page-head">
+    <p class="eyebrow">Daily mix</p>
+    <h1>Which kind of problem is it?</h1>
+    <p class="muted">Ten questions from every track you've started, all shuffled together. The track stays hidden until you answer, so you have to work out which kind of problem it is first. No timer.</p>
+  </section>
+  <Mix client:only="preact" base={base}>
+    <div slot="fallback" class="drill skeleton">Shuffling your tracks…</div>
+  </Mix>
+</Base>
