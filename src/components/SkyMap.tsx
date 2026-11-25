@@ -4,6 +4,7 @@ import { planAll, type Slot } from '../lib/schedule';
 import { mastery } from './Stars';
 import Glyph from './Glyph';
 import TellApart from './TellApart';
+import WeekRecap from './WeekRecap';
 import { copyText, loadWishes, removeWish, wishText, WISHES_CHANGED, type Wish } from '../lib/wishes';
 
 const wishKey = (w: Wish) => `${w.forTrack}>${w.slug}`;
@@ -90,7 +91,10 @@ function layout(n: number) {
 const SKY = (() => {
   let s = 7;
   const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
-  return Array.from({ length: 90 }, () => ({ x: r() * 1000 - 500, y: r() * 1000 - 500, r: 0.6 + r() * 1.6, d: r() * 4 }));
+  return Array.from({ length: 160 }, () => {
+    const k = r();
+    return { x: r() * 1400 - 700, y: r() * 1400 - 700, r: k > 0.96 ? 2.4 : 0.5 + r() * 1.4, d: r() * 4, c: k > 0.96 ? 'bright' : k > 0.85 ? 'warm' : k > 0.72 ? 'cool' : '' };
+  });
 })();
 
 function Label({ text, y, cls, max = 14, x = 0, anchor = 'middle' }: {
@@ -189,15 +193,19 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
         )}
         <Legend />
       </div>
+      <div class="map-stage">
       <svg class="map-sky" viewBox="-500 -500 1000 1000" role="group"
         aria-label={track ? `${track.name}: its patterns as planets` : 'Every track as a sun'}
         onClick={(e) => { if (e.target === e.currentTarget) setSel(''); }}>
         <defs>
           <radialGradient id="mapHalo"><stop offset="0" stop-color="var(--map-sun)" stop-opacity=".6" /><stop offset="1" stop-color="var(--map-sun)" stop-opacity="0" /></radialGradient>
+          <clipPath id="mapClip"><rect x="-500" y="-500" width="1000" height="1000" /></clipPath>
           <filter id="mapGlow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="7" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
         </defs>
-        <g class="map-stars" aria-hidden="true">
-          {SKY.map((s) => <circle cx={s.x} cy={s.y} r={s.r} style={{ animationDelay: `${s.d}s` }} />)}
+        <g clip-path="url(#mapClip)" aria-hidden="true">
+          <g class="map-stars">
+            {SKY.map((s) => <circle class={s.c} cx={s.x} cy={s.y} r={s.r} style={{ animationDelay: `${s.d}s` }} />)}
+          </g>
         </g>
         <g key={view} class="map-scene">
           {track ? (
@@ -210,8 +218,9 @@ export default function SkyMap({ tracks, base }: { tracks: MapTrack[]; base: str
       {track ? (
         <TrackDetail track={track} st={stats.get(track.slug)!} sel={sel} setSel={setSel} base={base} />
       ) : (
-        <UniverseDetail tracks={tracks} stats={stats} go={go} wishes={wishes} selWish={selWish} setSelWish={setSelWish} />
+        <UniverseDetail tracks={tracks} stats={stats} go={go} wishes={wishes} selWish={selWish} setSelWish={setSelWish} attempts={attempts} />
       )}
+      </div>
     </div>
   );
 }
@@ -375,8 +384,8 @@ function SlotCounts({ s }: { s: Record<Slot, number> }) {
   );
 }
 
-function UniverseDetail({ tracks, stats, go, wishes, selWish, setSelWish }: {
-  tracks: MapTrack[]; stats: Map<string, TStat>; go: (s: string) => void;
+function UniverseDetail({ tracks, stats, go, wishes, selWish, setSelWish, attempts }: {
+  tracks: MapTrack[]; stats: Map<string, TStat>; go: (s: string) => void; attempts: Attempt[];
   wishes: Wish[]; selWish: string; setSelWish: (k: string) => void;
 }) {
   const all = [...stats.values()];
@@ -393,6 +402,7 @@ function UniverseDetail({ tracks, stats, go, wishes, selWish, setSelWish }: {
       {answered ? (
         <>
           <h2>{plural(answered, 'answer')} so far</h2>
+          <WeekRecap tracks={tracks} attempts={attempts} />
           <SlotCounts s={slots} />
           {waiting.length > 0 && (
             <p class="map-waiting">

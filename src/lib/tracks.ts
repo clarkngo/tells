@@ -35,6 +35,8 @@ import { patterns as mlbPatterns } from '../data/tracks/ml-basics/patterns';
 import { glossary as mlbGlossary } from '../data/tracks/ml-basics/glossary';
 import { patterns as dwbPatterns } from '../data/tracks/dev-workflow-basics/patterns';
 import { glossary as dwbGlossary } from '../data/tracks/dev-workflow-basics/glossary';
+import { patterns as tobPatterns } from '../data/tracks/tech-org-basics/patterns';
+import { glossary as tobGlossary } from '../data/tracks/tech-org-basics/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -263,8 +265,16 @@ export const devWorkflowBasics = makeTrack(
   dwbGlossary,
 );
 
+export const techOrgBasics = makeTrack(
+  { slug: 'tech-org-basics', name: 'Technology and organizations basics', short: 'Tech & org basics',
+    tagline: 'Easier warm-up for sociomateriality: name, in plain words, how tools, routines and people shape each other at work.' },
+  tobPatterns,
+  import.meta.glob('../data/tracks/tech-org-basics/problems/*.json', { eager: true, import: 'default' }),
+  tobGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
   dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, sociomateriality, debugging, firstPrinciples,
-  dsaBasics, statsBasics, mlBasics, devWorkflowBasics,
+  dsaBasics, statsBasics, mlBasics, devWorkflowBasics, techOrgBasics,
 ];

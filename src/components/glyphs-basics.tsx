@@ -377,4 +377,99 @@ export const basicsShapes: Record<string, Shape> = {
       </g>
     </g>
   ),
+
+  // ---------- Technology and organizations basics ----------
+  workaround: () => (
+    <g>
+      <rect class="g-node" x={70} y={14} width={20} height={28} rx={3} />
+      <path class="g-line" d="M14 28 H66" />
+      <path class="g-draw" pathLength={100} d="M40 28 C40 4, 120 4, 120 28 H146" />
+    </g>
+  ),
+  'built-in-rule': () => (
+    <g>
+      <path class="g-line" d="M14 40 H146" />
+      <path class="g-fill" d="M70 40 Q80 26 90 40 Z" />
+      <circle class="g-fill g-sway" style={v({ '--dx': '40px', '--dy': '-6px', '--t': '2.2s' })} cx={30} cy={34} r={5} />
+    </g>
+  ),
+  'same-tool-different-use': () => (
+    <g>
+      <rect class="g-fill" x={70} y={18} width={20} height={20} rx={4} />
+      <path class="g-flow" d="M66 24 L30 12 M66 32 L30 44" />
+      <path class="g-flow" d="M94 28 H132" />
+      <circle class="g-node" cx={24} cy={10} r={5} /><circle class="g-node" cx={24} cy={46} r={5} />
+      <rect class="g-node" x={134} y={22} width={12} height={12} rx={2} />
+    </g>
+  ),
+  'opens-a-possibility': () => (
+    <g>
+      <rect class="g-node" x={30} y={10} width={44} height={36} rx={3} />
+      <rect class="g-fill g-flip" style={{ transformOrigin: '74px 10px' }} x={52} y={10} width={22} height={36} rx={2} />
+      <path class="g-draw" pathLength={100} d="M86 28 H140 M130 20 L140 28 L130 36" />
+    </g>
+  ),
+  'tool-blocks-goal': () => (
+    <g>
+      <path class="g-line" d="M14 28 H76" />
+      <rect class="g-fill" x={80} y={8} width={8} height={40} rx={2} />
+      <circle class="g-node" cx={132} cy={28} r={9} /><circle class="g-fill" cx={132} cy={28} r={3} />
+      <circle class="g-fill g-sway" style={v({ '--dx': '40px', '--t': '1.6s' })} cx={30} cy={28} r={5} />
+    </g>
+  ),
+  'measure-changes-behavior': () => (
+    <g>
+      <path class="g-line" d="M42 50 A38 38 0 0 1 118 50" />
+      <path class="g-stroke g-sway" style={v({ '--dx': '18px', '--t': '1.8s' })} d="M80 50 L70 22" />
+      <circle class="g-fill" cx={80} cy={50} r={4} />
+      <path class="g-fill g-bs" d="M126 12 h14 v8 h-14 z" />
+    </g>
+  ),
+  'invisible-work': () => (
+    <g>
+      <rect class="g-node" x={50} y={8} width={60} height={22} rx={4} />
+      <path class="g-line g-dash" d="M24 46 H136" />
+      {range(4).map((i) => <circle class="g-fill g-faint g-heap" style={d(i * 0.3)} cx={40 + i * 26} cy={42} r={3.5} />)}
+      <path class="g-flow" d="M80 38 V32" />
+    </g>
+  ),
+  'locked-in-choice': () => (
+    <g>
+      <rect class="g-fill" x={66} y={36} width={28} height={12} rx={2} />
+      {range(3).map((i) => <rect class="g-node g-ps" style={d(i * 0.4)} x={44 + i * 26} y={12} width={20} height={22} rx={2} />)}
+      <path class="g-line" d="M20 48 H140" />
+    </g>
+  ),
+  'it-just-works': () => (
+    <g>
+      <path class="g-flow" d="M14 28 H58 M102 28 H146" />
+      <rect class="g-fill" x={60} y={10} width={40} height={36} rx={4} />
+      <g class="g-sway" style={v({ '--dy': '-10px', '--t': '3s' })}>
+        <path class="g-stroke" d="M64 10 L96 10" />
+      </g>
+    </g>
+  ),
+  'shared-object': () => (
+    <g>
+      <rect class="g-fill" x={66} y={16} width={28} height={24} rx={3} />
+      {[[22, 12], [22, 44], [138, 12], [138, 44]].map(([x, y], i) => (
+        <g><circle class="g-node" cx={x} cy={y} r={6} /><path class="g-flow" style={d(i * 0.2)} d={`M${x < 80 ? x + 7 : x - 7} ${y} L${x < 80 ? 64 : 96} 28`} /></g>
+      ))}
+    </g>
+  ),
+  'must-go-through': () => (
+    <g>
+      <path class="g-line" d="M14 12 L72 28 M14 28 H72 M14 44 L72 28 M88 28 H146" />
+      <circle class="g-fill g-heap" cx={80} cy={28} r={8} />
+      <circle class="g-fill g-move" style={v({ '--dx': '120px', '--t': '2.6s' })} cx={18} cy={12} r={3} />
+    </g>
+  ),
+  'shape-each-other': () => (
+    <g>
+      <rect class="g-fill g-sway" style={v({ '--dx': '12px', '--t': '1.6s' })} x={36} y={18} width={20} height={20} rx={4} />
+      <circle class="g-node g-sway" style={v({ '--dx': '-12px', '--t': '1.6s', animationDelay: '0.8s' })} cx={114} cy={28} r={10} />
+      <path class="g-flow" d="M66 22 H98" />
+      <path class="g-flow" style={d(0.45)} d="M98 34 H66" />
+    </g>
+  ),
 };
