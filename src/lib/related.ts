@@ -84,6 +84,26 @@ export const related: Record<string, Related> = {
     easier: [],
     basics: { slug: 'thinking-basics', title: 'Clear thinking basics', about: 'assumptions, cause and effect, and breaking a problem into parts' },
   },
+  security: {
+    easier: ['backend'],
+    basics: { slug: 'security-basics', title: 'Security basics', about: 'passwords, HTTPS, permissions and the most common attacks in plain words' },
+  },
+  databases: {
+    easier: ['backend'],
+    basics: { slug: 'sql-basics', title: 'SQL basics', about: 'tables, SELECT and WHERE, keys and joins in plain words' },
+  },
+  'cloud-devops': {
+    easier: ['dev-workflow-basics', 'web-basics'],
+    basics: { slug: 'cloud-basics', title: 'Cloud basics', about: 'servers, containers, deploys and monitoring in plain words' },
+  },
+  'product-thinking': {
+    easier: ['requirements-basics'],
+    basics: { slug: 'product-basics', title: 'Product basics', about: 'users, problems, metrics and small experiments in plain words' },
+  },
+  negotiation: {
+    easier: ['listening-basics', 'hard-conversations'],
+    basics: { slug: 'negotiation-basics', title: 'Negotiation basics', about: 'asking for what you want, knowing your limits and finding a fair deal' },
+  },
 };
 
 /** A round below this share of clean right answers counts as a low score. */

@@ -55,6 +55,16 @@ import { patterns as lsbPatterns } from '../data/tracks/listening-basics/pattern
 import { glossary as lsbGlossary } from '../data/tracks/listening-basics/glossary';
 import { patterns as plbPatterns } from '../data/tracks/play-basics/patterns';
 import { glossary as plbGlossary } from '../data/tracks/play-basics/glossary';
+import { patterns as secPatterns } from '../data/tracks/security/patterns';
+import { glossary as secGlossary } from '../data/tracks/security/glossary';
+import { patterns as dbsPatterns } from '../data/tracks/databases/patterns';
+import { glossary as dbsGlossary } from '../data/tracks/databases/glossary';
+import { patterns as cdoPatterns } from '../data/tracks/cloud-devops/patterns';
+import { glossary as cdoGlossary } from '../data/tracks/cloud-devops/glossary';
+import { patterns as prdPatterns } from '../data/tracks/product-thinking/patterns';
+import { glossary as prdGlossary } from '../data/tracks/product-thinking/glossary';
+import { patterns as negPatterns } from '../data/tracks/negotiation/patterns';
+import { glossary as negGlossary } from '../data/tracks/negotiation/glossary';
 
 const problemSchema = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
@@ -363,9 +373,50 @@ export const playBasics = makeTrack(
   plbGlossary,
 );
 
+export const security = makeTrack(
+  { slug: 'security', name: 'Security', short: 'Security',
+    tagline: 'Spot the weakness or the defence: injection, XSS, CSRF, broken access control, leaked secrets and least privilege.' },
+  secPatterns,
+  import.meta.glob('../data/tracks/security/problems/*.json', { eager: true, import: 'default' }),
+  secGlossary,
+);
+
+export const databases = makeTrack(
+  { slug: 'databases', name: 'Databases and SQL', short: 'SQL',
+    tagline: 'Pick the index, join or isolation level, catch N+1 queries and read the query plan.' },
+  dbsPatterns,
+  import.meta.glob('../data/tracks/databases/problems/*.json', { eager: true, import: 'default' }),
+  dbsGlossary,
+);
+
+export const cloudDevops = makeTrack(
+  { slug: 'cloud-devops', name: 'Cloud and DevOps', short: 'DevOps',
+    tagline: 'Ship, scale and watch: autoscaling, blue-green and canary deploys, retries with backoff, observability and SLOs.' },
+  cdoPatterns,
+  import.meta.glob('../data/tracks/cloud-devops/problems/*.json', { eager: true, import: 'default' }),
+  cdoGlossary,
+);
+
+export const productThinking = makeTrack(
+  { slug: 'product-thinking', name: 'Product thinking', short: 'Product',
+    tagline: 'Choose the metric, scope the MVP, find the real need and decide what not to build.' },
+  prdPatterns,
+  import.meta.glob('../data/tracks/product-thinking/problems/*.json', { eager: true, import: 'default' }),
+  prdGlossary,
+);
+
+export const negotiation = makeTrack(
+  { slug: 'negotiation', name: 'Negotiation and influence', short: 'Negotiation',
+    tagline: 'Name the move: anchoring, BATNA, framing, trading concessions, and the influence tactics used on you.' },
+  negPatterns,
+  import.meta.glob('../data/tracks/negotiation/problems/*.json', { eager: true, import: 'default' }),
+  negGlossary,
+);
+
 export const tracks: Track[] = [
   dsa, systemDesign, frontend, backend, aiEngineering, contextEngineering, aiAgents, specDriven,
   dataScience, garch, ai901, disc, gameDesign, engineeringJudgment, hardConversations, sociomateriality, debugging, firstPrinciples,
+  security, databases, cloudDevops, productThinking, negotiation,
   dsaBasics, statsBasics, mlBasics, devWorkflowBasics, techOrgBasics,
   llmBasics, webBasics, webPageBasics, debuggingBasics, thinkingBasics, requirementsBasics, timeSeriesBasics, listeningBasics, playBasics,
 ];

@@ -11,10 +11,11 @@ export interface Area {
 export const AREAS: Area[] = [
   { id: 'coding', name: 'Coding', tracks: ['dsa', 'dsa-basics', 'debugging', 'debugging-basics', 'engineering-judgment', 'dev-workflow-basics'] },
   { id: 'web', name: 'Web', tracks: ['system-design', 'web-basics', 'backend', 'frontend', 'web-page-basics'] },
+  { id: 'systems', name: 'Systems', tracks: ['cloud-devops', 'security', 'databases'] },
   { id: 'ai', name: 'AI', tracks: ['ai-engineering', 'llm-basics', 'context-engineering', 'ai-agents', 'ai-901', 'ml-basics'] },
   { id: 'data', name: 'Data', tracks: ['data-science', 'stats-basics', 'garch', 'time-series-basics'] },
-  { id: 'thinking', name: 'Thinking', tracks: ['first-principles', 'thinking-basics', 'spec-driven', 'requirements-basics'] },
-  { id: 'people', name: 'People', tracks: ['disc', 'listening-basics', 'hard-conversations', 'sociomateriality', 'tech-org-basics'] },
+  { id: 'thinking', name: 'Thinking', tracks: ['first-principles', 'thinking-basics', 'spec-driven', 'requirements-basics', 'product-thinking'] },
+  { id: 'people', name: 'People', tracks: ['disc', 'listening-basics', 'hard-conversations', 'negotiation', 'sociomateriality', 'tech-org-basics'] },
   { id: 'play', name: 'Play', tracks: ['game-design', 'play-basics'] },
 ];
 

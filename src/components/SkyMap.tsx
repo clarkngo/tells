@@ -365,7 +365,7 @@ function Galaxy({ areas, stats, go, keyOf }: {
   return (
     <>
       {areas.map((a, i) => {
-        const [x, y] = at(i, areas.length, 320);
+        const [x, y] = at(i + 0.5, areas.length, 320);
         const lit = a.tracks.some((t) => stats.get(t.slug)!.answered);
         return <line class={`map-path ${lit ? 'lit' : ''}`} x1={0} y1={0} x2={x} y2={y} />;
       })}
@@ -376,13 +376,15 @@ function Galaxy({ areas, stats, go, keyOf }: {
         <text class="map-small" y={26} text-anchor="middle">of {max} ★</text>
       </g>
       {areas.map((a, i) => {
-        const [x, y] = at(i, areas.length, 320);
+        const [x, y] = at(i + 0.5, areas.length, 320);
         const sts = a.tracks.map((t) => stats.get(t.slug)!);
         const stars = sts.reduce((s, t) => s + t.stars, 0);
         const mx = sts.reduce((s, t) => s + t.max, 0);
         const retry = sts.reduce((s, t) => s + t.slots.retry, 0);
         const n = a.tracks.length;
-        const above = y < -150;
+        // Clusters sit half a step off the axes, so a label above (top half) or
+        // below (bottom half) never runs into the neighbouring cluster.
+        const above = y < 0;
         return (
           <g class={`map-node map-area ${sts.some((t) => t.answered) ? 'started' : ''}`}
             transform={`translate(${x} ${y})`} role="button" tabIndex={0}
