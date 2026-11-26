@@ -4,8 +4,10 @@
 //  - XP is tracked per device and each device keeps its larger value, so XP from
 //    other devices adds up but importing the same code twice never double-counts
 //  - practice days are combined, best scores keep the higher one
+//  - your own scenarios merge by id; the version edited last wins
 import { loadAttempts, replaceAttempts, type Attempt } from './storage';
 import { loadProfile, saveProfile, sumSources } from './profile';
+import { loadOwn, mergeOwn, replaceOwn, type Own } from './own';
 
 // Row: track, id, answer, picked, ms, at, then optional peeked (1/0) and confidence (1 sure, 2 guess).
 type Row = [string, string, string, string | null, number, number, (1 | 0)?, (1 | 2)?];
@@ -15,6 +17,8 @@ interface Payload {
   best: Record<string, number>;
   days: string[];
   sources: Record<string, number>;
+  /** Your own scenarios (absent in older codes). */
+  own?: Own[];
 }
 
 export interface ImportSummary {
@@ -22,6 +26,7 @@ export interface ImportSummary {
   xp: number;
   days: number;
   bests: number;
+  own: number;
 }
 
 function toRow(a: Attempt): Row {
@@ -55,7 +60,8 @@ const canCompress = () => typeof CompressionStream !== 'undefined';
 
 export async function exportCode(): Promise<string> {
   const p = loadProfile();
-  const payload: Payload = { v: 1, a: loadAttempts().map(toRow), best: p.best, days: p.days, sources: p.sources };
+  const own = loadOwn();
+  const payload: Payload = { v: 1, a: loadAttempts().map(toRow), best: p.best, days: p.days, sources: p.sources, ...(own.length ? { own } : {}) };
   const json = new TextEncoder().encode(JSON.stringify(payload));
   if (canCompress()) return 'tells1.' + toB64url(await pipe(json, new CompressionStream('deflate-raw')));
   return 'tells0.' + toB64url(json);
@@ -112,5 +118,13 @@ export async function importCode(code: string): Promise<ImportSummary> {
   }
   saveProfile(p);
 
-  return { answers: fresh.length, xp: p.xp - xpBefore, days: newDays.length, bests };
+  // Own scenarios: merge by id.
+  let own = 0;
+  if (Array.isArray(incoming.own) && incoming.own.length) {
+    const m = mergeOwn(loadOwn(), incoming.own);
+    if (m.changed) replaceOwn(m.all);
+    own = m.changed;
+  }
+
+  return { answers: fresh.length, xp: p.xp - xpBefore, days: newDays.length, bests, own };
 }
