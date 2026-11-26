@@ -51,6 +51,39 @@ function save(all: Own[]) {
   }
 }
 
+/** Replaces every scenario (used by sync import). */
+export function replaceOwn(all: Own[]) {
+  save(all);
+}
+
+/**
+ * Merges scenarios from another device by id. The version edited last wins (an
+ * edit restarts its tests), and test results from both devices since that edit
+ * are kept. Returns how many were added or changed.
+ */
+export function mergeOwn(mine: Own[], incoming: Own[]): { all: Own[]; changed: number } {
+  const byId = new Map(mine.map((o) => [o.id, o]));
+  let changed = 0;
+  for (const o of incoming) {
+    if (!o || typeof o.id !== 'string' || typeof o.text !== 'string') continue;
+    const here = byId.get(o.id);
+    if (!here) {
+      byId.set(o.id, { ...o, checks: o.checks ?? [] });
+      changed++;
+      continue;
+    }
+    const win = o.at > here.at ? o : here;
+    const seen = new Set<number>();
+    const checks = [...(here.checks ?? []), ...(o.checks ?? [])]
+      .filter((c) => c.at >= win.at && !seen.has(c.at) && seen.add(c.at))
+      .sort((a, b) => a.at - b.at);
+    const merged = { ...win, checks };
+    if (win !== here || checks.length !== here.checks.length) changed++;
+    byId.set(o.id, merged);
+  }
+  return { all: [...byId.values()].sort((a, b) => a.at - b.at), changed };
+}
+
 /** Adds a new scenario, or replaces one with the same id (an edit resets its checks). */
 export function putOwn(o: Own) {
   const all = loadOwn().filter((x) => x.id !== o.id);

@@ -51,7 +51,7 @@ export default function SyncPanel() {
     setBusy(false);
   };
 
-  const nothingNew = result && !result.answers && !result.xp && !result.days && !result.bests;
+  const nothingNew = result && !result.answers && !result.xp && !result.days && !result.bests && !result.own;
 
   return (
     <div class="sync">
@@ -70,8 +70,8 @@ export default function SyncPanel() {
       <section class="card sync-card">
         <h2>2 · Paste on the other device</h2>
         <p class="muted">
-          Importing adds to what's here. Answers, XP, practice days and best scores combine, and importing the same
-          code twice never counts anything double.
+          Importing adds to what's here. Answers, XP, practice days, best scores and your own scenarios combine, and
+          importing the same code twice never counts anything double.
         </p>
         <textarea rows={4} placeholder="tells1.…" value={paste} onInput={(e) => setPaste(e.currentTarget.value)} />
         <button class="btn primary" onClick={doImport} disabled={busy || !paste.trim()}>
@@ -84,13 +84,14 @@ export default function SyncPanel() {
               ? 'Already up to date: nothing new in that code.'
               : `Merged: +${result.answers} answers, +${result.xp.toLocaleString()} XP, +${result.days} practice days` +
                 (result.bests ? `, ${result.bests} new best scores` : '') +
+                (result.own ? `, ${result.own} of your own ${result.own === 1 ? 'scenario' : 'scenarios'}` : '') +
                 '.'}
           </p>
         )}
       </section>
       <p class="muted small">
         Tip: to keep every device in step, import on each device the code from the others. Codes contain only your
-        answers and scores.
+        answers, scores and the scenarios you wrote.
       </p>
     </div>
   );
