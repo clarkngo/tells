@@ -257,6 +257,42 @@ select { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px soli
 .signals li { font-family: var(--mono); font-size: 0.72rem; padding: 2px 8px; border-radius: 5px; background: var(--surface-2); }
 .card-link { margin-top: auto; color: var(--pc); text-decoration: none; font-weight: 500; }
 .card-link:hover { text-decoration: underline; }
+.card-links { margin-top: auto; display: flex; flex-wrap: wrap; gap: 6px 18px; }
+.card-links .card-link { margin-top: 0; }
+.card-link.quiet { color: var(--muted); }
+.own-link { margin: 18px 0 0; }
+.own-link a { color: var(--accent); }
+
+/* write your own */
+.own { display: grid; gap: 28px; }
+.own-form { display: grid; gap: 18px; }
+.own-field { display: flex; flex-direction: column; gap: 8px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.own-field > span, .own-field > legend { font-weight: 600; padding: 0; }
+.own-field em { font-style: normal; font-size: 0.88rem; }
+.own .pname { display: inline; }
+.own-blurb { margin: -6px 0 0; color: var(--muted); }
+.own textarea, .own input[type=text] {
+  font: inherit; color: var(--text); background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 10px 12px; width: 100%; box-sizing: border-box;
+}
+.own textarea { resize: vertical; min-height: 110px; line-height: 1.5; }
+.own textarea:focus, .own input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.own-mark { margin: 0; padding: 10px 12px; border-radius: 8px; background: var(--surface-2); }
+.own-check { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; padding: 4px 0; }
+.own-check input { width: 18px; height: 18px; margin: 2px 0 0; accent-color: var(--accent); flex: none; }
+.own-warn { color: var(--bad); }
+.own-todo { margin: 0; padding-left: 20px; color: var(--bad); font-size: 0.92rem; }
+.own-saved { color: var(--good); font-size: 0.92rem; }
+.own-note { margin: 0; font-size: 0.85rem; }
+.own-list h2 { font-size: 1.2rem; margin: 0 0 12px; }
+.own-item { border-top: 1px solid var(--border); padding: 14px 0; }
+.own-item p { margin: 0 0 10px; }
+.own-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.own-badge { font-family: var(--mono); font-size: 0.72rem; border: 1px solid currentColor; border-radius: 4px; padding: 1px 6px; color: var(--muted); }
+.own-badge.ready { color: var(--accent); }
+.own-badge.passed { color: var(--good); }
+.own-badge.rewrite { color: var(--bad); }
+.own-quiz { margin: 0 0 16px; }
 
 /* ---------- glyphs ---------- */
 .glyph { width: 100%; max-width: 220px; height: auto; display: block; color: var(--pc); }
