@@ -11,6 +11,7 @@ import TellApart from './TellApart';
 import { SIZES, applySize, loadSize } from '../lib/textsize';
 import { LOW_SCORE, type Basics } from '../lib/related';
 import { markMixDone } from '../lib/mix';
+import { readyIn } from '../lib/own';
 import type { Cousins } from '../lib/cousins';
 import { addWish, copyText, wishText, type Wish } from '../lib/wishes';
 
@@ -710,6 +711,7 @@ export default function Drill({ track, patterns, problems, glossary = [], count 
               ? <button type="button" class="btn" onClick={() => setPhase('setup')}>Change mode</button>
               : drillHref && <a class="btn" href={drillHref}>Full drill →</a>}
           </div>}
+          {setup && !review && <OwnLink track={track} />}
         </div>
       </div>
     );
@@ -948,6 +950,18 @@ function CousinRow({ c }: { c: Cousins }) {
         ))}
       </div>
     </div>
+  );
+}
+
+// Drill results: a way into writing your own scenario, or testing ones that are due.
+function OwnLink({ track }: { track: string }) {
+  const n = readyIn(track).length;
+  return (
+    <p class="own-link">
+      {n
+        ? <a href={`${BASE}${track}/write/?quiz=1`}>{n === 1 ? '1 of your own scenarios is' : `${n} of your own scenarios are`} ready to test →</a>
+        : <a href={`${BASE}${track}/write/`}>Write your own scenario →</a>}
+    </p>
   );
 }
 

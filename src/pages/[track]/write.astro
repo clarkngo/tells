@@ -1,0 +1,36 @@
+---
+import Base from '../../layouts/Base.astro';
+import WriteOwn from '../../components/WriteOwn';
+import { tracks } from '../../lib/tracks';
+import type { Track } from '../../lib/types';
+
+export function getStaticPaths() {
+  return tracks.map((t) => ({ params: { track: t.slug }, props: { t } }));
+}
+const { t } = Astro.props as { t: Track };
+const base = import.meta.env.BASE_URL;
+const live = t.patterns.filter((p) => p.live);
+// Each pattern's look-alikes: the decoys its questions use, most common first.
+const lookalikes: Record<string, string[]> = {};
+for (const p of live) {
+  const n = new Map<string, number>();
+  for (const q of t.problems) if (q.answer === p.slug) for (const d of q.decoys) n.set(d, (n.get(d) ?? 0) + 1);
+  lookalikes[p.slug] = [...n.entries()].sort((a, b) => b[1] - a[1]).map(([s]) => s);
+}
+---
+<Base title={`Write your own · ${t.short}`} description={`Write your own ${t.name} scenario, mark its tell, and test yourself on it later.`}>
+  <section class="page-head">
+    <p class="eyebrow">{t.name}</p>
+    <h1>Write your own</h1>
+    <p class="muted">
+      Write a short situation where a pattern is the answer, mark the words that give it away, and check it against the
+      pattern's signals and its closest look-alike. It comes back as a question the next day.
+      <a href={`${base}${t.slug}/patterns/`}>See all patterns</a>
+    </p>
+  </section>
+  <WriteOwn client:only="preact" track={t.slug} trackName={t.name}
+    patterns={live.map((p) => ({ slug: p.slug, name: p.name, blurb: p.blurb, signals: p.signals, hue: p.hue }))}
+    lookalikes={lookalikes}>
+    <div slot="fallback" class="drill skeleton">Loading…</div>
+  </WriteOwn>
+</Base>

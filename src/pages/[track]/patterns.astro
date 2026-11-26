@@ -42,7 +42,12 @@ const noun = t.slug === 'dsa' ? 'problems' : 'scenarios';
             </div>
           </div>
         )}
-        {p.live && <a class="card-link" href={`${base}${t.slug}/drill/?focus=${p.slug}`}>Drill this →</a>}
+        {p.live && (
+          <div class="card-links">
+            <a class="card-link" href={`${base}${t.slug}/drill/?focus=${p.slug}`}>Drill this →</a>
+            <a class="card-link quiet" href={`${base}${t.slug}/write/?p=${p.slug}`}>Write your own</a>
+          </div>
+        )}
       </article>
     ))}
   </div>
